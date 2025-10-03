@@ -3,6 +3,11 @@
     <TargetFrameworks>net8.0</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="LTAF.Navigator" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\Atlassian.Jira\Atlassian.Jira.csproj" />
   </ItemGroup>
   <ItemGroup>
