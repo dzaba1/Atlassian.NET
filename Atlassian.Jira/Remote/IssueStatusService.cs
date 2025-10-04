@@ -16,7 +16,7 @@ namespace Atlassian.Jira.Remote
             _jira = jira;
         }
 
-        public async Task<IEnumerable<IssueStatus>> GetStatusesAsync(CancellationToken token = default(CancellationToken))
+        public async Task<IEnumerable<IssueStatus>> GetStatusesAsync(CancellationToken token = default)
         {
             var cache = _jira.Cache;
 
@@ -29,7 +29,7 @@ namespace Atlassian.Jira.Remote
             return cache.Statuses.Values;
         }
 
-        public async Task<IssueStatus> GetStatusAsync(string idOrName, CancellationToken token = default(CancellationToken))
+        public async Task<IssueStatus> GetStatusAsync(string idOrName, CancellationToken token = default)
         {
             var cache = _jira.Cache;
 

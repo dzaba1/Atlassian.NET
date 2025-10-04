@@ -1,7 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-    <PackageId>Atlassian.SDK</PackageId>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <PackageId>Dzaba.AtlassianSDK</PackageId>
     <Authors>Federico Silva Armas</Authors>
     <Company>Federico Silva Armas</Company>
     <Product>Atlassian.SDK</Product>

@@ -16,7 +16,7 @@ namespace Atlassian.Jira.Remote
             _jira = jira;
         }
 
-        public async Task<IEnumerable<IssueType>> GetIssueTypesAsync(CancellationToken token = default(CancellationToken))
+        public async Task<IEnumerable<IssueType>> GetIssueTypesAsync(CancellationToken token = default)
         {
             var cache = _jira.Cache;
 
@@ -30,7 +30,7 @@ namespace Atlassian.Jira.Remote
             return cache.IssueTypes.Values;
         }
 
-        public async Task<IEnumerable<IssueType>> GetIssueTypesForProjectAsync(string projectKey, CancellationToken token = default(CancellationToken))
+        public async Task<IEnumerable<IssueType>> GetIssueTypesForProjectAsync(string projectKey, CancellationToken token = default)
         {
             var cache = _jira.Cache;
 

@@ -18,7 +18,7 @@ namespace Atlassian.Jira.Remote
             _jira = jira;
         }
 
-        public async Task<IEnumerable<ProjectVersion>> GetVersionsAsync(string projectKey, CancellationToken token = default(CancellationToken))
+        public async Task<IEnumerable<ProjectVersion>> GetVersionsAsync(string projectKey, CancellationToken token = default)
         {
             var cache = _jira.Cache;
 
@@ -40,7 +40,7 @@ namespace Atlassian.Jira.Remote
             }
         }
 
-        public async Task<IPagedQueryResult<ProjectVersion>> GetPagedVersionsAsync(string projectKey, int startAt = 0, int maxResults = 50, CancellationToken token = default(CancellationToken))
+        public async Task<IPagedQueryResult<ProjectVersion>> GetPagedVersionsAsync(string projectKey, int startAt = 0, int maxResults = 50, CancellationToken token = default)
         {
             var settings = _jira.RestClient.Settings.JsonSerializerSettings;
             var resource = string.Format("rest/api/2/project/{0}/version?startAt={1}&maxResults={2}",
@@ -61,7 +61,7 @@ namespace Atlassian.Jira.Remote
             return PagedQueryResult<ProjectVersion>.FromJson((JObject)result, versions);
         }
 
-        public async Task<ProjectVersion> CreateVersionAsync(ProjectVersionCreationInfo projectVersion, CancellationToken token = default(CancellationToken))
+        public async Task<ProjectVersion> CreateVersionAsync(ProjectVersionCreationInfo projectVersion, CancellationToken token = default)
         {
             var settings = _jira.RestClient.Settings.JsonSerializerSettings;
             var serializer = JsonSerializer.Create(settings);
@@ -77,7 +77,7 @@ namespace Atlassian.Jira.Remote
             return version;
         }
 
-        public async Task DeleteVersionAsync(string versionId, string moveFixIssuesTo = null, string moveAffectedIssuesTo = null, CancellationToken token = default(CancellationToken))
+        public async Task DeleteVersionAsync(string versionId, string moveFixIssuesTo = null, string moveAffectedIssuesTo = null, CancellationToken token = default)
         {
             var resource = string.Format("/rest/api/2/version/{0}?{1}&{2}",
                 versionId,
@@ -89,7 +89,7 @@ namespace Atlassian.Jira.Remote
             _jira.Cache.Versions.TryRemove(versionId);
         }
 
-        public async Task<ProjectVersion> GetVersionAsync(string versionId, CancellationToken token = default(CancellationToken))
+        public async Task<ProjectVersion> GetVersionAsync(string versionId, CancellationToken token = default)
         {
             var resource = string.Format("rest/api/2/version/{0}", versionId);
             var remoteVersion = await _jira.RestClient.ExecuteRequestAsync<RemoteVersion>(Method.GET, resource, null, token).ConfigureAwait(false);
@@ -97,7 +97,7 @@ namespace Atlassian.Jira.Remote
             return new ProjectVersion(_jira, remoteVersion);
         }
 
-        public async Task<ProjectVersion> UpdateVersionAsync(ProjectVersion version, CancellationToken token = default(CancellationToken))
+        public async Task<ProjectVersion> UpdateVersionAsync(ProjectVersion version, CancellationToken token = default)
         {
             var resource = string.Format("rest/api/2/version/{0}", version.Id);
             var serializerSettings = _jira.RestClient.Settings.JsonSerializerSettings;

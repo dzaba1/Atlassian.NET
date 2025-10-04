@@ -15,7 +15,7 @@ namespace Atlassian.Jira.Remote
             _jira = jira;
         }
 
-        public async Task<IEnumerable<IssuePriority>> GetPrioritiesAsync(CancellationToken token = default(CancellationToken))
+        public async Task<IEnumerable<IssuePriority>> GetPrioritiesAsync(CancellationToken token = default)
         {
             var cache = _jira.Cache;
 

@@ -14,6 +14,6 @@ namespace Atlassian.Jira
         /// <param name="doHealthCheck">if set to <c>true</c>, do a health check.</param>
         /// <param name="token">The cancellation token.</param>
         /// <returns>The server information.</returns>
-        Task<ServerInfo> GetServerInfoAsync(bool doHealthCheck = false, CancellationToken token = default(CancellationToken));
+        Task<ServerInfo> GetServerInfoAsync(bool doHealthCheck = false, CancellationToken token = default);
     }
 }

@@ -105,7 +105,7 @@ namespace Atlassian.Jira
         /// Gets the issue types for the current project.
         /// </summary>
         /// <param name="token">Cancellation token for this operation.</param>
-        public Task<IEnumerable<IssueType>> GetIssueTypesAsync(CancellationToken token = default(CancellationToken))
+        public Task<IEnumerable<IssueType>> GetIssueTypesAsync(CancellationToken token = default)
         {
             return _jira.IssueTypes.GetIssueTypesForProjectAsync(Key, token);
         }
@@ -115,7 +115,7 @@ namespace Atlassian.Jira
         /// </summary>
         /// <param name="projectComponent">Information of the new component.</param>
         /// <param name="token">Cancellation token for this operation.</param>
-        public Task<ProjectComponent> AddComponentAsync(ProjectComponentCreationInfo projectComponent, CancellationToken token = default(CancellationToken))
+        public Task<ProjectComponent> AddComponentAsync(ProjectComponentCreationInfo projectComponent, CancellationToken token = default)
         {
             projectComponent.ProjectKey = Key;
             return _jira.Components.CreateComponentAsync(projectComponent, token);
@@ -125,7 +125,7 @@ namespace Atlassian.Jira
         /// Gets the components for the current project.
         /// </summary>
         /// <param name="token">Cancellation token for this operation.</param>
-        public Task<IEnumerable<ProjectComponent>> GetComponentsAsync(CancellationToken token = default(CancellationToken))
+        public Task<IEnumerable<ProjectComponent>> GetComponentsAsync(CancellationToken token = default)
         {
             return _jira.Components.GetComponentsAsync(Key, token);
         }
@@ -136,7 +136,7 @@ namespace Atlassian.Jira
         /// <param name="componentName">Name of the component to remove.</param>
         /// <param name="moveIssuesTo">The component to set on issues where the deleted component is the component, If null then the component is removed.</param>
         /// <param name="token">Cancellation token for this operation.</param>
-        public async Task DeleteComponentAsync(string componentName, string moveIssuesTo = null, CancellationToken token = default(CancellationToken))
+        public async Task DeleteComponentAsync(string componentName, string moveIssuesTo = null, CancellationToken token = default)
         {
             var components = await this.GetComponentsAsync(token).ConfigureAwait(false);
             var component = components.First(c => string.Equals(c.Name, componentName));
@@ -154,7 +154,7 @@ namespace Atlassian.Jira
         /// </summary>
         /// <param name="projectVersion">Information of the new project version.</param>
         /// <param name="token">Cancellation token for this operation.</param>
-        public Task<ProjectVersion> AddVersionAsync(ProjectVersionCreationInfo projectVersion, CancellationToken token = default(CancellationToken))
+        public Task<ProjectVersion> AddVersionAsync(ProjectVersionCreationInfo projectVersion, CancellationToken token = default)
         {
             projectVersion.ProjectKey = Key;
             return _jira.Versions.CreateVersionAsync(projectVersion, token);
@@ -164,7 +164,7 @@ namespace Atlassian.Jira
         /// Gets the versions for this project.
         /// </summary>
         /// <param name="token">Cancellation token for this operation.</param>
-        public Task<IEnumerable<ProjectVersion>> GetVersionsAsync(CancellationToken token = default(CancellationToken))
+        public Task<IEnumerable<ProjectVersion>> GetVersionsAsync(CancellationToken token = default)
         {
             return _jira.Versions.GetVersionsAsync(Key, token);
         }
@@ -175,7 +175,7 @@ namespace Atlassian.Jira
         /// <param name="startAt">The page offset, if not specified then defaults to 0.</param>
         /// <param name="maxResults">How many results on the page should be included. Defaults to 50.</param>
         /// <param name="token">Cancellation token for this operation.</param>
-        public Task<IPagedQueryResult<ProjectVersion>> GetPagedVersionsAsync(int startAt = 0, int maxResults = 50, CancellationToken token = default(CancellationToken))
+        public Task<IPagedQueryResult<ProjectVersion>> GetPagedVersionsAsync(int startAt = 0, int maxResults = 50, CancellationToken token = default)
         {
             return _jira.Versions.GetPagedVersionsAsync(Key, startAt, maxResults, token);
         }
@@ -187,7 +187,7 @@ namespace Atlassian.Jira
         /// <param name="moveFixIssuesTo">The version to set fixVersion to on issues where the deleted version is the fix version, If null then the fixVersion is removed.</param>
         /// <param name="moveAffectedIssuesTo">The version to set fixVersion to on issues where the deleted version is the fix version, If null then the fixVersion is removed.</param>
         /// <param name="token">Cancellation token for this operation.</param>
-        public async Task DeleteVersionAsync(string versionName, string moveFixIssuesTo = null, string moveAffectedIssuesTo = null, CancellationToken token = default(CancellationToken))
+        public async Task DeleteVersionAsync(string versionName, string moveFixIssuesTo = null, string moveAffectedIssuesTo = null, CancellationToken token = default)
         {
             var versions = await this.GetVersionsAsync(token).ConfigureAwait(false);
             var version = versions.FirstOrDefault(v => string.Equals(v.Name, versionName, StringComparison.OrdinalIgnoreCase));

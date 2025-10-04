@@ -13,6 +13,6 @@ namespace Atlassian.Jira
         /// Returns all the issue resolutions within JIRA.
         /// </summary>
         /// <param name="token">Cancellation token for this operation.</param>
-        Task<IEnumerable<IssueResolution>> GetResolutionsAsync(CancellationToken token = default(CancellationToken));
+        Task<IEnumerable<IssueResolution>> GetResolutionsAsync(CancellationToken token = default);
     }
 }

@@ -359,7 +359,7 @@ namespace Atlassian.Jira
              */
             return value.ToString(
                 value.TimeOfDay == TimeSpan.Zero ? DEFAULT_DATE_FORMAT : DEFAULT_DATE_TIME_FORMAT,
-                Jira.DefaultCultureInfo);
+                DefaultCultureInfo);
         }
 
         private static void ConfigureDefaultServices(ServiceLocator services, Jira jira, IJiraRestClient restClient)

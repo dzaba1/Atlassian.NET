@@ -15,7 +15,7 @@ namespace Atlassian.Jira.Remote
             _jira = jira;
         }
 
-        public async Task<IEnumerable<ScreenField>> GetScreenAvailableFieldsAsync(string screenId, CancellationToken token = default(CancellationToken))
+        public async Task<IEnumerable<ScreenField>> GetScreenAvailableFieldsAsync(string screenId, CancellationToken token = default)
         {
             var resource = $"rest/api/2/screens/{screenId}/availableFields";
 
@@ -25,7 +25,7 @@ namespace Atlassian.Jira.Remote
             return screenFields;
         }
 
-        public async Task<IEnumerable<ScreenTab>> GetScreenTabsAsync(string screenId, string projectKey = null, CancellationToken token = default(CancellationToken))
+        public async Task<IEnumerable<ScreenTab>> GetScreenTabsAsync(string screenId, string projectKey = null, CancellationToken token = default)
         {
             var resource = $"rest/api/2/screens/{screenId}/tabs";
             if (!string.IsNullOrWhiteSpace(projectKey))
@@ -39,7 +39,7 @@ namespace Atlassian.Jira.Remote
             return screenTabs;
         }
 
-        public async Task<IEnumerable<ScreenField>> GetScreenTabFieldsAsync(string screenId, string tabId, string projectKey = null, CancellationToken token = default(CancellationToken))
+        public async Task<IEnumerable<ScreenField>> GetScreenTabFieldsAsync(string screenId, string tabId, string projectKey = null, CancellationToken token = default)
         {
             var resource = $"rest/api/2/screens/{screenId}/tabs/{tabId}/fields";
             if (!string.IsNullOrWhiteSpace(projectKey))

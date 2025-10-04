@@ -17,7 +17,7 @@ namespace Atlassian.Jira.Remote
             _jira = jira;
         }
 
-        public Task CreateRemoteLinkAsync(string issueKey, string remoteUrl, string title, string summary, CancellationToken token = default(CancellationToken))
+        public Task CreateRemoteLinkAsync(string issueKey, string remoteUrl, string title, string summary, CancellationToken token = default)
         {
             if (string.IsNullOrEmpty(title))
             {
@@ -44,7 +44,7 @@ namespace Atlassian.Jira.Remote
             return _jira.RestClient.ExecuteRequestAsync(Method.POST, string.Format("rest/api/2/issue/{0}/remotelink", issueKey), bodyObject, token);
         }
 
-        public async Task<IEnumerable<IssueRemoteLink>> GetRemoteLinksForIssueAsync(string issueKey, CancellationToken token = default(CancellationToken))
+        public async Task<IEnumerable<IssueRemoteLink>> GetRemoteLinksForIssueAsync(string issueKey, CancellationToken token = default)
         {
             var serializerSettings = _jira.RestClient.Settings.JsonSerializerSettings;
             var resource = string.Format("rest/api/2/issue/{0}/remotelink", issueKey);

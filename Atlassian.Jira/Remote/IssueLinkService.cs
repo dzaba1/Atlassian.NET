@@ -18,7 +18,7 @@ namespace Atlassian.Jira.Remote
             _jira = jira;
         }
 
-        public Task CreateLinkAsync(string outwardIssueKey, string inwardIssueKey, string linkName, string comment, CancellationToken token = default(CancellationToken))
+        public Task CreateLinkAsync(string outwardIssueKey, string inwardIssueKey, string linkName, string comment, CancellationToken token = default)
         {
             var bodyObject = new JObject();
             bodyObject.Add("type", new JObject(new JProperty("name", linkName)));
@@ -33,13 +33,13 @@ namespace Atlassian.Jira.Remote
             return _jira.RestClient.ExecuteRequestAsync(Method.POST, "rest/api/2/issueLink", bodyObject, token);
         }
 
-        public async Task<IEnumerable<IssueLink>> GetLinksForIssueAsync(string issueKey, CancellationToken token = default(CancellationToken))
+        public async Task<IEnumerable<IssueLink>> GetLinksForIssueAsync(string issueKey, CancellationToken token = default)
         {
             var issue = await _jira.Issues.GetIssueAsync(issueKey, token);
             return await GetLinksForIssueAsync(issue, null, token);
         }
 
-        public async Task<IEnumerable<IssueLink>> GetLinksForIssueAsync(Issue issue, IEnumerable<string> linkTypeNames = null, CancellationToken token = default(CancellationToken))
+        public async Task<IEnumerable<IssueLink>> GetLinksForIssueAsync(Issue issue, IEnumerable<string> linkTypeNames = null, CancellationToken token = default)
         {
             var serializerSettings = _jira.RestClient.Settings.JsonSerializerSettings;
             var resource = string.Format("rest/api/2/issue/{0}?fields=issuelinks,created", issue.Key.Value);
@@ -86,7 +86,7 @@ namespace Atlassian.Jira.Remote
             });
         }
 
-        public async Task<IEnumerable<IssueLinkType>> GetLinkTypesAsync(CancellationToken token = default(CancellationToken))
+        public async Task<IEnumerable<IssueLinkType>> GetLinkTypesAsync(CancellationToken token = default)
         {
             var cache = _jira.Cache;
             var serializerSettings = _jira.RestClient.Settings.JsonSerializerSettings;

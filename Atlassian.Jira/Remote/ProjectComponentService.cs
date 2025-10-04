@@ -19,7 +19,7 @@ namespace Atlassian.Jira.Remote
 
         }
 
-        public async Task<ProjectComponent> CreateComponentAsync(ProjectComponentCreationInfo projectComponent, CancellationToken token = default(CancellationToken))
+        public async Task<ProjectComponent> CreateComponentAsync(ProjectComponentCreationInfo projectComponent, CancellationToken token = default)
         {
             var serializer = JsonSerializer.Create(_jira.RestClient.Settings.JsonSerializerSettings);
             var resource = "/rest/api/2/component";
@@ -33,7 +33,7 @@ namespace Atlassian.Jira.Remote
             return component;
         }
 
-        public async Task DeleteComponentAsync(string componentId, string moveIssuesTo = null, CancellationToken token = default(CancellationToken))
+        public async Task DeleteComponentAsync(string componentId, string moveIssuesTo = null, CancellationToken token = default)
         {
             var resource = string.Format("/rest/api/2/component/{0}?{1}",
                 componentId,
@@ -44,7 +44,7 @@ namespace Atlassian.Jira.Remote
             _jira.Cache.Components.TryRemove(componentId);
         }
 
-        public async Task<IEnumerable<ProjectComponent>> GetComponentsAsync(string projectKey, CancellationToken token = default(CancellationToken))
+        public async Task<IEnumerable<ProjectComponent>> GetComponentsAsync(string projectKey, CancellationToken token = default)
         {
             var cache = _jira.Cache;
 

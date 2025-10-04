@@ -86,7 +86,7 @@ namespace Atlassian.Jira
 
             if (val == null || val.Type == JTokenType.Null)
             {
-                return default(TValue);
+                return default;
             }
             else
             {
