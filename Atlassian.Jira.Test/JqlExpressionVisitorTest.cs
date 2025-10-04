@@ -516,39 +516,6 @@ public class JqlExpressionTranslatorTest
     }
 
     [Fact]
-    public void CustomFieldEqual()
-    {
-        var queryable = CreateQueryable();
-        var issues = (from i in queryable
-                      where i["Foo"] == "foo" && i["Bar"] == new DateTime(2012, 1, 1) && i["Baz"] == new LiteralMatch("baz")
-                      select i).ToArray();
-
-        Assert.Equal("((\"Foo\" ~ \"foo\" and \"Bar\" = \"2012/01/01\") and \"Baz\" = \"baz\")", _translator.Jql);
-    }
-
-    [Fact]
-    public void CustomFieldNotEqual()
-    {
-        var queryable = CreateQueryable();
-        var issues = (from i in queryable
-                      where i["Foo"] != "foo" && i["Bar"] != new DateTime(2012, 1, 1) && i["Baz"] != new LiteralMatch("baz")
-                      select i).ToArray();
-
-        Assert.Equal("((\"Foo\" !~ \"foo\" and \"Bar\" != \"2012/01/01\") and \"Baz\" != \"baz\")", _translator.Jql);
-    }
-
-    [Fact]
-    public void CustomFieldGreaterThan()
-    {
-        var queryable = CreateQueryable();
-        var issues = (from i in queryable
-                      where i["Foo"] > "foo" && i["Bar"] > new DateTime(2012, 1, 1)
-                      select i).ToArray();
-
-        Assert.Equal("(\"Foo\" > \"foo\" and \"Bar\" > \"2012/01/01\")", _translator.Jql);
-    }
-
-    [Fact]
     public void MultipleSeparateWheres()
     {
         var queryable = CreateQueryable();

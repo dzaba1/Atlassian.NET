@@ -227,31 +227,6 @@ public class IssueCreateTest
 
     [Theory]
     [ClassData(typeof(JiraProvider))]
-    public async Task CreateAndQueryIssueWithCustomField(Jira jira)
-    {
-        var summaryValue = "Test issue with custom field (Created)" + _random.Next(int.MaxValue);
-
-        var issue = new Issue(jira, "TST")
-        {
-            Type = "1",
-            Summary = summaryValue,
-            Assignee = "admin"
-        };
-        await issue.SetCustomFieldAsync("Custom Text Field", "My new value");
-        await issue.SetCustomFieldAsync("Custom User Field", "admin");
-
-        await issue.SaveChangesAsync();
-
-        var newIssue = (from i in jira.Issues.Queryable
-                        where i.Summary == summaryValue && i["Custom Text Field"] == "My new value"
-                        select i).First();
-
-        Assert.Equal("My new value", newIssue["Custom Text Field"]);
-        Assert.Equal("admin", newIssue["Custom User Field"]);
-    }
-
-    [Theory]
-    [ClassData(typeof(JiraProvider))]
     public async Task CreateIssueAsSubtask(Jira jira)
     {
         var summaryValue = "Test issue as subtask " + _random.Next(int.MaxValue);

@@ -154,8 +154,13 @@ public class CustomFieldValueCollection : ReadOnlyCollection<CustomFieldValue>, 
 
     private async Task<string> GetCustomFieldIdAsync(string fieldName)
     {
-        var customFields = await _issue.Jira.Fields
-            .GetCustomFieldsAsync()
+        var fields = _issue.Jira.Fields.GetCustomFieldsAsync();
+        if (fields == null)
+        {
+            fields = AsyncEnumerable.Empty<CustomField>();
+        }
+
+        var customFields = await fields
             .Where(f => f.Name.Equals(fieldName, StringComparison.OrdinalIgnoreCase))
             .ToArrayAsync();
         var searchByProject = (customFields.Length > 1) || SearchByProjectOnly;

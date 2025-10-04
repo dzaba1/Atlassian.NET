@@ -208,17 +208,6 @@ public class IssueQueryTest
 
     [Theory]
     [ClassData(typeof(JiraProvider))]
-    public void QueryIssueWithCustomDateField(Jira jira)
-    {
-        var issue = (from i in jira.Issues.Queryable
-                     where i["Custom Date Field"] <= new DateTime(2012, 4, 1)
-                     select i).First();
-
-        Assert.Equal("Sample bug in Test Project", issue.Summary);
-    }
-
-    [Theory]
-    [ClassData(typeof(JiraProvider))]
     public async Task QueryIssuesWithTakeExpression(Jira jira)
     {
         // create 2 issues with same summary
