@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.Serialization;
 
 namespace Atlassian.Jira.Remote
 {
@@ -17,10 +16,6 @@ namespace Atlassian.Jira.Remote
         }
 
         public ResourceNotFoundException(string message, Exception innerException) : base(message, innerException)
-        {
-        }
-
-        protected ResourceNotFoundException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
     }

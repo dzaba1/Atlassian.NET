@@ -78,7 +78,7 @@ namespace Atlassian.Jira
         {
             if ((object)field == null)
             {
-                return value == null;
+                return false;
             }
             else
             {
@@ -90,7 +90,7 @@ namespace Atlassian.Jira
         {
             if ((object)field == null)
             {
-                return value != null;
+                return true;
             }
             else
             {
