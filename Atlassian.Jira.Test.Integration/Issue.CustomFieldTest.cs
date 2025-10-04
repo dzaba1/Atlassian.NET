@@ -65,13 +65,13 @@ public class IssueCustomFieldTest
         };
 
         issue.CustomFields.SearchByProjectOnly = true;
-        issue["Custom Text Field"] = "My new value";
-        issue["Custom Date Field"] = "2015-10-03";
+        await issue.SetCustomFieldAsync("Custom Text Field", "My new value");
+        await issue.SetCustomFieldAsync("Custom Date Field", "2015-10-03");
 
         var newIssue = await issue.SaveChangesAsync();
 
-        Assert.Equal("My new value", newIssue["Custom Text Field"]);
-        Assert.Equal("2015-10-03", newIssue["Custom Date Field"]);
+        Assert.Equal("My new value", await newIssue.GetCustomFieldAsync("Custom Text Field"));
+        Assert.Equal("2015-10-03", await newIssue.GetCustomFieldAsync("Custom Date Field"));
     }
 
     [Fact]
@@ -80,7 +80,7 @@ public class IssueCustomFieldTest
         var jira = Jira.CreateRestClient(new TraceReplayer("Trace_CustomFieldArrayOfObjects.txt"));
         var issue = (await jira.Issues.GetIssuesFromJqlAsync("foo")).Single();
 
-        Assert.True(issue["Watchers"].Value.Length > 0);
+        Assert.True((await issue.GetCustomFieldAsync("Watchers")).Value.Length > 0);
     }
 
     [Fact]
@@ -128,12 +128,12 @@ public class IssueCustomFieldTest
         };
 
         // Add cascading select with only parent set.
-        issue.CustomFields.AddCascadingSelectField("Custom Cascading Select Field", "Option3");
+        await issue.CustomFields.AddCascadingSelectFieldAsync("Custom Cascading Select Field", "Option3");
         await issue.SaveChangesAsync();
 
         var newIssue = await jira.Issues.GetIssueAsync(issue.Key.Value);
 
-        var cascadingSelect = newIssue.CustomFields.GetCascadingSelectField("Custom Cascading Select Field");
+        var cascadingSelect = await newIssue.CustomFields.GetCascadingSelectFieldAsync("Custom Cascading Select Field");
         Assert.Equal("Option3", cascadingSelect.ParentOption);
         Assert.Null(cascadingSelect.ChildOption);
         Assert.Equal("Custom Cascading Select Field", cascadingSelect.Name);
@@ -150,11 +150,11 @@ public class IssueCustomFieldTest
             Assignee = "admin"
         };
 
-        issue["Custom Number Field"] = "10000000000";
+        await issue.SetCustomFieldAsync("Custom Number Field", "10000000000");
         await issue.SaveChangesAsync();
 
         var newIssue = await jira.Issues.GetIssueAsync(issue.Key.Value);
-        Assert.Equal("10000000000", newIssue["Custom Number Field"]);
+        Assert.Equal("10000000000", await newIssue.GetCustomFieldAsync("Custom Number Field"));
     }
 
     [Theory]
@@ -173,53 +173,53 @@ public class IssueCustomFieldTest
             Assignee = "admin"
         };
 
-        issue["Custom Text Field"] = "My new value";
-        issue["Custom Date Field"] = "2015-10-03";
-        issue["Custom DateTime Field"] = dateTimeStr;
-        issue["Custom User Field"] = "admin";
-        issue["Custom Select Field"] = "Blue";
-        issue["Custom Group Field"] = "jira-users";
-        issue["Custom Project Field"] = "TST";
-        issue["Custom Version Field"] = "1.0";
-        issue["Custom Radio Field"] = "option1";
-        issue["Custom Number Field"] = "12.34";
-        issue.CustomFields.AddArray("Custom Labels Field", "label1", "label2");
-        issue.CustomFields.AddArray("Custom Multi Group Field", "jira-developers", "jira-users");
-        issue.CustomFields.AddArray("Custom Multi Select Field", "option1", "option2");
-        issue.CustomFields.AddArray("Custom Multi User Field", "admin", "test");
-        issue.CustomFields.AddArray("Custom Checkboxes Field", "option1", "option2");
-        issue.CustomFields.AddArray("Custom Multi Version Field", "2.0", "3.0");
-        issue.CustomFields.AddCascadingSelectField("Custom Cascading Select Field", "Option2", "Option2.2");
+        await issue.SetCustomFieldAsync("Custom Text Field", "My new value");
+        await issue.SetCustomFieldAsync("Custom Date Field", "2015-10-03");
+        await issue.SetCustomFieldAsync("Custom DateTime Field", dateTimeStr);
+        await issue.SetCustomFieldAsync("Custom User Field", "admin");
+        await issue.SetCustomFieldAsync("Custom Select Field", "Blue");
+        await issue.SetCustomFieldAsync("Custom Group Field", "jira-users");
+        await issue.SetCustomFieldAsync("Custom Project Field", "TST");
+        await issue.SetCustomFieldAsync("Custom Version Field", "1.0");
+        await issue.SetCustomFieldAsync("Custom Radio Field", "option1");
+        await issue.SetCustomFieldAsync("Custom Number Field", "12.34");
+        await issue.CustomFields.AddArrayAsync("Custom Labels Field", "label1", "label2");
+        await issue.CustomFields.AddArrayAsync("Custom Multi Group Field", "jira-developers", "jira-users");
+        await issue.CustomFields.AddArrayAsync("Custom Multi Select Field", "option1", "option2");
+        await issue.CustomFields.AddArrayAsync("Custom Multi User Field", "admin", "test");
+        await issue.CustomFields.AddArrayAsync("Custom Checkboxes Field", "option1", "option2");
+        await issue.CustomFields.AddArrayAsync("Custom Multi Version Field", "2.0", "3.0");
+        await issue.CustomFields.AddCascadingSelectFieldAsync("Custom Cascading Select Field", "Option2", "Option2.2");
 
         await issue.SaveChangesAsync();
 
         var newIssue = await jira.Issues.GetIssueAsync(issue.Key.Value);
 
-        Assert.Equal("My new value", newIssue["Custom Text Field"]);
-        Assert.Equal("2015-10-03", newIssue["Custom Date Field"]);
-        Assert.Equal("admin", newIssue["Custom User Field"]);
-        Assert.Equal("Blue", newIssue["Custom Select Field"]);
-        Assert.Equal("jira-users", newIssue["Custom Group Field"]);
-        Assert.Equal("TST", newIssue["Custom Project Field"]);
-        Assert.Equal("1.0", newIssue["Custom Version Field"]);
-        Assert.Equal("option1", newIssue["Custom Radio Field"]);
-        Assert.Equal("12.34", newIssue["Custom Number Field"]);
-        Assert.Equal("admin@example.com", newIssue.CustomFields.GetAs<JiraUser>("Custom User Field").Email);
+        Assert.Equal("My new value", await newIssue.GetCustomFieldAsync("Custom Text Field"));
+        Assert.Equal("2015-10-03", await newIssue.GetCustomFieldAsync("Custom Date Field"));
+        Assert.Equal("admin", await newIssue.GetCustomFieldAsync("Custom User Field"));
+        Assert.Equal("Blue", await newIssue.GetCustomFieldAsync("Custom Select Field"));
+        Assert.Equal("jira-users", await newIssue.GetCustomFieldAsync("Custom Group Field"));
+        Assert.Equal("TST", await newIssue.GetCustomFieldAsync("Custom Project Field"));
+        Assert.Equal("1.0", await newIssue.GetCustomFieldAsync("Custom Version Field"));
+        Assert.Equal("option1", await newIssue.GetCustomFieldAsync("Custom Radio Field"));
+        Assert.Equal("12.34", await newIssue.GetCustomFieldAsync("Custom Number Field"));
+        Assert.Equal("admin@example.com", (await newIssue.CustomFields.GetAsAsync<JiraUser>("Custom User Field")).Email);
 
-        var serverDate = DateTime.Parse(newIssue["Custom DateTime Field"].Value);
+        var serverDate = DateTime.Parse((await newIssue.GetCustomFieldAsync("Custom DateTime Field")).Value);
         Assert.Equal(dateTime, serverDate);
 
-        Assert.Equal(new string[2] { "label1", "label2" }, newIssue.CustomFields["Custom Labels Field"].Values);
-        Assert.Equal(new string[2] { "jira-developers", "jira-users" }, newIssue.CustomFields["Custom Multi Group Field"].Values);
-        Assert.Equal(new string[2] { "option1", "option2" }, newIssue.CustomFields["Custom Multi Select Field"].Values);
-        Assert.Equal(new string[2] { "admin", "test" }, newIssue.CustomFields["Custom Multi User Field"].Values);
-        Assert.Equal(new string[2] { "option1", "option2" }, newIssue.CustomFields["Custom Checkboxes Field"].Values);
-        Assert.Equal(new string[2] { "2.0", "3.0" }, newIssue.CustomFields["Custom Multi Version Field"].Values);
+        Assert.Equal(new string[2] { "label1", "label2" }, (await newIssue.CustomFields.GetCustomFieldAsync("Custom Labels Field")).Values);
+        Assert.Equal(new string[2] { "jira-developers", "jira-users" }, (await newIssue.CustomFields.GetCustomFieldAsync("Custom Multi Group Field")).Values);
+        Assert.Equal(new string[2] { "option1", "option2" }, (await newIssue.CustomFields.GetCustomFieldAsync("Custom Multi Select Field")).Values);
+        Assert.Equal(new string[2] { "admin", "test" }, (await newIssue.CustomFields.GetCustomFieldAsync("Custom Multi User Field")).Values);
+        Assert.Equal(new string[2] { "option1", "option2" }, (await newIssue.CustomFields.GetCustomFieldAsync("Custom Checkboxes Field")).Values);
+        Assert.Equal(new string[2] { "2.0", "3.0" }, (await newIssue.CustomFields.GetCustomFieldAsync("Custom Multi Version Field")).Values);
 
-        var users = newIssue.CustomFields.GetAs<JiraUser[]>("Custom Multi User Field");
+        var users = await newIssue.CustomFields.GetAsAsync<JiraUser[]>("Custom Multi User Field");
         Assert.Contains(users, u => u.Email == "test@qa.com");
 
-        var cascadingSelect = newIssue.CustomFields.GetCascadingSelectField("Custom Cascading Select Field");
+        var cascadingSelect = await newIssue.CustomFields.GetCascadingSelectFieldAsync("Custom Cascading Select Field");
         Assert.Equal("Option2", cascadingSelect.ParentOption);
         Assert.Equal("Option2.2", cascadingSelect.ChildOption);
         Assert.Equal("Custom Cascading Select Field", cascadingSelect.Name);
@@ -237,24 +237,24 @@ public class IssueCustomFieldTest
             Assignee = "admin"
         };
 
-        issue["Custom Text Field"] = "My new value";
-        issue["Custom Date Field"] = "2015-10-03";
-        issue["Custom Select Field"] = "Blue";
+        await issue.SetCustomFieldAsync("Custom Text Field", "My new value");
+        await issue.SetCustomFieldAsync("Custom Date Field", "2015-10-03");
+        await issue.SetCustomFieldAsync("Custom Select Field", "Blue");
         await issue.SaveChangesAsync();
 
         var newIssue = await jira.Issues.GetIssueAsync(issue.Key.Value);
-        Assert.Equal("My new value", newIssue["Custom Text Field"]);
-        Assert.Equal("2015-10-03", newIssue["Custom Date Field"]);
-        newIssue["Custom Text Field"] = null;
-        newIssue["Custom Date Field"] = null;
-        newIssue["Custom Select Field"] = null;
+        Assert.Equal("My new value", await newIssue.GetCustomFieldAsync("Custom Text Field"));
+        Assert.Equal("2015-10-03", await newIssue.GetCustomFieldAsync("Custom Date Field"));
+        await newIssue.SetCustomFieldAsync("Custom Text Field", null);
+        await newIssue.SetCustomFieldAsync("Custom Date Field", null);
+        await newIssue.SetCustomFieldAsync("Custom Select Field", null);
         await newIssue.SaveChangesAsync();
 
         var updatedIssue = await jira.Issues.GetIssueAsync(issue.Key.Value);
 
-        Assert.Null(updatedIssue["Custom Text Field"]);
-        Assert.Null(updatedIssue["Custom Date Field"]);
-        Assert.Null(updatedIssue["Custom Select Field"]);
+        Assert.Null(await updatedIssue.GetCustomFieldAsync("Custom Text Field"));
+        Assert.Null(await updatedIssue.GetCustomFieldAsync("Custom Date Field"));
+        Assert.Null(await updatedIssue.GetCustomFieldAsync("Custom Select Field"));
     }
 
     [Theory]
@@ -279,67 +279,67 @@ public class IssueCustomFieldTest
         // Retrieve the issue, set all custom fields and save the changes.
         var newIssue = await jira.Issues.GetIssueAsync(issue.Key.Value);
 
-        newIssue["Custom Text Field"] = "My new value";
-        newIssue["Custom Date Field"] = "2015-10-03";
-        newIssue["Custom DateTime Field"] = dateTimeStr;
-        newIssue["Custom User Field"] = "admin";
-        newIssue["Custom Select Field"] = "Blue";
-        newIssue["Custom Group Field"] = "jira-users";
-        newIssue["Custom Project Field"] = "TST";
-        newIssue["Custom Version Field"] = "1.0";
-        newIssue["Custom Radio Field"] = "option1";
-        newIssue["Custom Number Field"] = "1234";
-        newIssue.CustomFields.AddArray("Custom Labels Field", "label1", "label2");
-        newIssue.CustomFields.AddArray("Custom Multi Group Field", "jira-developers", "jira-users");
-        newIssue.CustomFields.AddArray("Custom Multi Select Field", "option1", "option2");
-        newIssue.CustomFields.AddArray("Custom Multi User Field", "admin", "test");
-        newIssue.CustomFields.AddArray("Custom Checkboxes Field", "option1", "option2");
-        newIssue.CustomFields.AddArray("Custom Multi Version Field", "2.0", "3.0");
-        newIssue.CustomFields.AddCascadingSelectField("Custom Cascading Select Field", "Option2", "Option2.2");
+        await newIssue.SetCustomFieldAsync("Custom Text Field", "My new value");
+        await newIssue.SetCustomFieldAsync("Custom Date Field", "2015-10-03");
+        await newIssue.SetCustomFieldAsync("Custom DateTime Field", dateTimeStr);
+        await newIssue.SetCustomFieldAsync("Custom User Field", "admin");
+        await newIssue.SetCustomFieldAsync("Custom Select Field", "Blue");
+        await newIssue.SetCustomFieldAsync("Custom Group Field", "jira-users");
+        await newIssue.SetCustomFieldAsync("Custom Project Field", "TST");
+        await newIssue.SetCustomFieldAsync("Custom Version Field", "1.0");
+        await newIssue.SetCustomFieldAsync("Custom Radio Field", "option1");
+        await newIssue.SetCustomFieldAsync("Custom Number Field", "1234");
+        await newIssue.CustomFields.AddArrayAsync("Custom Labels Field", "label1", "label2");
+        await newIssue.CustomFields.AddArrayAsync("Custom Multi Group Field", "jira-developers", "jira-users");
+        await newIssue.CustomFields.AddArrayAsync("Custom Multi Select Field", "option1", "option2");
+        await newIssue.CustomFields.AddArrayAsync("Custom Multi User Field", "admin", "test");
+        await newIssue.CustomFields.AddArrayAsync("Custom Checkboxes Field", "option1", "option2");
+        await newIssue.CustomFields.AddArrayAsync("Custom Multi Version Field", "2.0", "3.0");
+        await newIssue.CustomFields.AddArrayAsync("Custom Cascading Select Field", "Option2", "Option2.2");
 
         await newIssue.SaveChangesAsync();
 
         // Retrieve the issue again and verify fields
         var updatedIssue = await jira.Issues.GetIssueAsync(issue.Key.Value);
 
-        Assert.Equal("My new value", updatedIssue["Custom Text Field"]);
-        Assert.Equal("2015-10-03", updatedIssue["Custom Date Field"]);
-        Assert.Equal("admin", updatedIssue["Custom User Field"]);
-        Assert.Equal("Blue", updatedIssue["Custom Select Field"]);
-        Assert.Equal("jira-users", updatedIssue["Custom Group Field"]);
-        Assert.Equal("TST", updatedIssue["Custom Project Field"]);
-        Assert.Equal("1.0", updatedIssue["Custom Version Field"]);
-        Assert.Equal("option1", updatedIssue["Custom Radio Field"]);
-        Assert.Equal("1234", updatedIssue["Custom Number Field"]);
+        Assert.Equal("My new value", await updatedIssue.GetCustomFieldAsync("Custom Text Field"));
+        Assert.Equal("2015-10-03", await updatedIssue.GetCustomFieldAsync("Custom Date Field"));
+        Assert.Equal("admin", await updatedIssue.GetCustomFieldAsync("Custom User Field"));
+        Assert.Equal("Blue", await updatedIssue.GetCustomFieldAsync("Custom Select Field"));
+        Assert.Equal("jira-users", await updatedIssue.GetCustomFieldAsync("Custom Group Field"));
+        Assert.Equal("TST", await updatedIssue.GetCustomFieldAsync("Custom Project Field"));
+        Assert.Equal("1.0", await updatedIssue.GetCustomFieldAsync("Custom Version Field"));
+        Assert.Equal("option1", await updatedIssue.GetCustomFieldAsync("Custom Radio Field"));
+        Assert.Equal("1234", await updatedIssue.GetCustomFieldAsync("Custom Number Field"));
 
-        var serverDate = DateTime.Parse(updatedIssue["Custom DateTime Field"].Value);
+        var serverDate = DateTime.Parse((await updatedIssue.GetCustomFieldAsync("Custom DateTime Field")).Value);
         Assert.Equal(dateTime, serverDate);
 
-        Assert.Equal(new string[2] { "label1", "label2" }, updatedIssue.CustomFields["Custom Labels Field"].Values);
-        Assert.Equal(new string[2] { "jira-developers", "jira-users" }, updatedIssue.CustomFields["Custom Multi Group Field"].Values);
-        Assert.Equal(new string[2] { "option1", "option2" }, updatedIssue.CustomFields["Custom Multi Select Field"].Values);
-        Assert.Equal(new string[2] { "admin", "test" }, updatedIssue.CustomFields["Custom Multi User Field"].Values);
-        Assert.Equal(new string[2] { "option1", "option2" }, updatedIssue.CustomFields["Custom Checkboxes Field"].Values);
-        Assert.Equal(new string[2] { "2.0", "3.0" }, updatedIssue.CustomFields["Custom Multi Version Field"].Values);
+        Assert.Equal(new string[2] { "label1", "label2" }, (await updatedIssue.CustomFields.GetCustomFieldAsync("Custom Labels Field")).Values);
+        Assert.Equal(new string[2] { "jira-developers", "jira-users" }, (await updatedIssue.CustomFields.GetCustomFieldAsync("Custom Multi Group Field")).Values);
+        Assert.Equal(new string[2] { "option1", "option2" }, (await updatedIssue.CustomFields.GetCustomFieldAsync("Custom Multi Select Field")).Values);
+        Assert.Equal(new string[2] { "admin", "test" }, (await updatedIssue.CustomFields.GetCustomFieldAsync("Custom Multi User Field")).Values);
+        Assert.Equal(new string[2] { "option1", "option2" }, (await updatedIssue.CustomFields.GetCustomFieldAsync("Custom Checkboxes Field")).Values);
+        Assert.Equal(new string[2] { "2.0", "3.0" }, (await updatedIssue.CustomFields.GetCustomFieldAsync("Custom Multi Version Field")).Values);
 
-        var cascadingSelect = updatedIssue.CustomFields.GetCascadingSelectField("Custom Cascading Select Field");
+        var cascadingSelect = await updatedIssue.CustomFields.GetCascadingSelectFieldAsync("Custom Cascading Select Field");
         Assert.Equal("Option2", cascadingSelect.ParentOption);
         Assert.Equal("Option2.2", cascadingSelect.ChildOption);
         Assert.Equal("Custom Cascading Select Field", cascadingSelect.Name);
 
         // Update custom fields again and save
-        updatedIssue["Custom Text Field"] = "My newest value";
-        updatedIssue["Custom Date Field"] = "2019-10-03";
-        updatedIssue["Custom Number Field"] = "9999";
-        updatedIssue.CustomFields["Custom Labels Field"].Values = new string[] { "label3" };
+        await updatedIssue.SetCustomFieldAsync("Custom Text Field", "My newest value");
+        await updatedIssue.SetCustomFieldAsync("Custom Date Field", "2019-10-03");
+        await updatedIssue.SetCustomFieldAsync("Custom Number Field", "9999");
+        (await updatedIssue.CustomFields.GetCustomFieldAsync("Custom Labels Field")).Values = new string[] { "label3" };
         await updatedIssue.SaveChangesAsync();
 
         // Retrieve the issue one last time and verify custom fields.
         var updatedIssue2 = await jira.Issues.GetIssueAsync(issue.Key.Value);
-        Assert.Equal("My newest value", updatedIssue["Custom Text Field"]);
-        Assert.Equal("2019-10-03", updatedIssue["Custom Date Field"]);
-        Assert.Equal("9999", updatedIssue2["Custom Number Field"]);
-        Assert.Equal(new string[1] { "label3" }, updatedIssue.CustomFields["Custom Labels Field"].Values);
+        Assert.Equal("My newest value", await updatedIssue.GetCustomFieldAsync("Custom Text Field"));
+        Assert.Equal("2019-10-03", await updatedIssue.GetCustomFieldAsync("Custom Date Field"));
+        Assert.Equal("9999", await updatedIssue2.GetCustomFieldAsync("Custom Number Field"));
+        Assert.Equal(new string[1] { "label3" }, (await updatedIssue.CustomFields.GetCustomFieldAsync("Custom Labels Field")).Values);
     }
 
     [Theory]
@@ -353,12 +353,12 @@ public class IssueCustomFieldTest
             Assignee = "admin"
         };
         // Set the sprint by id
-        issue["Sprint"] = "1";
+        await issue.SetCustomFieldAsync("Sprint", "1");
         await issue.SaveChangesAsync();
 
         // Get the sprint by name
         var newIssue = await jira.Issues.GetIssueAsync(issue.Key.Value);
-        Assert.Equal("Sprint 1", newIssue["Sprint"]);
+        Assert.Equal("Sprint 1", await newIssue.GetCustomFieldAsync("Sprint"));
     }
 
     [Theory]
@@ -372,15 +372,15 @@ public class IssueCustomFieldTest
             Assignee = "admin"
         };
         await issue.SaveChangesAsync();
-        Assert.Null(issue["Sprint"]);
+        Assert.Null(await issue.GetCustomFieldAsync("Sprint"));
 
         // Set the sprint by id
-        issue["Sprint"] = "1";
+        await issue.SetCustomFieldAsync("Sprint", "1");
         await issue.SaveChangesAsync();
 
         // Get the sprint by name
         var newIssue = await jira.Issues.GetIssueAsync(issue.Key.Value);
-        Assert.Equal("Sprint 1", newIssue["Sprint"]);
+        Assert.Equal("Sprint 1", await newIssue.GetCustomFieldAsync("Sprint"));
     }
 
     [Theory]
@@ -393,13 +393,13 @@ public class IssueCustomFieldTest
             Summary = "Test issue with sprint" + _random.Next(int.MaxValue),
             Assignee = "admin"
         };
-        issue["Sprint"] = "1";
+        await issue.SetCustomFieldAsync("Sprint", "1");
         await issue.SaveChangesAsync();
-        Assert.Equal("Sprint 1", issue["Sprint"]);
+        Assert.Equal("Sprint 1", await issue.GetCustomFieldAsync("Sprint"));
 
         issue.Summary += " (Updated)";
         await issue.SaveChangesAsync();
-        Assert.Equal("Sprint 1", issue["Sprint"]);
+        Assert.Equal("Sprint 1", await issue.GetCustomFieldAsync("Sprint"));
     }
 
     [Theory]
@@ -414,7 +414,7 @@ public class IssueCustomFieldTest
         };
 
         // Set the sprint by name
-        issue["Sprint"] = "Sprint 1";
+        await issue.SetCustomFieldAsync("Sprint", "Sprint 1");
 
         try
         {
