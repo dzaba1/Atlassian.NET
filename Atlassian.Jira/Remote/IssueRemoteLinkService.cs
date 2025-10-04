@@ -19,12 +19,12 @@ namespace Atlassian.Jira.Remote
 
         public Task CreateRemoteLinkAsync(string issueKey, string remoteUrl, string title, string summary, CancellationToken token = default(CancellationToken))
         {
-            if (String.IsNullOrEmpty(title))
+            if (string.IsNullOrEmpty(title))
             {
                 throw new ArgumentNullException(nameof(title), "Title must be supplied.");
             }
 
-            if (String.IsNullOrEmpty(remoteUrl))
+            if (string.IsNullOrEmpty(remoteUrl))
             {
                 throw new ArgumentNullException(nameof(remoteUrl), "Remote URL must be supplied.");
             }
@@ -36,18 +36,18 @@ namespace Atlassian.Jira.Remote
             bodyObjectContent.Add("title", title);
             bodyObjectContent.Add("url", remoteUrl);
 
-            if (!String.IsNullOrEmpty(summary))
+            if (!string.IsNullOrEmpty(summary))
             {
                 bodyObjectContent.Add("summary", summary);
             }
 
-            return _jira.RestClient.ExecuteRequestAsync(Method.POST, String.Format("rest/api/2/issue/{0}/remotelink", issueKey), bodyObject, token);
+            return _jira.RestClient.ExecuteRequestAsync(Method.POST, string.Format("rest/api/2/issue/{0}/remotelink", issueKey), bodyObject, token);
         }
 
         public async Task<IEnumerable<IssueRemoteLink>> GetRemoteLinksForIssueAsync(string issueKey, CancellationToken token = default(CancellationToken))
         {
             var serializerSettings = _jira.RestClient.Settings.JsonSerializerSettings;
-            var resource = String.Format("rest/api/2/issue/{0}/remotelink", issueKey);
+            var resource = string.Format("rest/api/2/issue/{0}/remotelink", issueKey);
             var remoteLinksJson = await _jira.RestClient.ExecuteRequestAsync(Method.GET, resource, null, token).ConfigureAwait(false);
 
             var links = remoteLinksJson.Cast<JObject>();

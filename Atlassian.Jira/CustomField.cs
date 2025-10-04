@@ -15,7 +15,7 @@ namespace Atlassian.Jira
         {
             _remoteField = remoteField;
 
-            if (String.IsNullOrEmpty(this.Id) && !String.IsNullOrEmpty(CustomIdentifier))
+            if (string.IsNullOrEmpty(this.Id) && !string.IsNullOrEmpty(CustomIdentifier))
             {
                 this.Id = $"customfield_{CustomIdentifier}";
             }

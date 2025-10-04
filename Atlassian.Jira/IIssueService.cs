@@ -115,7 +115,7 @@ namespace Atlassian.Jira
         /// </summary>
         /// <param name="issueKey">The issue key.</param>
         /// <param name="token">Cancellation token for this operation.</param>
-        Task<IDictionary<String, IssueFieldEditMetadata>> GetFieldsEditMetadataAsync(string issueKey, CancellationToken token = default(CancellationToken));
+        Task<IDictionary<string, IssueFieldEditMetadata>> GetFieldsEditMetadataAsync(string issueKey, CancellationToken token = default(CancellationToken));
 
         /// <summary>
         /// Adds a comment to an issue.

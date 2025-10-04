@@ -63,7 +63,7 @@ namespace Atlassian.Jira.Remote
 
         public async Task<Issue> GetIssueAsync(string issueKey, CancellationToken token = default(CancellationToken))
         {
-            var excludedFields = String.Join(",", _excludedFields.Select(field => $"-{field}"));
+            var excludedFields = string.Join(",", _excludedFields.Select(field => $"-{field}"));
             var fields = $"{ALL_FIELDS_QUERY_STRING},{excludedFields}";
             var resource = $"rest/api/2/issue/{issueKey}?fields={fields}";
             var response = await _jira.RestClient.ExecuteRequestAsync(Method.GET, resource, null, token).ConfigureAwait(false);
@@ -133,7 +133,7 @@ namespace Atlassian.Jira.Remote
 
         public async Task UpdateIssueAsync(Issue issue, IssueUpdateOptions options, CancellationToken token = default(CancellationToken))
         {
-            var resource = String.Format("rest/api/2/issue/{0}", issue.Key.Value);
+            var resource = string.Format("rest/api/2/issue/{0}", issue.Key.Value);
             if (options.SuppressEmailNotification)
             {
                 resource += "?notifyUsers=false";
@@ -209,7 +209,7 @@ namespace Atlassian.Jira.Remote
 
                 if (action == null)
                 {
-                    throw new InvalidOperationException(String.Format("Workflow action with name '{0}' not found.", actionNameOrId));
+                    throw new InvalidOperationException(string.Format("Workflow action with name '{0}' not found.", actionNameOrId));
                 }
 
                 actionId = action.Id;
@@ -217,14 +217,14 @@ namespace Atlassian.Jira.Remote
 
             updates = updates ?? new WorkflowTransitionUpdates();
 
-            var resource = String.Format("rest/api/2/issue/{0}/transitions", issue.Key.Value);
+            var resource = string.Format("rest/api/2/issue/{0}/transitions", issue.Key.Value);
             var fieldProvider = issue as IRemoteIssueFieldProvider;
             var remoteFields = await fieldProvider.GetRemoteFieldValuesAsync(token).ConfigureAwait(false);
             var remoteIssue = await issue.ToRemoteAsync(token).ConfigureAwait(false);
             var fields = await BuildFieldsObjectFromIssueAsync(remoteIssue, remoteFields, token).ConfigureAwait(false);
             var updatesObject = new JObject();
 
-            if (!String.IsNullOrEmpty(updates.Comment))
+            if (!string.IsNullOrEmpty(updates.Comment))
             {
                 updatesObject.Add("comment", new JArray(new JObject[]
                 {
@@ -248,12 +248,12 @@ namespace Atlassian.Jira.Remote
 
         public async Task<IssueTimeTrackingData> GetTimeTrackingDataAsync(string issueKey, CancellationToken token = default(CancellationToken))
         {
-            if (String.IsNullOrEmpty(issueKey))
+            if (string.IsNullOrEmpty(issueKey))
             {
                 throw new InvalidOperationException("Unable to retrieve time tracking data, make sure the issue has been created.");
             }
 
-            var resource = String.Format("rest/api/2/issue/{0}?fields=timetracking", issueKey);
+            var resource = string.Format("rest/api/2/issue/{0}?fields=timetracking", issueKey);
             var response = await _jira.RestClient.ExecuteRequestAsync(Method.GET, resource, null, token).ConfigureAwait(false);
 
             var serializerSettings = _jira.RestClient.Settings.JsonSerializerSettings;
@@ -272,7 +272,7 @@ namespace Atlassian.Jira.Remote
         public async Task<IDictionary<string, IssueFieldEditMetadata>> GetFieldsEditMetadataAsync(string issueKey, CancellationToken token = default(CancellationToken))
         {
             var dict = new Dictionary<string, IssueFieldEditMetadata>();
-            var resource = String.Format("rest/api/2/issue/{0}/editmeta", issueKey);
+            var resource = string.Format("rest/api/2/issue/{0}/editmeta", issueKey);
             var serializer = JsonSerializer.Create(_jira.RestClient.Settings.JsonSerializerSettings);
             var result = await _jira.RestClient.ExecuteRequestAsync(Method.GET, resource, null, token).ConfigureAwait(false);
             JObject fields = result["fields"].Value<JObject>();
@@ -288,24 +288,24 @@ namespace Atlassian.Jira.Remote
 
         public async Task<Comment> AddCommentAsync(string issueKey, Comment comment, CancellationToken token = default(CancellationToken))
         {
-            if (String.IsNullOrEmpty(comment.Author))
+            if (string.IsNullOrEmpty(comment.Author))
             {
                 throw new InvalidOperationException("Unable to add comment due to missing author field.");
             }
 
-            var resource = String.Format("rest/api/2/issue/{0}/comment", issueKey);
+            var resource = string.Format("rest/api/2/issue/{0}/comment", issueKey);
             var remoteComment = await _jira.RestClient.ExecuteRequestAsync<RemoteComment>(Method.POST, resource, comment.ToRemote(), token).ConfigureAwait(false);
             return new Comment(remoteComment);
         }
 
         public async Task<Comment> UpdateCommentAsync(string issueKey, Comment comment, CancellationToken token = default(CancellationToken))
         {
-            if (String.IsNullOrEmpty(comment.Id))
+            if (string.IsNullOrEmpty(comment.Id))
             {
                 throw new InvalidOperationException("Unable to update comment due to missing id field.");
             }
 
-            var resource = String.Format("rest/api/2/issue/{0}/comment/{1}", issueKey, comment.Id);
+            var resource = string.Format("rest/api/2/issue/{0}/comment/{1}", issueKey, comment.Id);
             var remoteComment = await _jira.RestClient.ExecuteRequestAsync<RemoteComment>(Method.PUT, resource, comment.ToRemote(), token).ConfigureAwait(false);
             return new Comment(remoteComment);
         }
@@ -354,7 +354,7 @@ namespace Atlassian.Jira.Remote
 
         public async Task<IEnumerable<Attachment>> GetAttachmentsAsync(string issueKey, CancellationToken token = default(CancellationToken))
         {
-            var resource = String.Format("rest/api/2/issue/{0}?fields=attachment", issueKey);
+            var resource = string.Format("rest/api/2/issue/{0}?fields=attachment", issueKey);
             var serializerSettings = _jira.RestClient.Settings.JsonSerializerSettings;
             var result = await _jira.RestClient.ExecuteRequestAsync(Method.GET, resource, null, token).ConfigureAwait(false);
             var attachmentsJson = result["fields"]["attachment"];
@@ -365,7 +365,7 @@ namespace Atlassian.Jira.Remote
 
         public async Task<string[]> GetLabelsAsync(string issueKey, CancellationToken token = default(CancellationToken))
         {
-            var resource = String.Format("rest/api/2/issue/{0}?fields=labels", issueKey);
+            var resource = string.Format("rest/api/2/issue/{0}?fields=labels", issueKey);
             var serializerSettings = await this.GetIssueSerializerSettingsAsync(token).ConfigureAwait(false);
             var response = await _jira.RestClient.ExecuteRequestAsync(Method.GET, resource).ConfigureAwait(false);
             var issue = JsonConvert.DeserializeObject<RemoteIssueWrapper>(response.ToString(), serializerSettings);
@@ -374,7 +374,7 @@ namespace Atlassian.Jira.Remote
 
         public Task SetLabelsAsync(string issueKey, string[] labels, CancellationToken token = default(CancellationToken))
         {
-            var resource = String.Format("rest/api/2/issue/{0}", issueKey);
+            var resource = string.Format("rest/api/2/issue/{0}", issueKey);
             return _jira.RestClient.ExecuteRequestAsync(Method.PUT, resource, new
             {
                 fields = new
@@ -392,7 +392,7 @@ namespace Atlassian.Jira.Remote
                 throw new InvalidOperationException("Unable to interact with the watchers resource, make sure the issue has been created.");
             }
 
-            var resourceUrl = String.Format("rest/api/2/issue/{0}/watchers", issueKey);
+            var resourceUrl = string.Format("rest/api/2/issue/{0}/watchers", issueKey);
             var serializerSettings = _jira.RestClient.Settings.JsonSerializerSettings;
             var result = await _jira.RestClient.ExecuteRequestAsync(Method.GET, resourceUrl, null, token).ConfigureAwait(false);
             var watchersJson = result["watchers"];
@@ -401,7 +401,7 @@ namespace Atlassian.Jira.Remote
 
         public async Task<IEnumerable<IssueChangeLog>> GetChangeLogsAsync(string issueKey, CancellationToken token = default(CancellationToken))
         {
-            var resourceUrl = String.Format("rest/api/2/issue/{0}?fields=created&expand=changelog", issueKey);
+            var resourceUrl = string.Format("rest/api/2/issue/{0}?fields=created&expand=changelog", issueKey);
             var serializerSettings = _jira.RestClient.Settings.JsonSerializerSettings;
             var response = await _jira.RestClient.ExecuteRequestAsync(Method.GET, resourceUrl, null, token).ConfigureAwait(false);
             var result = Enumerable.Empty<IssueChangeLog>();
@@ -426,7 +426,7 @@ namespace Atlassian.Jira.Remote
             }
 
             var queryString = _jira.RestClient.Settings.EnableUserPrivacyMode ? "accountId" : "username";
-            var resourceUrl = String.Format($"rest/api/2/issue/{issueKey}/watchers?{queryString}={System.Uri.EscapeUriString(username)}");
+            var resourceUrl = string.Format($"rest/api/2/issue/{issueKey}/watchers?{queryString}={System.Uri.EscapeUriString(username)}");
             return _jira.RestClient.ExecuteRequestAsync(Method.DELETE, resourceUrl, null, token);
         }
 
@@ -437,20 +437,20 @@ namespace Atlassian.Jira.Remote
                 throw new InvalidOperationException("Unable to interact with the watchers resource, make sure the issue has been created.");
             }
 
-            var requestBody = String.Format("\"{0}\"", username);
-            var resourceUrl = String.Format("rest/api/2/issue/{0}/watchers", issueKey);
+            var requestBody = string.Format("\"{0}\"", username);
+            var resourceUrl = string.Format("rest/api/2/issue/{0}/watchers", issueKey);
             return _jira.RestClient.ExecuteRequestAsync(Method.POST, resourceUrl, requestBody, token);
         }
 
         public Task<IPagedQueryResult<Issue>> GetSubTasksAsync(string issueKey, int? maxIssues = default(int?), int startAt = 0, CancellationToken token = default(CancellationToken))
         {
-            var jql = String.Format("parent = {0}", issueKey);
+            var jql = string.Format("parent = {0}", issueKey);
             return GetIssuesFromJqlAsync(jql, maxIssues, startAt, token);
         }
 
         public Task AddAttachmentsAsync(string issueKey, UploadAttachmentInfo[] attachments, CancellationToken token = default(CancellationToken))
         {
-            var resource = String.Format("rest/api/2/issue/{0}/attachments", issueKey);
+            var resource = string.Format("rest/api/2/issue/{0}/attachments", issueKey);
             var request = new RestRequest();
             request.Method = Method.POST;
             request.Resource = resource;
@@ -467,7 +467,7 @@ namespace Atlassian.Jira.Remote
 
         public Task DeleteAttachmentAsync(string issueKey, string attachmentId, CancellationToken token = default(CancellationToken))
         {
-            var resource = String.Format("rest/api/2/attachment/{0}", attachmentId);
+            var resource = string.Format("rest/api/2/attachment/{0}", attachmentId);
 
             return _jira.RestClient.ExecuteRequestAsync(Method.DELETE, resource, null, token);
         }
@@ -477,7 +477,7 @@ namespace Atlassian.Jira.Remote
             if (issueKeys.Any())
             {
                 var distinctKeys = issueKeys.Distinct();
-                var jql = String.Format("key in ({0})", String.Join(",", distinctKeys));
+                var jql = string.Format("key in ({0})", string.Join(",", distinctKeys));
                 var options = new IssueSearchOptions(jql)
                 {
                     MaxIssuesPerRequest = distinctKeys.Count(),
@@ -508,11 +508,11 @@ namespace Atlassian.Jira.Remote
 
         public async Task<IEnumerable<Comment>> GetCommentsAsync(string issueKey, CommentQueryOptions options, CancellationToken token = default(CancellationToken))
         {
-            var resource = String.Format("rest/api/2/issue/{0}/comment", issueKey);
+            var resource = string.Format("rest/api/2/issue/{0}/comment", issueKey);
 
             if (options.Expand.Any())
             {
-                resource += $"?expand={String.Join(",", options.Expand)}";
+                resource += $"?expand={string.Join(",", options.Expand)}";
             }
 
             var issueJson = await _jira.RestClient.ExecuteRequestAsync(Method.GET, resource, null, token).ConfigureAwait(false);
@@ -526,7 +526,7 @@ namespace Atlassian.Jira.Remote
 
         public Task DeleteCommentAsync(string issueKey, string commentId, CancellationToken token = default(CancellationToken))
         {
-            var resource = String.Format("rest/api/2/issue/{0}/comment/{1}", issueKey, commentId);
+            var resource = string.Format("rest/api/2/issue/{0}/comment/{1}", issueKey, commentId);
 
             return _jira.RestClient.ExecuteRequestAsync(Method.DELETE, resource, null, token);
         }
@@ -545,7 +545,7 @@ namespace Atlassian.Jira.Remote
                 queryString = "adjustEstimate=new&newEstimate=" + Uri.EscapeDataString(newEstimate);
             }
 
-            var resource = String.Format("rest/api/2/issue/{0}/worklog?{1}", issueKey, queryString);
+            var resource = string.Format("rest/api/2/issue/{0}/worklog?{1}", issueKey, queryString);
             var serverWorklog = await _jira.RestClient.ExecuteRequestAsync<RemoteWorklog>(Method.POST, resource, remoteWorklog, token).ConfigureAwait(false);
             return new Worklog(serverWorklog);
         }
@@ -563,13 +563,13 @@ namespace Atlassian.Jira.Remote
                 queryString = "adjustEstimate=new&newEstimate=" + Uri.EscapeDataString(newEstimate);
             }
 
-            var resource = String.Format("rest/api/2/issue/{0}/worklog/{1}?{2}", issueKey, worklogId, queryString);
+            var resource = string.Format("rest/api/2/issue/{0}/worklog/{1}?{2}", issueKey, worklogId, queryString);
             return _jira.RestClient.ExecuteRequestAsync(Method.DELETE, resource, null, token);
         }
 
         public async Task<IEnumerable<Worklog>> GetWorklogsAsync(string issueKey, CancellationToken token = default(CancellationToken))
         {
-            var resource = String.Format("rest/api/2/issue/{0}/worklog", issueKey);
+            var resource = string.Format("rest/api/2/issue/{0}/worklog", issueKey);
             var serializerSettings = _jira.RestClient.Settings.JsonSerializerSettings;
             var response = await _jira.RestClient.ExecuteRequestAsync(Method.GET, resource, null, token).ConfigureAwait(false);
             var worklogsJson = response["worklogs"];
@@ -580,14 +580,14 @@ namespace Atlassian.Jira.Remote
 
         public async Task<Worklog> GetWorklogAsync(string issueKey, string worklogId, CancellationToken token = default(CancellationToken))
         {
-            var resource = String.Format("rest/api/2/issue/{0}/worklog/{1}", issueKey, worklogId);
+            var resource = string.Format("rest/api/2/issue/{0}/worklog/{1}", issueKey, worklogId);
             var remoteWorklog = await _jira.RestClient.ExecuteRequestAsync<RemoteWorklog>(Method.GET, resource, null, token).ConfigureAwait(false);
             return new Worklog(remoteWorklog);
         }
 
         public Task DeleteIssueAsync(string issueKey, CancellationToken token = default(CancellationToken))
         {
-            var resource = String.Format("rest/api/2/issue/{0}", issueKey);
+            var resource = string.Format("rest/api/2/issue/{0}", issueKey);
             return _jira.RestClient.ExecuteRequestAsync(Method.DELETE, resource, null, token);
         }
 

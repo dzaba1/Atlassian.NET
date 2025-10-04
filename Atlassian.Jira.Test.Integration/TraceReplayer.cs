@@ -17,7 +17,7 @@ namespace Atlassian.Jira.Test.Integration
 
         public TraceReplayer(string traceFilePath)
         {
-            var lines = File.ReadAllLines(traceFilePath).Where(line => !line.StartsWith("//") && !String.IsNullOrEmpty(line.Trim()));
+            var lines = File.ReadAllLines(traceFilePath).Where(line => !line.StartsWith("//") && !string.IsNullOrEmpty(line.Trim()));
             _responses = new Queue<string>(lines);
         }
 

@@ -55,7 +55,7 @@ namespace Atlassian.Jira
             }
             else
             {
-                throw new InvalidOperationException(String.Format("Service '{0}' not found.", typeof(TService)));
+                throw new InvalidOperationException(string.Format("Service '{0}' not found.", typeof(TService)));
             }
         }
 

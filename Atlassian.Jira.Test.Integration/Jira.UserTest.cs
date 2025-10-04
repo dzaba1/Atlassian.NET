@@ -16,7 +16,7 @@ namespace Atlassian.Jira.Test.Integration
             {
                 Username = "test" + rand,
                 DisplayName = "Test User " + rand,
-                Email = String.Format("test{0}@user.com", rand),
+                Email = string.Format("test{0}@user.com", rand),
                 Password = "MyPass" + rand
             };
         }
@@ -34,7 +34,7 @@ namespace Atlassian.Jira.Test.Integration
             Assert.Equal(user.Username, userInfo.Username);
             Assert.NotNull(user.Key);
             Assert.True(user.IsActive);
-            Assert.False(String.IsNullOrEmpty(user.Locale));
+            Assert.False(string.IsNullOrEmpty(user.Locale));
 
             // verify retrieve a user.
             user = jira.Users.GetUserAsync(userInfo.Username).Result;
@@ -64,7 +64,7 @@ namespace Atlassian.Jira.Test.Integration
             Assert.Equal(user.Username, userInfo.Username);
             Assert.NotNull(user.Key);
             Assert.True(user.IsActive);
-            Assert.False(String.IsNullOrEmpty(user.Locale));
+            Assert.False(string.IsNullOrEmpty(user.Locale));
 
             // verify retrieve a user.
             user = await jira.Users.GetUserAsync(userInfo.Username);
