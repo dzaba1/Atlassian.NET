@@ -31,7 +31,7 @@ public interface IProjectVersionService
     /// </summary>
     /// <param name="projectKey">Key of the project to retrieve versions from.</param>
     /// <param name="token">Cancellation token for this operation.</param>
-    Task<IEnumerable<ProjectVersion>> GetVersionsAsync(string projectKey, CancellationToken token = default);
+    IAsyncEnumerable<ProjectVersion> GetVersionsAsync(string projectKey, CancellationToken token = default);
 
     /// <summary>
     /// Gets the version specified.

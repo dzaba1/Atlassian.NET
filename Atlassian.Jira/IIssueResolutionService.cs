@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Atlassian.Jira;
 
@@ -13,5 +12,5 @@ public interface IIssueResolutionService
     /// Returns all the issue resolutions within JIRA.
     /// </summary>
     /// <param name="token">Cancellation token for this operation.</param>
-    Task<IEnumerable<IssueResolution>> GetResolutionsAsync(CancellationToken token = default);
+    IAsyncEnumerable<IssueResolution> GetResolutionsAsync(CancellationToken token = default);
 }

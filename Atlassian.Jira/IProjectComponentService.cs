@@ -30,5 +30,5 @@ public interface IProjectComponentService
     /// </summary>
     /// <param name="projectKey">Key of the project to retrieve the components from.</param>
     /// <param name="token">Cancellation token for this operation.</param>
-    Task<IEnumerable<ProjectComponent>> GetComponentsAsync(string projectKey, CancellationToken token = default);
+    IAsyncEnumerable<ProjectComponent> GetComponentsAsync(string projectKey, CancellationToken token = default);
 }

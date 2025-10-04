@@ -130,7 +130,7 @@ public interface IIssueService
     /// </summary>
     /// <param name="issueKey">Issue key to retrieve comments from.</param>
     /// <param name="token">Cancellation token for this operation.</param>
-    Task<IEnumerable<Comment>> GetCommentsAsync(string issueKey, CancellationToken token = default);
+    IAsyncEnumerable<Comment> GetCommentsAsync(string issueKey, CancellationToken token = default);
 
     /// <summary>
     /// Returns all comments of an issue.
@@ -138,7 +138,7 @@ public interface IIssueService
     /// <param name="issueKey">Issue key to retrieve comments from.</param>
     /// <param name="options">Options to configure the values of the query.</param>
     /// <param name="token">Cancellation token for this operation.</param>
-    Task<IEnumerable<Comment>> GetCommentsAsync(string issueKey, CommentQueryOptions options, CancellationToken token = default);
+    IAsyncEnumerable<Comment> GetCommentsAsync(string issueKey, CommentQueryOptions options, CancellationToken token = default);
 
     /// <summary>
     /// Removes a comment from an issue.
@@ -170,7 +170,7 @@ public interface IIssueService
     /// </summary>
     /// <param name="issueKey">The issue key</param>
     /// <param name="token">Cancellation token for this operation.</param>
-    Task<IEnumerable<IssueTransition>> GetActionsAsync(string issueKey, CancellationToken token = default);
+    IAsyncEnumerable<IssueTransition> GetActionsAsync(string issueKey, CancellationToken token = default);
 
     /// <summary>
     /// Returns the workflow actions that an issue can be transitioned to.
@@ -178,14 +178,14 @@ public interface IIssueService
     /// <param name="issueKey">The issue key</param>
     /// <param name="expandTransitionFields">Whether to show the transition fields</param>
     /// <param name="token">Cancellation token for this operation.</param>
-    Task<IEnumerable<IssueTransition>> GetActionsAsync(string issueKey, bool expandTransitionFields, CancellationToken token = default);
+    IAsyncEnumerable<IssueTransition> GetActionsAsync(string issueKey, bool expandTransitionFields, CancellationToken token = default);
 
     /// <summary>
     /// Retrieve attachment metadata from server for this issue
     /// </summary>
     /// <param name="issueKey">The issue key to get attachments from.</param>
     /// <param name="token">Cancellation token for this operation.</param>
-    Task<IEnumerable<Attachment>> GetAttachmentsAsync(string issueKey, CancellationToken token = default);
+    IAsyncEnumerable<Attachment> GetAttachmentsAsync(string issueKey, CancellationToken token = default);
 
     /// <summary>
     /// Retrieve the labels from server for the issue specified.
@@ -209,7 +209,7 @@ public interface IIssueService
     /// </summary>
     /// <param name="issueKey">The issue key to get watchers from.</param>
     /// <param name="token">Cancellation token for this operation.</param>
-    Task<IEnumerable<JiraUser>> GetWatchersAsync(string issueKey, CancellationToken token = default);
+    IAsyncEnumerable<JiraUser> GetWatchersAsync(string issueKey, CancellationToken token = default);
 
     /// <summary>
     /// Removes a user from the watcher list of an issue.
@@ -232,7 +232,7 @@ public interface IIssueService
     /// </summary>
     /// <param name="issueKey">The issue key to get watchers from.</param>
     /// <param name="token">Cancellation token for this operation.</param>
-    Task<IEnumerable<IssueChangeLog>> GetChangeLogsAsync(string issueKey, CancellationToken token = default);
+    IAsyncEnumerable<IssueChangeLog> GetChangeLogsAsync(string issueKey, CancellationToken token = default);
 
     /// <summary>
     /// Returns the issues that are marked as sub tasks of this issue.
@@ -273,7 +273,7 @@ public interface IIssueService
     /// </summary>
     /// <param name="issueKey">Issue key to retrieve the worklogs from.</param>
     /// <param name="token">Cancellation token for this operation.</param>
-    Task<IEnumerable<Worklog>> GetWorklogsAsync(string issueKey, CancellationToken token = default);
+    IAsyncEnumerable<Worklog> GetWorklogsAsync(string issueKey, CancellationToken token = default);
 
     /// <summary>
     /// Adds a work log to an issue.
@@ -308,7 +308,7 @@ public interface IIssueService
     /// </summary>
     /// <param name="issueKey">Identifier of the issue.</param>
     /// <param name="token">Cancellation token for this operation.</param>
-    Task<IEnumerable<string>> GetPropertyKeysAsync(string issueKey, CancellationToken token = default);
+    IAsyncEnumerable<string> GetPropertyKeysAsync(string issueKey, CancellationToken token = default);
 
     /// <summary>
     /// Fetch requested entity properties attached to the issue.

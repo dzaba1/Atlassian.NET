@@ -20,7 +20,7 @@ public interface IIssueFilterService
     /// Returns the favourite filters for the user.
     /// </summary>
     /// <param name="token">Cancellation token for this operation.</param>
-    Task<IEnumerable<JiraFilter>> GetFavouritesAsync(CancellationToken token = default);
+    IAsyncEnumerable<JiraFilter> GetFavouritesAsync(CancellationToken token = default);
 
     /// <summary>
     /// Returns issues that match the specified favorite filter.

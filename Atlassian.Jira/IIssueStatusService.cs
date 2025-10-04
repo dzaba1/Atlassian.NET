@@ -14,7 +14,7 @@ public interface IIssueStatusService
     /// Returns all the issue statuses within JIRA.
     /// </summary>
     /// <param name="token">Cancellation token for this operation.</param>
-    Task<IEnumerable<IssueStatus>> GetStatusesAsync(CancellationToken token = default);
+    IAsyncEnumerable<IssueStatus> GetStatusesAsync(CancellationToken token = default);
 
     /// <summary>
     /// Returns a full representation of the status having the given id or name.

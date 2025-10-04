@@ -24,5 +24,5 @@ public interface IIssueRemoteLinkService
     /// </summary>
     /// <param name="issueKey">The issue to retrieve remote links for.</param>
     /// <param name="token">Cancellation token for this operation.</param>
-    Task<IEnumerable<IssueRemoteLink>> GetRemoteLinksForIssueAsync(string issueKey, CancellationToken token = default);
+    IAsyncEnumerable<IssueRemoteLink> GetRemoteLinksForIssueAsync(string issueKey, CancellationToken token = default);
 }

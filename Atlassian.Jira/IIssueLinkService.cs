@@ -13,7 +13,7 @@ public interface IIssueLinkService
     /// Returns all available issue link types.
     /// </summary>
     /// <param name="token">Cancellation token for this operation.</param>
-    Task<IEnumerable<IssueLinkType>> GetLinkTypesAsync(CancellationToken token = default);
+    IAsyncEnumerable<IssueLinkType> GetLinkTypesAsync(CancellationToken token = default);
 
     /// <summary>
     /// Creates an issue link between two issues.
@@ -30,7 +30,7 @@ public interface IIssueLinkService
     /// </summary>
     /// <param name="issueKey">The issue key to retrieve links for.</param>
     /// <param name="token">Cancellation token for this operation.</param>
-    Task<IEnumerable<IssueLink>> GetLinksForIssueAsync(string issueKey, CancellationToken token = default);
+    IAsyncEnumerable<IssueLink> GetLinksForIssueAsync(string issueKey, CancellationToken token = default);
 
     /// <summary>
     /// Returns all issue links associated with a given issue.
@@ -38,5 +38,5 @@ public interface IIssueLinkService
     /// <param name="issue">The issue to retrieve links for.</param>
     /// <param name="linkTypeNames">Optional subset of link types to retrieve.</param>
     /// <param name="token">Cancellation token for this operation.</param>
-    Task<IEnumerable<IssueLink>> GetLinksForIssueAsync(Issue issue, IEnumerable<string> linkTypeNames = null, CancellationToken token = default);
+    IAsyncEnumerable<IssueLink> GetLinksForIssueAsync(Issue issue, IEnumerable<string> linkTypeNames = null, CancellationToken token = default);
 }

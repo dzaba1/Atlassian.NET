@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Atlassian.Jira;
 
@@ -16,7 +15,7 @@ public interface IScreenService
     /// <param name="token">The cancellation token.</param>
     /// <returns>The available fields for the given screen.</returns>
     /// <remarks>An available field is a field not yet added to a screen.</remarks>
-    Task<IEnumerable<ScreenField>> GetScreenAvailableFieldsAsync(string screenId, CancellationToken token = default);
+    IAsyncEnumerable<ScreenField> GetScreenAvailableFieldsAsync(string screenId, CancellationToken token = default);
 
     /// <summary>
     /// Gets the screen tabs.
@@ -25,7 +24,7 @@ public interface IScreenService
     /// <param name="projectKey">The project key.</param>
     /// <param name="token">The cancellation token.</param>
     /// <returns>The tabs of the given screen.</returns>
-    Task<IEnumerable<ScreenTab>> GetScreenTabsAsync(string screenId, string projectKey = null, CancellationToken token = default);
+    IAsyncEnumerable<ScreenTab> GetScreenTabsAsync(string screenId, string projectKey = null, CancellationToken token = default);
 
     /// <summary>
     /// Gets the screen tab fields.
@@ -35,5 +34,5 @@ public interface IScreenService
     /// <param name="projectKey">The project key.</param>
     /// <param name="token">The cancellation token.</param>
     /// <returns>The fields of the given screen tab.</returns>
-    Task<IEnumerable<ScreenField>> GetScreenTabFieldsAsync(string screenId, string tabId, string projectKey = null, CancellationToken token = default);
+    IAsyncEnumerable<ScreenField> GetScreenTabFieldsAsync(string screenId, string tabId, string projectKey = null, CancellationToken token = default);
 }
