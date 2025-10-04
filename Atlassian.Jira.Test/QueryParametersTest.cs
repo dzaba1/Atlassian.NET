@@ -16,12 +16,12 @@ public class QueryParametersTest
 
         // Assert
         Assert.NotNull(parameters);
-        Assert.Equal(parameters.Count(), 2);
+        Assert.Equal(2, parameters.Count());
 
-        Assert.Equal(parameters.First().Name, "field1");
+        Assert.Equal("field1", parameters.First().Name);
         Assert.Equal(parameters.First().Value, "9");
 
-        Assert.Equal(parameters.ElementAt(1).Name, "field2");
+        Assert.Equal("field2", parameters.ElementAt(1).Name);
         Assert.Equal(parameters.ElementAt(1).Value, "Test");
     }
 
@@ -36,9 +36,9 @@ public class QueryParametersTest
 
         // Assert
         Assert.NotNull(parameters);
-        Assert.Equal(parameters.Count(), 1);
+        Assert.Single(parameters);
 
-        Assert.Equal(parameters.First().Name, "field1");
+        Assert.Equal("field1", parameters.First().Name);
         Assert.Equal(parameters.First().Value, "");
     }
 
@@ -53,9 +53,9 @@ public class QueryParametersTest
 
         // Assert
         Assert.NotNull(parameters);
-        Assert.Equal(parameters.Count(), 1);
+        Assert.Single(parameters);
 
-        Assert.Equal(parameters.First().Name, "field1");
+        Assert.Equal("field1", parameters.First().Name);
         Assert.Equal(parameters.First().Value, "value=string==");
     }
 }

@@ -10,7 +10,7 @@ namespace Atlassian.Jira.Test;
 public class ServiceLocatorTest
 {
     [Fact]
-    public void UserCanProvideCustomProjectVersionService()
+    public async Task UserCanProvideCustomProjectVersionService()
     {
         // Arrange
         var projects = new Mock<IProjectService>();
@@ -31,14 +31,15 @@ public class ServiceLocatorTest
         jira.Services.Register<IProjectVersionService>(() => versionResource.Object);
 
         // Act
-        var versions = jira.Projects.GetProjectsAsync().Result.First().GetVersionsAsync().Result;
+        var projs = await jira.Projects.GetProjectsAsync();
+        var versions = await projs.First().GetVersionsAsync();
 
         // Assert
         Assert.Equal("my version", versions.First().Name);
     }
 
     [Fact]
-    public void UserCanProvideCustomProjectComponentsService()
+    public async Task UserCanProvideCustomProjectComponentsService()
     {
         // Arrange
         var projects = new Mock<IProjectService>();
@@ -59,7 +60,8 @@ public class ServiceLocatorTest
         jira.Services.Register<IProjectComponentService>(() => componentResource.Object);
 
         // Act
-        var components = jira.Projects.GetProjectsAsync().Result.First().GetComponentsAsync().Result;
+        var projs = await jira.Projects.GetProjectsAsync();
+        var components = await projs.First().GetComponentsAsync();
 
         // Assert
         Assert.Equal("my component", components.First().Name);

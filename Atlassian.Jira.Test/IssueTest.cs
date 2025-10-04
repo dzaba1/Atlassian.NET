@@ -230,7 +230,7 @@ public class IssueTest
             jira.IssueTypeService.Setup(s => s.GetIssueTypesAsync(CancellationToken.None))
                 .Returns(Task.FromResult(Enumerable.Repeat(new IssueType("1"), 1)));
 
-            var issue = jira.Issues.GetIssueAsync("TST-1").Result;
+            var issue = await jira.Issues.GetIssueAsync("TST-1");
 
             var result = await GetUpdatedFieldsForIssueAsync(issue);
             Assert.Empty(result);
@@ -261,7 +261,7 @@ public class IssueTest
             jira.IssueTypeService.Setup(s => s.GetIssueTypesAsync(CancellationToken.None))
                 .Returns(Task.FromResult(Enumerable.Repeat(new IssueType("1"), 1)));
 
-            var issue = jira.Issues.GetIssueAsync("TST-1").Result;
+            var issue = await jira.Issues.GetIssueAsync("TST-1");
             issue["My Custom Field"] = "My New Value";
 
             var result = await GetUpdatedFieldsForIssueAsync(issue);
@@ -479,7 +479,7 @@ public class IssueTest
         }
 
         [Fact]
-        public void IfIssueIsCreated_ShouldLoadAttachments()
+        public async Task IfIssueIsCreated_ShouldLoadAttachments()
         {
             //arrange
             var jira = TestableJira.Create();
@@ -490,7 +490,7 @@ public class IssueTest
             var issue = (new RemoteIssue() { key = "issueKey" }).ToLocal(jira);
 
             //act
-            var attachments = issue.GetAttachmentsAsync().Result;
+            var attachments = await issue.GetAttachmentsAsync();
 
             //assert
             Assert.Single(attachments);
@@ -532,7 +532,7 @@ public class IssueTest
         }
 
         [Fact]
-        public void IfIssueIsCreated_ShouldLoadComments()
+        public async Task IfIssueIsCreated_ShouldLoadComments()
         {
             //arrange
             var jira = TestableJira.Create();
@@ -541,7 +541,7 @@ public class IssueTest
             var issue = (new RemoteIssue() { key = "issueKey" }).ToLocal(jira);
 
             //act
-            var comments = issue.GetCommentsAsync().Result;
+            var comments = await issue.GetCommentsAsync();
 
             //assert
             Assert.Single(comments);

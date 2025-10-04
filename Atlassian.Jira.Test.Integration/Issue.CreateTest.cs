@@ -140,7 +140,7 @@ public class IssueCreateTest
 
     [Theory]
     [ClassData(typeof(JiraProvider))]
-    public void CreateAndQueryIssueWithSubTask(Jira jira)
+    public async Task CreateAndQueryIssueWithSubTask(Jira jira)
     {
         var parentTask = jira.CreateIssue("TST");
         parentTask.Type = "1";
@@ -157,7 +157,7 @@ public class IssueCreateTest
         Assert.Equal(parentTask.Key.Value, subTask.ParentIssueKey);
 
         // query the subtask again to make sure it loads everything from server.
-        subTask = jira.Issues.GetIssueAsync(subTask.Key.Value).Result;
+        subTask = await jira.Issues.GetIssueAsync(subTask.Key.Value);
         Assert.False(parentTask.Type.IsSubTask);
         Assert.True(subTask.Type.IsSubTask);
         Assert.Equal(parentTask.Key.Value, subTask.ParentIssueKey);
@@ -252,7 +252,7 @@ public class IssueCreateTest
 
     [Theory]
     [ClassData(typeof(JiraProvider))]
-    public void CreateIssueAsSubtask(Jira jira)
+    public async Task CreateIssueAsSubtask(Jira jira)
     {
         var summaryValue = "Test issue as subtask " + _random.Next(int.MaxValue);
 
@@ -264,7 +264,7 @@ public class IssueCreateTest
         };
         issue.SaveChanges();
 
-        var subtasks = jira.Issues.GetIssuesFromJqlAsync("project = TST and parent = TST-1").Result;
+        var subtasks = await jira.Issues.GetIssuesFromJqlAsync("project = TST and parent = TST-1");
 
         Assert.True(subtasks.Any(s => s.Summary.Equals(summaryValue)),
             string.Format("'{0}' was not found as a sub-task of TST-1", summaryValue));
