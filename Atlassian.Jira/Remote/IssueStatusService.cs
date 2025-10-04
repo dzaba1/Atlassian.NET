@@ -1,9 +1,10 @@
-﻿using System;
+﻿using RestSharp;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
-using RestSharp;
 
 namespace Atlassian.Jira.Remote;
 
@@ -16,7 +17,7 @@ internal class IssueStatusService : IIssueStatusService
         _jira = jira;
     }
 
-    public async Task<IEnumerable<IssueStatus>> GetStatusesAsync(CancellationToken token = default)
+    public async IAsyncEnumerable<IssueStatus> GetStatusesAsync([EnumeratorCancellation] CancellationToken token = default)
     {
         var cache = _jira.Cache;
 
@@ -26,7 +27,11 @@ internal class IssueStatusService : IIssueStatusService
             cache.Statuses.TryAdd(results.Select(s => new IssueStatus(s)));
         }
 
-        return cache.Statuses.Values;
+        var values = cache.Statuses.Values;
+        foreach (var value in values)
+        {
+            yield return value;
+        }
     }
 
     public async Task<IssueStatus> GetStatusAsync(string idOrName, CancellationToken token = default)

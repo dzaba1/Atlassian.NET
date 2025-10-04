@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -33,13 +34,16 @@ internal class IssueLinkService : IIssueLinkService
         return _jira.RestClient.ExecuteRequestAsync(Method.POST, "rest/api/2/issueLink", bodyObject, token);
     }
 
-    public async Task<IEnumerable<IssueLink>> GetLinksForIssueAsync(string issueKey, CancellationToken token = default)
+    public async IAsyncEnumerable<IssueLink> GetLinksForIssueAsync(string issueKey, [EnumeratorCancellation] CancellationToken token = default)
     {
         var issue = await _jira.Issues.GetIssueAsync(issueKey, token);
-        return await GetLinksForIssueAsync(issue, null, token);
+        await foreach (var value in GetLinksForIssueAsync(issue, null, token))
+        {
+            yield return value;
+        }
     }
 
-    public async Task<IEnumerable<IssueLink>> GetLinksForIssueAsync(Issue issue, IEnumerable<string> linkTypeNames = null, CancellationToken token = default)
+    public async IAsyncEnumerable<IssueLink> GetLinksForIssueAsync(Issue issue, IEnumerable<string> linkTypeNames = null, [EnumeratorCancellation] CancellationToken token = default)
     {
         var serializerSettings = _jira.RestClient.Settings.JsonSerializerSettings;
         var resource = string.Format("rest/api/2/issue/{0}?fields=issuelinks,created", issue.Key.Value);
@@ -72,7 +76,7 @@ internal class IssueLinkService : IIssueLinkService
         }
 
 
-        return filteredIssueLinks.Select(issueLink =>
+        var values = filteredIssueLinks.Select(issueLink =>
         {
             var linkType = JsonConvert.DeserializeObject<IssueLinkType>(issueLink["type"].ToString(), serializerSettings);
             var outwardIssue = issueLink["outwardIssue"];
@@ -84,9 +88,13 @@ internal class IssueLinkService : IIssueLinkService
                 outwardIssueKey == null ? issue : issuesMap[outwardIssueKey],
                 inwardIssueKey == null ? issue : issuesMap[inwardIssueKey]);
         });
+        foreach (var value in values)
+        {
+            yield return value;
+        }
     }
 
-    public async Task<IEnumerable<IssueLinkType>> GetLinkTypesAsync(CancellationToken token = default)
+    public async IAsyncEnumerable<IssueLinkType> GetLinkTypesAsync([EnumeratorCancellation] CancellationToken token = default)
     {
         var cache = _jira.Cache;
         var serializerSettings = _jira.RestClient.Settings.JsonSerializerSettings;
@@ -101,6 +109,10 @@ internal class IssueLinkService : IIssueLinkService
             cache.LinkTypes.TryAdd(linkTypes);
         }
 
-        return cache.LinkTypes.Values;
+        var values = cache.LinkTypes.Values;
+        foreach (var value in values)
+        {
+            yield return value;
+        }
     }
 }

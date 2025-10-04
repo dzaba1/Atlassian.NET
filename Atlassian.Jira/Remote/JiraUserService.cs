@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -39,7 +40,8 @@ internal class JiraUserService : IJiraUserService
         return _jira.RestClient.ExecuteRequestAsync<JiraUser>(Method.GET, resource, null, token);
     }
 
-    public Task<IEnumerable<JiraUser>> SearchUsersAsync(string query, JiraUserStatus userStatus = JiraUserStatus.Active, int maxResults = 50, int startAt = 0, CancellationToken token = default)
+    public async IAsyncEnumerable<JiraUser> SearchUsersAsync(string query, JiraUserStatus userStatus = JiraUserStatus.Active, int maxResults = 50, int startAt = 0,
+        [EnumeratorCancellation] CancellationToken token = default)
     {
         var resource = string.Format(
             "rest/api/2/user/search?{0}={1}&includeActive={2}&includeInactive={3}&startAt={4}&maxResults={5}",
@@ -50,48 +52,64 @@ internal class JiraUserService : IJiraUserService
             startAt,
             maxResults);
 
-        return _jira.RestClient.ExecuteRequestAsync<IEnumerable<JiraUser>>(Method.GET, resource, null, token);
+        var values = await _jira.RestClient.ExecuteRequestAsync<JiraUser[]>(Method.GET, resource, null, token);
+        foreach (var value in values)
+        {
+            yield return value;
+        }
     }
 
-    public Task<IEnumerable<JiraUser>> SearchAssignableUsersForIssueAsync(
+    public async IAsyncEnumerable<JiraUser> SearchAssignableUsersForIssueAsync(
         string username,
         string issueKey,
         int startAt = 0,
         int maxResults = 50,
-        CancellationToken token = default)
+        [EnumeratorCancellation] CancellationToken token = default)
     {
         var resourceSb = new StringBuilder($"rest/api/2/user/assignable/search", 200);
         resourceSb.Append($"?username={Uri.EscapeDataString(username)}&issueKey={Uri.EscapeDataString(issueKey)}");
         resourceSb.Append($"&startAt={startAt}&maxResults={maxResults}");
 
-        return _jira.RestClient.ExecuteRequestAsync<IEnumerable<JiraUser>>(Method.GET, resourceSb.ToString(), null, token);
+        var values = await _jira.RestClient.ExecuteRequestAsync<JiraUser[]>(Method.GET, resourceSb.ToString(), null, token);
+        foreach (var value in values)
+        {
+            yield return value;
+        }
     }
 
-    public Task<IEnumerable<JiraUser>> SearchAssignableUsersForProjectAsync(
+    public async IAsyncEnumerable<JiraUser> SearchAssignableUsersForProjectAsync(
         string username,
         string projectKey,
         int startAt = 0,
         int maxResults = 50,
-        CancellationToken token = default)
+        [EnumeratorCancellation] CancellationToken token = default)
     {
         var resourceSb = new StringBuilder($"rest/api/2/user/assignable/search", 200);
         resourceSb.Append($"?username={Uri.EscapeDataString(username)}&project={Uri.EscapeDataString(projectKey)}");
         resourceSb.Append($"&startAt={startAt}&maxResults={maxResults}");
 
-        return _jira.RestClient.ExecuteRequestAsync<IEnumerable<JiraUser>>(Method.GET, resourceSb.ToString(), null, token);
+        var values = await _jira.RestClient.ExecuteRequestAsync<IEnumerable<JiraUser>>(Method.GET, resourceSb.ToString(), null, token);
+        foreach (var value in values)
+        {
+            yield return value;
+        }
     }
 
-    public Task<IEnumerable<JiraUser>> SearchAssignableUsersForProjectsAsync(
+    public async IAsyncEnumerable<JiraUser> SearchAssignableUsersForProjectsAsync(
         string username,
         IEnumerable<string> projectKeys,
         int startAt = 0,
         int maxResults = 50,
-        CancellationToken token = default)
+        [EnumeratorCancellation] CancellationToken token = default)
     {
         var resourceSb = new StringBuilder("rest/api/2/user/assignable/multiProjectSearch", 200);
         resourceSb.Append($"?username={username}&projectKeys={string.Join(",", projectKeys)}&startAt={startAt}&maxResults={maxResults}");
 
-        return _jira.RestClient.ExecuteRequestAsync<IEnumerable<JiraUser>>(Method.GET, resourceSb.ToString(), null, token);
+        var values = await _jira.RestClient.ExecuteRequestAsync<IEnumerable<JiraUser>>(Method.GET, resourceSb.ToString(), null, token);
+        foreach (var value in values)
+        {
+            yield return value;
+        }
     }
 
     public async Task<JiraUser> GetMyselfAsync(CancellationToken token = default)

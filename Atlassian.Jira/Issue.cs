@@ -523,7 +523,7 @@ public class Issue : IRemoteIssueFieldProvider
     /// Gets the issue links associated with this issue.
     /// </summary>
     /// <param name="token">Cancellation token for this operation.</param>
-    public Task<IEnumerable<IssueLink>> GetIssueLinksAsync(CancellationToken token = default)
+    public IAsyncEnumerable<IssueLink> GetIssueLinksAsync(CancellationToken token = default)
     {
         if (string.IsNullOrEmpty(_originalIssue.key))
         {
@@ -538,7 +538,7 @@ public class Issue : IRemoteIssueFieldProvider
     /// </summary>
     /// <param name="linkTypeNames">Optional subset of link types to retrieve.</param>
     /// <param name="token">Cancellation token for this operation.</param>
-    public Task<IEnumerable<IssueLink>> GetIssueLinksAsync(IEnumerable<string> linkTypeNames, CancellationToken token = default)
+    public IAsyncEnumerable<IssueLink> GetIssueLinksAsync(IEnumerable<string> linkTypeNames, CancellationToken token = default)
     {
         if (string.IsNullOrEmpty(_originalIssue.key))
         {
@@ -568,7 +568,7 @@ public class Issue : IRemoteIssueFieldProvider
     /// Gets the remote links associated with this issue.
     /// </summary>
     /// <param name="token">Cancellation token for this operation.</param>
-    public Task<IEnumerable<IssueRemoteLink>> GetRemoteLinksAsync(CancellationToken token = default)
+    public IAsyncEnumerable<IssueRemoteLink> GetRemoteLinksAsync(CancellationToken token = default)
     {
         if (string.IsNullOrEmpty(_originalIssue.key))
         {
@@ -615,7 +615,7 @@ public class Issue : IRemoteIssueFieldProvider
     /// <summary>
     /// Retrieve attachment metadata from server for this issue
     /// </summary>
-    public Task<IEnumerable<Attachment>> GetAttachmentsAsync(CancellationToken token = default)
+    public IAsyncEnumerable<Attachment> GetAttachmentsAsync(CancellationToken token = default)
     {
         if (string.IsNullOrEmpty(_originalIssue.key))
         {
@@ -707,7 +707,7 @@ public class Issue : IRemoteIssueFieldProvider
     /// Retrieve change logs from server for this issue.
     /// </summary>
     /// <param name="token">Cancellation token for this operation.</param>
-    public Task<IEnumerable<IssueChangeLog>> GetChangeLogsAsync(CancellationToken token = default)
+    public IAsyncEnumerable<IssueChangeLog> GetChangeLogsAsync(CancellationToken token = default)
     {
         if (string.IsNullOrEmpty(_originalIssue.key))
         {
@@ -721,7 +721,7 @@ public class Issue : IRemoteIssueFieldProvider
     /// Get the comments for this issue.
     /// </summary>
     /// <param name="token">Cancellation token for this operation.</param>
-    public Task<IEnumerable<Comment>> GetCommentsAsync(CancellationToken token = default)
+    public IAsyncEnumerable<Comment> GetCommentsAsync(CancellationToken token = default)
     {
         if (string.IsNullOrEmpty(_originalIssue.key))
         {
@@ -736,7 +736,7 @@ public class Issue : IRemoteIssueFieldProvider
     /// </summary>
     /// <param name="options">Options to use when querying the comments.</param>
     /// <param name="token">Cancellation token for this operation.</param>
-    public Task<IEnumerable<Comment>> GetCommentsAsync(CommentQueryOptions options, CancellationToken token = default)
+    public IAsyncEnumerable<Comment> GetCommentsAsync(CommentQueryOptions options, CancellationToken token = default)
     {
         if (string.IsNullOrEmpty(_originalIssue.key))
         {
@@ -920,7 +920,7 @@ public class Issue : IRemoteIssueFieldProvider
     /// Retrieve worklogs for this issue.
     /// </summary>
     /// <param name="token">Cancellation token for this operation.</param>
-    public Task<IEnumerable<Worklog>> GetWorklogsAsync(CancellationToken token = default)
+    public IAsyncEnumerable<Worklog> GetWorklogsAsync(CancellationToken token = default)
     {
         if (string.IsNullOrEmpty(_originalIssue.key))
         {
@@ -950,7 +950,7 @@ public class Issue : IRemoteIssueFieldProvider
     /// Gets the workflow actions that the issue can be transitioned to.
     /// </summary>
     /// <param name="token">Cancellation token for this operation.</param>
-    public Task<IEnumerable<IssueTransition>> GetAvailableActionsAsync(CancellationToken token = default)
+    public IAsyncEnumerable<IssueTransition> GetAvailableActionsAsync(CancellationToken token = default)
     {
         if (string.IsNullOrEmpty(_originalIssue.key))
         {
@@ -964,7 +964,7 @@ public class Issue : IRemoteIssueFieldProvider
     /// Gets the workflow actions that the issue can be transitioned to including the fields that are required per action.
     /// </summary>
     /// <param name="token">Cancellation token for this operation.</param>
-    public Task<IEnumerable<IssueTransition>> GetAvailableActionsAsync(bool expandTransitionFields, CancellationToken token = default)
+    public IAsyncEnumerable<IssueTransition> GetAvailableActionsAsync(bool expandTransitionFields, CancellationToken token = default)
     {
         if (string.IsNullOrEmpty(_originalIssue.key))
         {
@@ -1011,7 +1011,7 @@ public class Issue : IRemoteIssueFieldProvider
     /// Gets the users that are watching the issue.
     /// </summary>
     /// <param name="token">Cancellation token for this operation.</param>
-    public Task<IEnumerable<JiraUser>> GetWatchersAsync(CancellationToken token = default)
+    public IAsyncEnumerable<JiraUser> GetWatchersAsync(CancellationToken token = default)
     {
         if (string.IsNullOrEmpty(_originalIssue.key))
         {

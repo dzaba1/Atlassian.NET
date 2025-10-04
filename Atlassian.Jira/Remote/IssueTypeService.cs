@@ -1,9 +1,8 @@
-﻿using System;
+﻿using RestSharp;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
-using System.Threading.Tasks;
-using RestSharp;
 
 namespace Atlassian.Jira.Remote;
 
@@ -16,7 +15,7 @@ internal class IssueTypeService : IIssueTypeService
         _jira = jira;
     }
 
-    public async Task<IEnumerable<IssueType>> GetIssueTypesAsync(CancellationToken token = default)
+    public async IAsyncEnumerable<IssueType> GetIssueTypesAsync([EnumeratorCancellation] CancellationToken token = default)
     {
         var cache = _jira.Cache;
 
@@ -27,10 +26,14 @@ internal class IssueTypeService : IIssueTypeService
             cache.IssueTypes.TryAdd(issueTypes);
         }
 
-        return cache.IssueTypes.Values;
+        var values = cache.IssueTypes.Values;
+        foreach (var value in values)
+        {
+            yield return value;
+        }
     }
 
-    public async Task<IEnumerable<IssueType>> GetIssueTypesForProjectAsync(string projectKey, CancellationToken token = default)
+    public async IAsyncEnumerable<IssueType> GetIssueTypesForProjectAsync(string projectKey, [EnumeratorCancellation] CancellationToken token = default)
     {
         var cache = _jira.Cache;
 
@@ -43,6 +46,10 @@ internal class IssueTypeService : IIssueTypeService
             cache.ProjectIssueTypes.TryAdd(projectKey, new JiraEntityDictionary<IssueType>(issueTypes));
         }
 
-        return cache.ProjectIssueTypes[projectKey].Values;
+        var values = cache.ProjectIssueTypes[projectKey].Values;
+        foreach (var value in values)
+        {
+            yield return value;
+        }
     }
 }

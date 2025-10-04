@@ -1,9 +1,9 @@
-﻿using System;
+﻿using RestSharp;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
-using RestSharp;
 
 namespace Atlassian.Jira.Remote;
 
@@ -16,7 +16,7 @@ internal class ProjectService : IProjectService
         _jira = jira;
     }
 
-    public async Task<IEnumerable<Project>> GetProjectsAsync(CancellationToken token = default)
+    public async IAsyncEnumerable<Project> GetProjectsAsync([EnumeratorCancellation] CancellationToken token = default)
     {
         var cache = _jira.Cache;
         if (!cache.Projects.Any())
@@ -25,7 +25,11 @@ internal class ProjectService : IProjectService
             cache.Projects.TryAdd(remoteProjects.Select(p => new Project(_jira, p)));
         }
 
-        return cache.Projects.Values;
+        var values = cache.Projects.Values;
+        foreach (var value in values)
+        {
+            yield return value;
+        }
     }
 
     public async Task<Project> GetProjectAsync(string projectKey, CancellationToken token = new CancellationToken())

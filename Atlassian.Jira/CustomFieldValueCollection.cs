@@ -154,8 +154,11 @@ public class CustomFieldValueCollection : ReadOnlyCollection<CustomFieldValue>, 
 
     private async Task<string> GetCustomFieldIdAsync(string fieldName)
     {
-        var customFields = (await _issue.Jira.Fields.GetCustomFieldsAsync()).Where(f => f.Name.Equals(fieldName, StringComparison.OrdinalIgnoreCase));
-        var searchByProject = (customFields.Count() > 1) || SearchByProjectOnly;
+        var customFields = await _issue.Jira.Fields
+            .GetCustomFieldsAsync()
+            .Where(f => f.Name.Equals(fieldName, StringComparison.OrdinalIgnoreCase))
+            .ToArrayAsync();
+        var searchByProject = (customFields.Length > 1) || SearchByProjectOnly;
 
         if (searchByProject)
         {
@@ -172,10 +175,13 @@ public class CustomFieldValueCollection : ReadOnlyCollection<CustomFieldValue>, 
                 options.IssueTypeNames.Add(_issue.Type.Name);
             }
 
-            customFields = (await _issue.Jira.Fields.GetCustomFieldsAsync(options)).Where(f => f.Name.Equals(fieldName, StringComparison.OrdinalIgnoreCase));
+            customFields = await _issue.Jira.Fields
+                .GetCustomFieldsAsync(options)
+                .Where(f => f.Name.Equals(fieldName, StringComparison.OrdinalIgnoreCase))
+                .ToArrayAsync();
         }
 
-        if (customFields.Count() == 0)
+        if (customFields.Length == 0)
         {
             var errorMessage = $"Could not find custom field with name '{fieldName}' on the JIRA server.";
 

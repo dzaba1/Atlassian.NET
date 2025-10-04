@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
@@ -44,7 +45,7 @@ internal class IssueRemoteLinkService : IIssueRemoteLinkService
         return _jira.RestClient.ExecuteRequestAsync(Method.POST, string.Format("rest/api/2/issue/{0}/remotelink", issueKey), bodyObject, token);
     }
 
-    public async Task<IEnumerable<IssueRemoteLink>> GetRemoteLinksForIssueAsync(string issueKey, CancellationToken token = default)
+    public async IAsyncEnumerable<IssueRemoteLink> GetRemoteLinksForIssueAsync(string issueKey, [EnumeratorCancellation] CancellationToken token = default)
     {
         var serializerSettings = _jira.RestClient.Settings.JsonSerializerSettings;
         var resource = string.Format("rest/api/2/issue/{0}/remotelink", issueKey);
@@ -59,6 +60,9 @@ internal class IssueRemoteLinkService : IIssueRemoteLinkService
             var summary = objJson["summary"]?.Value<string>();
             return new IssueRemoteLink(url, title, summary);
         });
-        return result;
+        foreach (var value in result)
+        {
+            yield return value;
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using RestSharp;
@@ -16,9 +17,13 @@ internal class IssueFilterService : IIssueFilterService
         _jira = jira;
     }
 
-    public Task<IEnumerable<JiraFilter>> GetFavouritesAsync(CancellationToken token = default)
+    public async IAsyncEnumerable<JiraFilter> GetFavouritesAsync([EnumeratorCancellation] CancellationToken token = default)
     {
-        return _jira.RestClient.ExecuteRequestAsync<IEnumerable<JiraFilter>>(Method.GET, "rest/api/2/filter/favourite", null, token);
+        var array = await _jira.RestClient.ExecuteRequestAsync<JiraFilter[]>(Method.GET, "rest/api/2/filter/favourite", null, token);
+        foreach (var item in array)
+        {
+            yield return item;
+        }
     }
 
     public Task<JiraFilter> GetFilterAsync(string filterId, CancellationToken token = default)
@@ -70,8 +75,8 @@ internal class IssueFilterService : IIssueFilterService
 
     private async Task<string> GetFilterJqlByNameAsync(string filterName, CancellationToken token = default)
     {
-        var filters = await GetFavouritesAsync(token).ConfigureAwait(false);
-        var filter = filters.FirstOrDefault(f => f.Name.Equals(filterName, StringComparison.OrdinalIgnoreCase));
+        var filters = GetFavouritesAsync(token);
+        var filter = await filters.FirstOrDefaultAsync(f => f.Name.Equals(filterName, StringComparison.OrdinalIgnoreCase)).ConfigureAwait(false);
 
         if (filter == null)
         {

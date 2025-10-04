@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -44,9 +45,10 @@ internal class ProjectComponentService : IProjectComponentService
         _jira.Cache.Components.TryRemove(componentId);
     }
 
-    public async Task<IEnumerable<ProjectComponent>> GetComponentsAsync(string projectKey, CancellationToken token = default)
+    public async IAsyncEnumerable<ProjectComponent> GetComponentsAsync(string projectKey, [EnumeratorCancellation] CancellationToken token = default)
     {
         var cache = _jira.Cache;
+        IEnumerable<ProjectComponent> result;
 
         if (!cache.Components.Values.Any(c => string.Equals(c.ProjectKey, projectKey)))
         {
@@ -58,11 +60,16 @@ internal class ProjectComponentService : IProjectComponentService
                 return new ProjectComponent(remoteComponent);
             });
             cache.Components.TryAdd(components);
-            return components;
+            result = components;
         }
         else
         {
-            return cache.Components.Values.Where(c => string.Equals(c.ProjectKey, projectKey));
+            result = cache.Components.Values.Where(c => string.Equals(c.ProjectKey, projectKey));
+        }
+
+        foreach (var value in result)
+        {
+            yield return value;
         }
     }
 }

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RestSharp;
@@ -18,7 +18,7 @@ internal class IssueFieldService : IIssueFieldService
         _jira = jira;
     }
 
-    public async Task<IEnumerable<CustomField>> GetCustomFieldsAsync(CancellationToken token = default)
+    public async IAsyncEnumerable<CustomField> GetCustomFieldsAsync([EnumeratorCancellation] CancellationToken token = default)
     {
         var cache = _jira.Cache;
 
@@ -29,10 +29,13 @@ internal class IssueFieldService : IIssueFieldService
             cache.CustomFields.TryAdd(results);
         }
 
-        return cache.CustomFields.Values;
+        foreach (var value in cache.CustomFields.Values)
+        {
+            yield return value;
+        };
     }
 
-    public async Task<IEnumerable<CustomField>> GetCustomFieldsAsync(CustomFieldFetchOptions options, CancellationToken token = default)
+    public async IAsyncEnumerable<CustomField> GetCustomFieldsAsync(CustomFieldFetchOptions options, [EnumeratorCancellation] CancellationToken token = default)
     {
         var cache = _jira.Cache;
         var projectKey = options.ProjectKeys.FirstOrDefault();
@@ -45,7 +48,10 @@ internal class IssueFieldService : IIssueFieldService
         }
         else if (string.IsNullOrEmpty(projectKey))
         {
-            return await GetCustomFieldsAsync(token);
+            await foreach (var value in GetCustomFieldsAsync(token))
+            {
+                yield return value;
+            }
         }
 
         if (!cache.ProjectCustomFields.TryGetValue(projectKey, out JiraEntityDictionary<CustomField> fields))
@@ -82,10 +88,13 @@ internal class IssueFieldService : IIssueFieldService
             cache.ProjectCustomFields.TryAdd(projectKey, new JiraEntityDictionary<CustomField>(distinctFields));
         }
 
-        return cache.ProjectCustomFields[projectKey].Values;
+        foreach (var value in cache.ProjectCustomFields[projectKey].Values)
+        {
+            yield return value;
+        }
     }
 
-    public Task<IEnumerable<CustomField>> GetCustomFieldsForProjectAsync(string projectKey, CancellationToken token = default)
+    public IAsyncEnumerable<CustomField> GetCustomFieldsForProjectAsync(string projectKey, CancellationToken token = default)
     {
         var options = new CustomFieldFetchOptions();
         options.ProjectKeys.Add(projectKey);

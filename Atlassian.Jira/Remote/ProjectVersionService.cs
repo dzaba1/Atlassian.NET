@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -18,9 +19,10 @@ internal class ProjectVersionService : IProjectVersionService
         _jira = jira;
     }
 
-    public async Task<IEnumerable<ProjectVersion>> GetVersionsAsync(string projectKey, CancellationToken token = default)
+    public async IAsyncEnumerable<ProjectVersion> GetVersionsAsync(string projectKey, [EnumeratorCancellation] CancellationToken token = default)
     {
         var cache = _jira.Cache;
+        IEnumerable<ProjectVersion> result;
 
         if (!cache.Versions.Values.Any(v => string.Equals(v.ProjectKey, projectKey)))
         {
@@ -32,11 +34,16 @@ internal class ProjectVersionService : IProjectVersionService
                 return new ProjectVersion(_jira, remoteVersion);
             });
             cache.Versions.TryAdd(versions);
-            return versions;
+            result = versions;
         }
         else
         {
-            return cache.Versions.Values.Where(v => string.Equals(v.ProjectKey, projectKey));
+            result = cache.Versions.Values.Where(v => string.Equals(v.ProjectKey, projectKey));
+        }
+
+        foreach (var value in result)
+        {
+            yield return value;
         }
     }
 

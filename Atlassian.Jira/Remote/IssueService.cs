@@ -8,6 +8,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -49,8 +50,10 @@ internal class IssueService : IIssueService
         if (_serializerSettings == null)
         {
             var fieldService = _jira.Services.Get<IIssueFieldService>();
-            var customFields = await fieldService.GetCustomFieldsAsync(token).ConfigureAwait(false);
-            var remoteFields = customFields.Select(f => f.RemoteField);
+            var remoteFields = await fieldService.GetCustomFieldsAsync(token)
+                .Select(f => f.RemoteField)
+                .ToArrayAsync()
+                .ConfigureAwait(false);
 
             var customFieldSerializers = new Dictionary<string, ICustomFieldValueSerializer>(_restSettings.CustomFieldSerializers, StringComparer.InvariantCultureIgnoreCase);
 
@@ -204,8 +207,9 @@ internal class IssueService : IIssueService
         }
         else
         {
-            var actions = await GetActionsAsync(issue.Key.Value, token).ConfigureAwait(false);
-            var action = actions.FirstOrDefault(a => a.Name.Equals(actionNameOrId, StringComparison.OrdinalIgnoreCase));
+            var action = await GetActionsAsync(issue.Key.Value, token)
+                .FirstOrDefaultAsync(a => a.Name.Equals(actionNameOrId, StringComparison.OrdinalIgnoreCase))
+                .ConfigureAwait(false);
 
             if (action == null)
             {
@@ -332,12 +336,12 @@ internal class IssueService : IIssueService
         return PagedQueryResult<Comment>.FromJson((JObject)result, comments);
     }
 
-    public Task<IEnumerable<IssueTransition>> GetActionsAsync(string issueKey, CancellationToken token = default)
+    public IAsyncEnumerable<IssueTransition> GetActionsAsync(string issueKey, CancellationToken token = default)
     {
         return GetActionsAsync(issueKey, false, token);
     }
 
-    public async Task<IEnumerable<IssueTransition>> GetActionsAsync(string issueKey, bool expandTransitionFields, CancellationToken token = default)
+    public async IAsyncEnumerable<IssueTransition> GetActionsAsync(string issueKey, bool expandTransitionFields, [EnumeratorCancellation] CancellationToken token = default)
     {
         var resource = $"rest/api/2/issue/{issueKey}/transitions";
         if (expandTransitionFields)
@@ -349,10 +353,14 @@ internal class IssueService : IIssueService
         var result = await _jira.RestClient.ExecuteRequestAsync(Method.GET, resource, null, token).ConfigureAwait(false);
         var remoteTransitions = JsonConvert.DeserializeObject<RemoteTransition[]>(result["transitions"].ToString(), serializerSettings);
 
-        return remoteTransitions.Select(transition => new IssueTransition(transition));
+        var values = remoteTransitions.Select(transition => new IssueTransition(transition));
+        foreach (var value in values)
+        {
+            yield return value;
+        }
     }
 
-    public async Task<IEnumerable<Attachment>> GetAttachmentsAsync(string issueKey, CancellationToken token = default)
+    public async IAsyncEnumerable<Attachment> GetAttachmentsAsync(string issueKey, [EnumeratorCancellation] CancellationToken token = default)
     {
         var resource = string.Format("rest/api/2/issue/{0}?fields=attachment", issueKey);
         var serializerSettings = _jira.RestClient.Settings.JsonSerializerSettings;
@@ -360,7 +368,11 @@ internal class IssueService : IIssueService
         var attachmentsJson = result["fields"]["attachment"];
         var attachments = JsonConvert.DeserializeObject<RemoteAttachment[]>(attachmentsJson.ToString(), serializerSettings);
 
-        return attachments.Select(remoteAttachment => new Attachment(_jira, remoteAttachment));
+        var values = attachments.Select(remoteAttachment => new Attachment(_jira, remoteAttachment));
+        foreach (var value in values)
+        {
+            yield return value;
+        }
     }
 
     public async Task<string[]> GetLabelsAsync(string issueKey, CancellationToken token = default)
@@ -385,7 +397,7 @@ internal class IssueService : IIssueService
         }, token);
     }
 
-    public async Task<IEnumerable<JiraUser>> GetWatchersAsync(string issueKey, CancellationToken token = default)
+    public async IAsyncEnumerable<JiraUser> GetWatchersAsync(string issueKey, [EnumeratorCancellation] CancellationToken token = default)
     {
         if (string.IsNullOrEmpty(issueKey))
         {
@@ -396,10 +408,14 @@ internal class IssueService : IIssueService
         var serializerSettings = _jira.RestClient.Settings.JsonSerializerSettings;
         var result = await _jira.RestClient.ExecuteRequestAsync(Method.GET, resourceUrl, null, token).ConfigureAwait(false);
         var watchersJson = result["watchers"];
-        return watchersJson.Select(watcherJson => JsonConvert.DeserializeObject<JiraUser>(watcherJson.ToString(), serializerSettings));
+        var values = watchersJson.Select(watcherJson => JsonConvert.DeserializeObject<JiraUser>(watcherJson.ToString(), serializerSettings));
+        foreach (var value in values)
+        {
+            yield return value;
+        }
     }
 
-    public async Task<IEnumerable<IssueChangeLog>> GetChangeLogsAsync(string issueKey, CancellationToken token = default)
+    public async IAsyncEnumerable<IssueChangeLog> GetChangeLogsAsync(string issueKey, [EnumeratorCancellation] CancellationToken token = default)
     {
         var resourceUrl = string.Format("rest/api/2/issue/{0}?fields=created&expand=changelog", issueKey);
         var serializerSettings = _jira.RestClient.Settings.JsonSerializerSettings;
@@ -415,7 +431,10 @@ internal class IssueService : IIssueService
             }
         }
 
-        return result;
+        foreach (var value in result)
+        {
+            yield return value;
+        }
     }
 
     public Task DeleteWatcherAsync(string issueKey, string username, CancellationToken token = default)
@@ -498,7 +517,7 @@ internal class IssueService : IIssueService
         return GetIssuesAsync(issueKeys, default);
     }
 
-    public Task<IEnumerable<Comment>> GetCommentsAsync(string issueKey, CancellationToken token = default)
+    public IAsyncEnumerable<Comment> GetCommentsAsync(string issueKey, CancellationToken token = default)
     {
         var options = new CommentQueryOptions();
         options.Expand.Add("properties");
@@ -506,7 +525,7 @@ internal class IssueService : IIssueService
         return GetCommentsAsync(issueKey, options, token);
     }
 
-    public async Task<IEnumerable<Comment>> GetCommentsAsync(string issueKey, CommentQueryOptions options, CancellationToken token = default)
+    public async IAsyncEnumerable<Comment> GetCommentsAsync(string issueKey, CommentQueryOptions options, [EnumeratorCancellation] CancellationToken token = default)
     {
         var resource = string.Format("rest/api/2/issue/{0}/comment", issueKey);
 
@@ -521,7 +540,11 @@ internal class IssueService : IIssueService
         var serializerSettings = _jira.RestClient.Settings.JsonSerializerSettings;
         var remoteComments = JsonConvert.DeserializeObject<RemoteComment[]>(commentJson.ToString(), serializerSettings);
 
-        return remoteComments.Select(c => new Comment(c));
+        var values = remoteComments.Select(c => new Comment(c));
+        foreach (var value in values)
+        {
+            yield return value;
+        }
     }
 
     public Task DeleteCommentAsync(string issueKey, string commentId, CancellationToken token = default)
@@ -567,7 +590,7 @@ internal class IssueService : IIssueService
         return _jira.RestClient.ExecuteRequestAsync(Method.DELETE, resource, null, token);
     }
 
-    public async Task<IEnumerable<Worklog>> GetWorklogsAsync(string issueKey, CancellationToken token = default)
+    public async IAsyncEnumerable<Worklog> GetWorklogsAsync(string issueKey, [EnumeratorCancellation] CancellationToken token = default)
     {
         var resource = string.Format("rest/api/2/issue/{0}/worklog", issueKey);
         var serializerSettings = _jira.RestClient.Settings.JsonSerializerSettings;
@@ -575,7 +598,11 @@ internal class IssueService : IIssueService
         var worklogsJson = response["worklogs"];
         var remoteWorklogs = JsonConvert.DeserializeObject<RemoteWorklog[]>(worklogsJson.ToString(), serializerSettings);
 
-        return remoteWorklogs.Select(w => new Worklog(w));
+        var values = remoteWorklogs.Select(w => new Worklog(w));
+        foreach (var value in values)
+        {
+            yield return value;
+        }
     }
 
     public async Task<Worklog> GetWorklogAsync(string issueKey, string worklogId, CancellationToken token = default)
@@ -603,7 +630,7 @@ internal class IssueService : IIssueService
         return _jira.RestClient.ExecuteRequestAsync(Method.PUT, resource, body, token);
     }
 
-    public async Task<IEnumerable<string>> GetPropertyKeysAsync(string issueKey, CancellationToken token = default)
+    public async IAsyncEnumerable<string> GetPropertyKeysAsync(string issueKey, [EnumeratorCancellation] CancellationToken token = default)
     {
         var serializerSettings = _jira.RestClient.Settings.JsonSerializerSettings;
         var serializer = JsonSerializer.Create(serializerSettings);
@@ -612,7 +639,11 @@ internal class IssueService : IIssueService
         var response = await _jira.RestClient.ExecuteRequestAsync(Method.GET, resource, null, token).ConfigureAwait(false);
         var propertyRefsJson = response["keys"];
         var propertyRefs = propertyRefsJson.ToObject<IEnumerable<RemoteEntityPropertyReference>>(serializer);
-        return propertyRefs.Select(x => x.key);
+        var values = propertyRefs.Select(x => x.key);
+        foreach (var value in values)
+        {
+            yield return value;
+        }
     }
 
     public async Task<ReadOnlyDictionary<string, JToken>> GetPropertiesAsync(string issueKey, IEnumerable<string> propertyKeys, CancellationToken token = default)

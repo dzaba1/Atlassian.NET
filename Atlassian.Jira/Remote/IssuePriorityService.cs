@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
-using System.Threading.Tasks;
 using RestSharp;
 
 namespace Atlassian.Jira.Remote;
@@ -15,7 +15,7 @@ internal class IssuePriorityService : IIssuePriorityService
         _jira = jira;
     }
 
-    public async Task<IEnumerable<IssuePriority>> GetPrioritiesAsync(CancellationToken token = default)
+    public async IAsyncEnumerable<IssuePriority> GetPrioritiesAsync([EnumeratorCancellation] CancellationToken token = default)
     {
         var cache = _jira.Cache;
 
@@ -25,6 +25,10 @@ internal class IssuePriorityService : IIssuePriorityService
             cache.Priorities.TryAdd(priorities.Select(p => new IssuePriority(p)));
         }
 
-        return cache.Priorities.Values;
+        var values = cache.Priorities.Values;
+        foreach (var value in values)
+        {
+            yield return value;
+        }
     }
 }
