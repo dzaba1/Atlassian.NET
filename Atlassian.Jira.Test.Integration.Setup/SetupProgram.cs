@@ -19,14 +19,14 @@ public class SetupProgram
         var hostOption = new Option<string>("--host", "-h")
         {
             Description = "Jira server host",
-            Required = true,
+            DefaultValueFactory = _ => "localhost"
         };
         rootCommand.Options.Add(hostOption);
 
         var portOption = new Option<int>("--port", "-p")
         {
             Description = "Jira server port",
-            Required = true,
+            DefaultValueFactory = _ => 8080
         };
         rootCommand.Options.Add(portOption);
 
@@ -142,6 +142,16 @@ public class SetupProgram
 
     private static void SetupJira(ChromeDriver webDriver, string jiraVersion)
     {
+        var testDataFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "TestData.zip");
+        if (!string.IsNullOrWhiteSpace(jiraVersion))
+        {
+            testDataFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"TestData_{jiraVersion}.zip");
+        }
+        if (!File.Exists(testDataFile))
+        {
+            throw new FileNotFoundException($"The test data file '{testDataFile}' is not found.", testDataFile);
+        }
+
         Console.WriteLine("--- Starting to setup Jira ---");
         webDriver.WaitForElement(By.Id("logo"), TimeSpan.FromMinutes(5));
         var step = GetStep(webDriver);
@@ -172,12 +182,6 @@ public class SetupProgram
 
         if (step <= 4)
         {
-            var testDataFile = "TestData.zip";
-            if (!string.IsNullOrWhiteSpace(jiraVersion))
-            {
-                testDataFile = $"TestData_{jiraVersion}.zip";
-            }
-
             Console.WriteLine($"Wait for the import data page and import the test data. Using data file: {testDataFile}");
 
             webDriver.WaitForElement(By.Name("filename")).SendKeys(testDataFile);
