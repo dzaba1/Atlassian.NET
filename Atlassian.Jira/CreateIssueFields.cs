@@ -11,7 +11,7 @@ public class CreateIssueFields
     /// <param name="projectKey">Project key to which the issue belongs to.</param>
     public CreateIssueFields(string projectKey)
     {
-        this.ProjectKey = projectKey;
+        ProjectKey = projectKey;
     }
 
     /// <summary>

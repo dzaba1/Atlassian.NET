@@ -46,7 +46,7 @@ public class JiraRestClient : IJiraRestClient
             Proxy = _clientSettings.Proxy
         };
 
-        this._restClient.Authenticator = authenticator;
+        _restClient.Authenticator = authenticator;
     }
 
     /// <summary>
@@ -161,7 +161,7 @@ public class JiraRestClient : IJiraRestClient
 
     private void LogRequest(IRestRequest request, object body = null)
     {
-        if (this._clientSettings.EnableRequestTrace)
+        if (_clientSettings.EnableRequestTrace)
         {
             Trace.WriteLine(string.Format("[{0}] Request Url: {1}",
                 request.Method,
@@ -184,7 +184,7 @@ public class JiraRestClient : IJiraRestClient
     {
         var content = response.Content != null ? response.Content.Trim() : string.Empty;
 
-        if (this._clientSettings.EnableRequestTrace)
+        if (_clientSettings.EnableRequestTrace)
         {
             Trace.WriteLine(string.Format("[{0}] Response for Url: {1}\n{2}",
                 request.Method,

@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Atlassian.Jira;
 
@@ -41,22 +42,19 @@ public class CustomFieldValue
     /// <summary>
     /// Name of the custom field as defined in JIRA
     /// </summary>
-    public string Name
+    public async Task<string> GetNameAsync()
     {
-        get
+        if (string.IsNullOrEmpty(_name))
         {
-            if (string.IsNullOrEmpty(_name))
+            var customField = (await _issue.Jira.Fields.GetCustomFieldsAsync()).FirstOrDefault(f => f.Id == Id);
+            if (customField == null)
             {
-                var customField = _issue.Jira.Fields.GetCustomFieldsAsync().Result.FirstOrDefault(f => f.Id == Id);
-                if (customField == null)
-                {
-                    throw new InvalidOperationException(string.Format("Custom field with id '{0}' was not found.", Id));
-                }
-
-                _name = customField.Name;
+                throw new InvalidOperationException(string.Format("Custom field with id '{0}' was not found.", Id));
             }
 
-            return _name;
+            _name = customField.Name;
         }
+
+        return _name;
     }
 }

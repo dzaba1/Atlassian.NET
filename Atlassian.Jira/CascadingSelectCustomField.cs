@@ -17,9 +17,9 @@ public class CascadingSelectCustomField
     /// <param name="childOption">The value of the child option.</param>
     public CascadingSelectCustomField(string name, string parentOption, string childOption)
     {
-        this._name = name;
-        this._parentOption = parentOption;
-        this._childOption = childOption;
+        _name = name;
+        _parentOption = parentOption;
+        _childOption = childOption;
     }
 
     /// <summary>

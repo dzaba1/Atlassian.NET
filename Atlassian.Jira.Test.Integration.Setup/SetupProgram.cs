@@ -11,9 +11,9 @@ public class SetupProgram
 {
     public const string URL = "http://localhost:8080";
 
-    static void Main(string[] args)
+    static async Task Main(string[] args)
     {
-        WaitForJira().Wait();
+        await WaitForJira();
 
         var chromeService = ChromeDriverService.CreateDefaultService();
         var options = new ChromeOptions();

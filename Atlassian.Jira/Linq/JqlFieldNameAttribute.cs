@@ -12,6 +12,6 @@ internal class JqlFieldNameAttribute: Attribute
 
     public JqlFieldNameAttribute(string name)
     {
-        this.Name = name;
+        Name = name;
     }
 }

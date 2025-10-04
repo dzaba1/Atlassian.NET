@@ -12,8 +12,8 @@ public class IssueTimeTrackingData
     /// </summary>
     public IssueTimeTrackingData(string originalEstimate, string remainingEstimate = null)
     {
-        this.OriginalEstimate = originalEstimate;
-        this.RemainingEstimate = remainingEstimate;
+        OriginalEstimate = originalEstimate;
+        RemainingEstimate = remainingEstimate;
     }
 
     [JsonProperty("originalEstimate")]

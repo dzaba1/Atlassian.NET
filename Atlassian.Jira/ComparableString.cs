@@ -15,7 +15,7 @@ public class ComparableString
 
     public ComparableString(string value)
     {
-        this.Value = value;
+        Value = value;
     }
 
     public static implicit operator ComparableString(string value)
@@ -120,18 +120,18 @@ public class ComparableString
 
     public override string ToString()
     {
-        return this.Value;
+        return Value;
     }
 
     public override bool Equals(object obj)
     {
         if (obj is ComparableString)
         {
-            return this.Value.Equals(((ComparableString)obj).Value);
+            return Value.Equals(((ComparableString)obj).Value);
         }
         else if (obj is string)
         {
-            return this.Value.Equals((string)obj);
+            return Value.Equals((string)obj);
         }
 
         return base.Equals(obj);
@@ -139,10 +139,10 @@ public class ComparableString
 
     public override int GetHashCode()
     {
-        if (this.Value == null)
+        if (Value == null)
         {
             return 0;
         }
-        return this.Value.GetHashCode();
+        return Value.GetHashCode();
     }
 }

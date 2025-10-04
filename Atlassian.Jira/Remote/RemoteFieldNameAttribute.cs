@@ -12,6 +12,6 @@ internal class RemoteFieldNameAttribute: Attribute
 
     public RemoteFieldNameAttribute(string remoteFieldName)
     {
-        this.Name = remoteFieldName;
+        Name = remoteFieldName;
     }
 }

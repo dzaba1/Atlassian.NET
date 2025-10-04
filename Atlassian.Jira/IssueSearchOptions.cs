@@ -13,7 +13,7 @@ public class IssueSearchOptions
     /// <param name="jql">The JQL of the search to execute.</param>
     public IssueSearchOptions(string jql)
     {
-        this.Jql = jql;
+        Jql = jql;
     }
 
     /// <summary>

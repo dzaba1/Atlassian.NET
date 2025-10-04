@@ -13,7 +13,7 @@ public class ProjectComponentCreationInfo
     /// <param name="name">The name of the project component.</param>
     public ProjectComponentCreationInfo(string name)
     {
-        this.Name = name;
+        Name = name;
     }
 
     /// <summary>

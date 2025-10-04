@@ -14,9 +14,9 @@ public class IssueRemoteLink
     /// </summary>
     public IssueRemoteLink(string remoteUrl, string title, string summary)
     {
-        this._remoteUrl = remoteUrl;
-        this._title = title;
-        this._summary = summary;
+        _remoteUrl = remoteUrl;
+        _title = title;
+        _summary = summary;
     }
 
     /// <summary>

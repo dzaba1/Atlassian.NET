@@ -17,7 +17,7 @@ public class LiteralMatch
 
     public LiteralMatch(string value)
     {
-        this._value = value;
+        _value = value;
     }
 
     public override string ToString()

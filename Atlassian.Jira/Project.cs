@@ -138,7 +138,7 @@ public class Project : JiraNamedEntity
     /// <param name="token">Cancellation token for this operation.</param>
     public async Task DeleteComponentAsync(string componentName, string moveIssuesTo = null, CancellationToken token = default)
     {
-        var components = await this.GetComponentsAsync(token).ConfigureAwait(false);
+        var components = await GetComponentsAsync(token).ConfigureAwait(false);
         var component = components.First(c => string.Equals(c.Name, componentName));
 
         if (component == null)
@@ -189,7 +189,7 @@ public class Project : JiraNamedEntity
     /// <param name="token">Cancellation token for this operation.</param>
     public async Task DeleteVersionAsync(string versionName, string moveFixIssuesTo = null, string moveAffectedIssuesTo = null, CancellationToken token = default)
     {
-        var versions = await this.GetVersionsAsync(token).ConfigureAwait(false);
+        var versions = await GetVersionsAsync(token).ConfigureAwait(false);
         var version = versions.FirstOrDefault(v => string.Equals(v.Name, versionName, StringComparison.OrdinalIgnoreCase));
 
         if (version == null)

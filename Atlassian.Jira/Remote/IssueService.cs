@@ -46,19 +46,19 @@ internal class IssueService : IIssueService
 
     private async Task<JsonSerializerSettings> GetIssueSerializerSettingsAsync(CancellationToken token)
     {
-        if (this._serializerSettings == null)
+        if (_serializerSettings == null)
         {
             var fieldService = _jira.Services.Get<IIssueFieldService>();
             var customFields = await fieldService.GetCustomFieldsAsync(token).ConfigureAwait(false);
             var remoteFields = customFields.Select(f => f.RemoteField);
 
-            var customFieldSerializers = new Dictionary<string, ICustomFieldValueSerializer>(this._restSettings.CustomFieldSerializers, StringComparer.InvariantCultureIgnoreCase);
+            var customFieldSerializers = new Dictionary<string, ICustomFieldValueSerializer>(_restSettings.CustomFieldSerializers, StringComparer.InvariantCultureIgnoreCase);
 
-            this._serializerSettings = _jira.RestClient.Settings.JsonSerializerSettings;
-            this._serializerSettings.Converters.Add(new RemoteIssueJsonConverter(remoteFields, customFieldSerializers));
+            _serializerSettings = _jira.RestClient.Settings.JsonSerializerSettings;
+            _serializerSettings.Converters.Add(new RemoteIssueJsonConverter(remoteFields, customFieldSerializers));
         }
 
-        return this._serializerSettings;
+        return _serializerSettings;
     }
 
     public async Task<Issue> GetIssueAsync(string issueKey, CancellationToken token = default)
@@ -79,7 +79,7 @@ internal class IssueService : IIssueService
         {
             MaxIssuesPerRequest = maxIssues,
             StartAt = startAt,
-            ValidateQuery = this.ValidateQuery
+            ValidateQuery = ValidateQuery
         };
 
         return GetIssuesFromJqlAsync(options, token);
@@ -113,13 +113,13 @@ internal class IssueService : IIssueService
         {
             jql = options.Jql,
             startAt = options.StartAt,
-            maxResults = options.MaxIssuesPerRequest ?? this.MaxIssuesPerRequest,
+            maxResults = options.MaxIssuesPerRequest ?? MaxIssuesPerRequest,
             validateQuery = options.ValidateQuery,
             fields = fields
         };
 
         var result = await _jira.RestClient.ExecuteRequestAsync(Method.POST, "rest/api/2/search", parameters, token).ConfigureAwait(false);
-        var serializerSettings = await this.GetIssueSerializerSettingsAsync(token).ConfigureAwait(false);
+        var serializerSettings = await GetIssueSerializerSettingsAsync(token).ConfigureAwait(false);
         var issues = result["issues"]
             .Cast<JObject>()
             .Select(issueJson =>
@@ -141,7 +141,7 @@ internal class IssueService : IIssueService
         var fieldProvider = issue as IRemoteIssueFieldProvider;
         var remoteFields = await fieldProvider.GetRemoteFieldValuesAsync(token).ConfigureAwait(false);
         var remoteIssue = await issue.ToRemoteAsync(token).ConfigureAwait(false);
-        var fields = await this.BuildFieldsObjectFromIssueAsync(remoteIssue, remoteFields, token).ConfigureAwait(false);
+        var fields = await BuildFieldsObjectFromIssueAsync(remoteIssue, remoteFields, token).ConfigureAwait(false);
 
         await _jira.RestClient.ExecuteRequestAsync(Method.PUT, resource, new { fields = fields }, token).ConfigureAwait(false);
     }
@@ -156,7 +156,7 @@ internal class IssueService : IIssueService
     {
         var remoteIssue = await issue.ToRemoteAsync(token).ConfigureAwait(false);
         var remoteIssueWrapper = new RemoteIssueWrapper(remoteIssue, issue.ParentIssueKey);
-        var serializerSettings = await this.GetIssueSerializerSettingsAsync(token).ConfigureAwait(false);
+        var serializerSettings = await GetIssueSerializerSettingsAsync(token).ConfigureAwait(false);
         var requestBody = JsonConvert.SerializeObject(remoteIssueWrapper, serializerSettings);
 
         var result = await _jira.RestClient.ExecuteRequestAsync(Method.POST, "rest/api/2/issue", requestBody, token).ConfigureAwait(false);
@@ -166,7 +166,7 @@ internal class IssueService : IIssueService
     private async Task<JObject> BuildFieldsObjectFromIssueAsync(RemoteIssue remoteIssue, RemoteFieldValue[] remoteFields, CancellationToken token)
     {
         var issueWrapper = new RemoteIssueWrapper(remoteIssue);
-        var serializerSettings = await this.GetIssueSerializerSettingsAsync(token).ConfigureAwait(false);
+        var serializerSettings = await GetIssueSerializerSettingsAsync(token).ConfigureAwait(false);
         var issueJson = JsonConvert.SerializeObject(issueWrapper, serializerSettings);
 
         var fieldsJsonSerializerSettings = new JsonSerializerSettings()
@@ -204,7 +204,7 @@ internal class IssueService : IIssueService
         }
         else
         {
-            var actions = await this.GetActionsAsync(issue.Key.Value, token).ConfigureAwait(false);
+            var actions = await GetActionsAsync(issue.Key.Value, token).ConfigureAwait(false);
             var action = actions.FirstOrDefault(a => a.Name.Equals(actionNameOrId, StringComparison.OrdinalIgnoreCase));
 
             if (action == null)
@@ -334,7 +334,7 @@ internal class IssueService : IIssueService
 
     public Task<IEnumerable<IssueTransition>> GetActionsAsync(string issueKey, CancellationToken token = default)
     {
-        return this.GetActionsAsync(issueKey, false, token);
+        return GetActionsAsync(issueKey, false, token);
     }
 
     public async Task<IEnumerable<IssueTransition>> GetActionsAsync(string issueKey, bool expandTransitionFields, CancellationToken token = default)
@@ -366,7 +366,7 @@ internal class IssueService : IIssueService
     public async Task<string[]> GetLabelsAsync(string issueKey, CancellationToken token = default)
     {
         var resource = string.Format("rest/api/2/issue/{0}?fields=labels", issueKey);
-        var serializerSettings = await this.GetIssueSerializerSettingsAsync(token).ConfigureAwait(false);
+        var serializerSettings = await GetIssueSerializerSettingsAsync(token).ConfigureAwait(false);
         var response = await _jira.RestClient.ExecuteRequestAsync(Method.GET, resource).ConfigureAwait(false);
         var issue = JsonConvert.DeserializeObject<RemoteIssueWrapper>(response.ToString(), serializerSettings);
         return issue.RemoteIssue.labels ?? new string[0];
@@ -484,7 +484,7 @@ internal class IssueService : IIssueService
                 ValidateQuery = false
             };
 
-            var result = await this.GetIssuesFromJqlAsync(options, token).ConfigureAwait(false);
+            var result = await GetIssuesFromJqlAsync(options, token).ConfigureAwait(false);
             return result.ToDictionary<Issue, string>(i => i.Key.Value);
         }
         else
@@ -495,7 +495,7 @@ internal class IssueService : IIssueService
 
     public Task<IDictionary<string, Issue>> GetIssuesAsync(params string[] issueKeys)
     {
-        return this.GetIssuesAsync(issueKeys, default);
+        return GetIssuesAsync(issueKeys, default);
     }
 
     public Task<IEnumerable<Comment>> GetCommentsAsync(string issueKey, CancellationToken token = default)
@@ -639,6 +639,7 @@ internal class IssueService : IIssueService
                  }
                  else
                  {
+                     // TODO: Fix stack trace and async await here
                      throw t.Exception;
                  }
              });

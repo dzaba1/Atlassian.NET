@@ -26,7 +26,7 @@ public class Jira
         _services = services;
         _cache = cache ?? new JiraCache();
 
-        this.Debug = false;
+        Debug = false;
     }
 
     /// <summary>
@@ -312,11 +312,11 @@ public class Jira
     {
         get
         {
-            return this.Issues.MaxIssuesPerRequest;
+            return Issues.MaxIssuesPerRequest;
         }
         set
         {
-            this.Issues.MaxIssuesPerRequest = value;
+            Issues.MaxIssuesPerRequest = value;
         }
     }
 

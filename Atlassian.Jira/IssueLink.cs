@@ -14,9 +14,9 @@ public class IssueLink
     /// </summary>
     public IssueLink(IssueLinkType linkType, Issue outwardIssue, Issue inwardIssue)
     {
-        this._linkType = linkType;
-        this._outwardIssue = outwardIssue;
-        this._inwardIssue = inwardIssue;
+        _linkType = linkType;
+        _outwardIssue = outwardIssue;
+        _inwardIssue = inwardIssue;
     }
 
     /// <summary>

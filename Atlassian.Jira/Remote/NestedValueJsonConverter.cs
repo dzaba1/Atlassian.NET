@@ -10,7 +10,7 @@ public class NestedValueJsonConverter : JsonConverter
 
     public NestedValueJsonConverter(string innerProperty)
     {
-        this._innerProperty = innerProperty;
+        _innerProperty = innerProperty;
     }
 
     public override bool CanConvert(Type objectType)
@@ -20,7 +20,7 @@ public class NestedValueJsonConverter : JsonConverter
 
     public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
     {
-        var outerObject = new JObject(new JProperty(this._innerProperty, value));
+        var outerObject = new JObject(new JProperty(_innerProperty, value));
         outerObject.WriteTo(writer);
     }
 

@@ -127,21 +127,6 @@ public class ProjectVersion : JiraNamedEntity
     /// <summary>
     /// Save field changes to the server.
     /// </summary>
-    public void SaveChanges()
-    {
-        try
-        {
-            SaveChangesAsync().Wait();
-        }
-        catch (AggregateException ex)
-        {
-            throw ex.Flatten().InnerException;
-        }
-    }
-
-    /// <summary>
-    /// Save field changes to the server.
-    /// </summary>
     /// <param name="token">Cancellation token for this operation.</param>
     public async Task SaveChangesAsync(CancellationToken token = default)
     {

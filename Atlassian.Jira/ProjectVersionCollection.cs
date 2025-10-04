@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Atlassian.Jira;
 
@@ -23,15 +24,15 @@ public class ProjectVersionCollection : JiraNamedEntityCollection<ProjectVersion
     /// Add a version by name
     /// </summary>
     /// <param name="versionName">Version name</param>
-    public void Add(string versionName)
+    public async Task AddAsync(string versionName)
     {
-        var version = _jira.Versions.GetVersionsAsync(_projectKey).Result.FirstOrDefault(v => v.Name.Equals(versionName, StringComparison.OrdinalIgnoreCase));
+        var version = (await _jira.Versions.GetVersionsAsync(_projectKey)).FirstOrDefault(v => v.Name.Equals(versionName, StringComparison.OrdinalIgnoreCase));
 
         if (version == null)
         {
             throw new InvalidOperationException(string.Format("Unable to find version with name '{0}'.", versionName));
         }
 
-        this.Add(version);
+        Add(version);
     }
 }

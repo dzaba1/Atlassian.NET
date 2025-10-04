@@ -10,7 +10,7 @@ public class UploadAttachmentInfo
 
     public UploadAttachmentInfo(string name, byte[] data)
     {
-        this.Name = name;
-        this.Data = data;
+        Name = name;
+        Data = data;
     }
 }

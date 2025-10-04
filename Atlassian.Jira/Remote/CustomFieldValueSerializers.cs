@@ -13,17 +13,17 @@ public class SingleObjectCustomFieldValueSerializer : ICustomFieldValueSerialize
 
     public SingleObjectCustomFieldValueSerializer(string propertyName)
     {
-        this._propertyName = propertyName;
+        _propertyName = propertyName;
     }
 
     public string[] FromJson(JToken json)
     {
-        return new string[1] { json[this._propertyName]?.ToString() };
+        return new string[1] { json[_propertyName]?.ToString() };
     }
 
     public JToken ToJson(string[] values)
     {
-        return new JObject(new JProperty(this._propertyName, values[0]));
+        return new JObject(new JProperty(_propertyName, values[0]));
     }
 }
 
@@ -33,7 +33,7 @@ public class MultiObjectCustomFieldValueSerializer : ICustomFieldValueSerializer
 
     public MultiObjectCustomFieldValueSerializer(string propertyName)
     {
-        this._propertyName = propertyName;
+        _propertyName = propertyName;
     }
 
     public string[] FromJson(JToken json)
@@ -126,7 +126,7 @@ public class GreenhopperSprintCustomFieldValueSerialiser : ICustomFieldValueSeri
 
     public GreenhopperSprintCustomFieldValueSerialiser(string propertyName)
     {
-        this._propertyName = propertyName;
+        _propertyName = propertyName;
     }
 
     // Sprint field is malformed

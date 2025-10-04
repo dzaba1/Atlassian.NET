@@ -14,7 +14,7 @@ public class ProjectVersionCreationInfo
     /// <param name="name">The name of the project version.</param>
     public ProjectVersionCreationInfo(string name)
     {
-        this.Name = name;
+        Name = name;
     }
 
     /// <summary>

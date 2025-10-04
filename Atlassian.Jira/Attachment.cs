@@ -98,7 +98,7 @@ public class Attachment
 
         return string.Format("{0}secure/attachment/{1}/{2}",
             _jira.Url.EndsWith("/") ? _jira.Url : _jira.Url + "/",
-            this.Id,
-            this.FileName);
+            Id,
+            FileName);
     }
 }
