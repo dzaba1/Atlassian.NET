@@ -96,7 +96,7 @@ public class IssueQueryTest
 
     [Theory]
     [ClassData(typeof(JiraProvider))]
-    public void GetIssuesWithPagingMetadata(Jira jira)
+    public async Task GetIssuesWithPagingMetadata(Jira jira)
     {
         // Arrange: Create 3 issues to query.
         var summaryValue = "Test-Summary-" + Guid.NewGuid().ToString();
@@ -112,7 +112,7 @@ public class IssueQueryTest
 
         // Act: Query for paged issues.
         var jql = string.Format("summary ~ \"{0}\"", summaryValue);
-        var result = jira.Issues.GetIssuesFromJqlAsync(jql, 5, 1).Result as IPagedQueryResult<Issue>;
+        var result = (await jira.Issues.GetIssuesFromJqlAsync(jql, 5, 1)) as IPagedQueryResult<Issue>;
 
         // Assert
         Assert.Equal(1, result.StartAt);
@@ -123,9 +123,9 @@ public class IssueQueryTest
 
     [Theory]
     [ClassData(typeof(JiraProvider))]
-    public void GetIssuesFromFilterWithByName(Jira jira)
+    public async Task GetIssuesFromFilterWithByName(Jira jira)
     {
-        var issues = jira.Filters.GetIssuesFromFavoriteAsync("One Issue Filter").Result;
+        var issues = await jira.Filters.GetIssuesFromFavoriteAsync("One Issue Filter");
 
         Assert.Single(issues);
         var issue = issues.First();
@@ -136,9 +136,9 @@ public class IssueQueryTest
 
     [Theory]
     [ClassData(typeof(JiraProvider))]
-    public void GetIssuesFromFilterWithByNameWithFields(Jira jira)
+    public async Task GetIssuesFromFilterWithByNameWithFields(Jira jira)
     {
-        var issues = jira.Filters.GetIssuesFromFavoriteWithFieldsAsync("One Issue Filter", fields: new List<string> { "watches" }).Result;
+        var issues = await jira.Filters.GetIssuesFromFavoriteWithFieldsAsync("One Issue Filter", fields: new List<string> { "watches" });
 
         Assert.Single(issues);
         var issue = issues.First();
@@ -149,9 +149,9 @@ public class IssueQueryTest
 
     [Theory]
     [ClassData(typeof(JiraProvider))]
-    public void GetIssuesFromFilterById(Jira jira)
+    public async Task GetIssuesFromFilterById(Jira jira)
     {
-        var issues = jira.Filters.GetIssuesFromFilterAsync("10000").Result;
+        var issues = await jira.Filters.GetIssuesFromFilterAsync("10000");
 
         Assert.Single(issues);
         var issue = issues.First();
@@ -162,9 +162,9 @@ public class IssueQueryTest
 
     [Theory]
     [ClassData(typeof(JiraProvider))]
-    public void GetIssuesFromFilterByIdWithFields(Jira jira)
+    public async Task GetIssuesFromFilterByIdWithFields(Jira jira)
     {
-        var issues = jira.Filters.GetIssuesFromFilterWithFieldsAsync("10000", fields: new List<string> { "watches" }).Result;
+        var issues = await jira.Filters.GetIssuesFromFilterWithFieldsAsync("10000", fields: new List<string> { "watches" });
 
         Assert.Single(issues);
         var issue = issues.First();

@@ -24,9 +24,9 @@ public class JiraTypesTest
 
     [Theory]
     [ClassData(typeof(JiraProvider))]
-    public void RetrieveNamedEntities(Jira jira)
+    public async Task RetrieveNamedEntities(Jira jira)
     {
-        var issue = jira.Issues.GetIssueAsync("TST-1").Result;
+        var issue = await jira.Issues.GetIssueAsync("TST-1");
 
         Assert.Equal("Bug", issue.Type.Name);
         Assert.Equal("Major", issue.Priority.Name);
@@ -36,9 +36,9 @@ public class JiraTypesTest
 
     [Theory]
     [ClassData(typeof(JiraProvider))]
-    public void GetIssueTypes(Jira jira)
+    public async Task GetIssueTypes(Jira jira)
     {
-        var issueTypes = jira.IssueTypes.GetIssueTypesAsync().Result;
+        var issueTypes = await jira.IssueTypes.GetIssueTypesAsync();
 
         // In addition, rest API contains "Sub-Task" as an issue type.
         Assert.True(issueTypes.Count() >= 5);
@@ -48,9 +48,9 @@ public class JiraTypesTest
 
     [Theory]
     [ClassData(typeof(JiraProvider))]
-    public void GetIssuePriorities(Jira jira)
+    public async Task GetIssuePriorities(Jira jira)
     {
-        var priorities = jira.Priorities.GetPrioritiesAsync().Result;
+        var priorities = await jira.Priorities.GetPrioritiesAsync();
 
         Assert.Contains(priorities, i => i.Name == "Blocker");
         Assert.NotNull(priorities.First().IconUrl);
@@ -58,18 +58,18 @@ public class JiraTypesTest
 
     [Theory]
     [ClassData(typeof(JiraProvider))]
-    public void GetIssueResolutions(Jira jira)
+    public async Task GetIssueResolutions(Jira jira)
     {
-        var resolutions = jira.Resolutions.GetResolutionsAsync().Result;
+        var resolutions = await jira.Resolutions.GetResolutionsAsync();
 
         Assert.Contains(resolutions, i => i.Name == "Fixed");
     }
 
     [Theory]
     [ClassData(typeof(JiraProvider))]
-    public void GetIssueStatuses(Jira jira)
+    public async Task GetIssueStatuses(Jira jira)
     {
-        var statuses = jira.Statuses.GetStatusesAsync().Result;
+        var statuses = await jira.Statuses.GetStatusesAsync();
 
         var status = statuses.FirstOrDefault(i => i.Name == "Open");
         Assert.NotNull(status);
@@ -103,24 +103,24 @@ public class JiraTypesTest
 
     [Theory]
     [ClassData(typeof(JiraProvider))]
-    public async void GetIssueStatusByInvalidNameShouldThrowException(Jira jira)
+    public async Task GetIssueStatusByInvalidNameShouldThrowException(Jira jira)
     {
         await Assert.ThrowsAsync<ResourceNotFoundException>(async () => await jira.Statuses.GetStatusAsync("InvalidName"));
     }
 
     [Theory]
     [ClassData(typeof(JiraProvider))]
-    public void GetCustomFields(Jira jira)
+    public async Task GetCustomFields(Jira jira)
     {
-        var fields = jira.Fields.GetCustomFieldsAsync().Result;
+        var fields = await jira.Fields.GetCustomFieldsAsync();
         Assert.True(fields.Count() >= 19);
     }
 
     [Theory]
     [ClassData(typeof(JiraProvider))]
-    public void GetProjects(Jira jira)
+    public async Task GetProjects(Jira jira)
     {
-        var projects = jira.Projects.GetProjectsAsync().Result;
+        var projects = await jira.Projects.GetProjectsAsync();
         Assert.True(projects.Count() > 0);
 
         var project = projects.First();
@@ -135,9 +135,9 @@ public class JiraTypesTest
 
     [Theory]
     [ClassData(typeof(JiraProvider))]
-    public void GetProject(Jira jira)
+    public async Task GetProject(Jira jira)
     {
-        var project = jira.Projects.GetProjectAsync("TST").Result;
+        var project = await jira.Projects.GetProjectAsync("TST");
         Assert.Equal("admin", project.Lead);
         Assert.Equal("admin", project.LeadUser.DisplayName);
         Assert.Equal("Test Project", project.Name);
@@ -160,9 +160,9 @@ public class JiraTypesTest
 
     [Theory]
     [ClassData(typeof(JiraProvider))]
-    public void GetIssueLinkTypes(Jira jira)
+    public async Task GetIssueLinkTypes(Jira jira)
     {
-        var linkTypes = jira.Links.GetLinkTypesAsync().Result;
+        var linkTypes = await jira.Links.GetLinkTypesAsync();
         Assert.Contains(linkTypes, l => l.Name.Equals("Duplicate"));
     }
 

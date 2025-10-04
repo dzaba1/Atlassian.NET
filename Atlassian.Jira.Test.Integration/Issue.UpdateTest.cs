@@ -68,7 +68,7 @@ public class IssueUpdateTest
 
     [Theory]
     [ClassData(typeof(JiraProvider))]
-    public void UpdateIssueType(Jira jira)
+    public async Task UpdateIssueType(Jira jira)
     {
         var summaryValue = "Test Summary " + _random.Next(int.MaxValue);
         var issue = new Issue(jira, "TST")
@@ -80,12 +80,12 @@ public class IssueUpdateTest
         issue.SaveChanges();
 
         //retrieve the issue from server and update
-        issue = jira.Issues.GetIssueAsync(issue.Key.Value).Result;
+        issue = await jira.Issues.GetIssueAsync(issue.Key.Value);
         issue.Type = "2";
         issue.SaveChanges();
 
         //retrieve again and verify
-        issue = jira.Issues.GetIssueAsync(issue.Key.Value).Result;
+        issue = await jira.Issues.GetIssueAsync(issue.Key.Value);
         Assert.Equal("2", issue.Type.Id);
     }
 
@@ -291,7 +291,7 @@ public class IssueUpdateTest
 
     [Theory]
     [ClassData(typeof(JiraProvider))]
-    public void AddAndRemoveLabelsFromIssue(Jira jira)
+    public async Task AddAndRemoveLabelsFromIssue(Jira jira)
     {
         var summaryValue = "Test issue with labels (Updated)" + _random.Next(int.MaxValue);
 
@@ -304,17 +304,17 @@ public class IssueUpdateTest
 
         issue.Labels.Add("label1", "label2");
         issue.SaveChanges();
-        issue = jira.Issues.GetIssueAsync(issue.Key.Value).Result;
+        issue = await jira.Issues.GetIssueAsync(issue.Key.Value);
         Assert.Equal(2, issue.Labels.Count);
 
         issue.Labels.RemoveAt(0);
         issue.SaveChanges();
-        issue = jira.Issues.GetIssueAsync(issue.Key.Value).Result;
+        issue = await jira.Issues.GetIssueAsync(issue.Key.Value);
         Assert.Single(issue.Labels);
 
         issue.Labels.Clear();
         issue.SaveChanges();
-        issue = jira.Issues.GetIssueAsync(issue.Key.Value).Result;
+        issue = await jira.Issues.GetIssueAsync(issue.Key.Value);
         Assert.Empty(issue.Labels);
     }
 
@@ -342,7 +342,7 @@ public class IssueUpdateTest
 
     [Theory]
     [ClassData(typeof(JiraProvider))]
-    public void CanAccessSecurityLevel(Jira jira)
+    public async Task CanAccessSecurityLevel(Jira jira)
     {
         var issue = new Issue(jira, "TST")
         {
@@ -364,7 +364,7 @@ public class IssueUpdateTest
                 }
             }
         };
-        jira.RestClient.ExecuteRequestAsync(Method.PUT, resource, body).Wait();
+        await jira.RestClient.ExecuteRequestAsync(Method.PUT, resource, body);
 
         issue.Refresh();
         Assert.Equal("Test Issue Security Level", issue.SecurityLevel.Name);
