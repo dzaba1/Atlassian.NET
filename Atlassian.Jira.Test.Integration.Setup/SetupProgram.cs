@@ -30,19 +30,19 @@ public class SetupProgram
         };
         rootCommand.Options.Add(portOption);
 
-        var testDataFileSuffixOption = new Option<string>("--testDataFileSuffix", "-tdfs")
+        var jiraVersionOption = new Option<string>("--jiraVersion", "-j")
         {
-            Description = "Test data file suffix"
+            Description = "Jira version"
         };
-        rootCommand.Options.Add(testDataFileSuffixOption);
+        rootCommand.Options.Add(jiraVersionOption);
 
         rootCommand.SetAction(async parseResult =>
         {
             var host = parseResult.GetValue(hostOption);
             var port = parseResult.GetValue(portOption);
-            var testDataFileSuffix = parseResult.GetValue(testDataFileSuffixOption);
+            var jiraVersion = parseResult.GetValue(jiraVersionOption);
 
-            await RunAsync(host, port, testDataFileSuffix);
+            await RunAsync(host, port, jiraVersion);
             return 0;
         });
 
@@ -58,7 +58,7 @@ public class SetupProgram
         }
     }
 
-    private static async Task RunAsync(string host, int port, string testDataFileSuffix)
+    private static async Task RunAsync(string host, int port, string jiraVersion)
     {
         var url = $"http://{host}:{port}";
 
@@ -74,7 +74,7 @@ public class SetupProgram
 
             try
             {
-                SetupJira(webDriver, testDataFileSuffix);
+                SetupJira(webDriver, jiraVersion);
                 webDriver.Quit();
             }
             catch (Exception ex)
@@ -140,7 +140,7 @@ public class SetupProgram
         }
     }
 
-    private static void SetupJira(ChromeDriver webDriver, string testDataFileSuffix)
+    private static void SetupJira(ChromeDriver webDriver, string jiraVersion)
     {
         Console.WriteLine("--- Starting to setup Jira ---");
         webDriver.WaitForElement(By.Id("logo"), TimeSpan.FromMinutes(5));
@@ -173,9 +173,9 @@ public class SetupProgram
         if (step <= 4)
         {
             var testDataFile = "TestData.zip";
-            if (!string.IsNullOrWhiteSpace(testDataFileSuffix))
+            if (!string.IsNullOrWhiteSpace(jiraVersion))
             {
-                testDataFile = $"TestData_{testDataFileSuffix}.zip";
+                testDataFile = $"TestData_{jiraVersion}.zip";
             }
 
             Console.WriteLine($"Wait for the import data page and import the test data. Using data file: {testDataFile}");
