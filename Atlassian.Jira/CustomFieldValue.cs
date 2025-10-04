@@ -46,7 +46,8 @@ public class CustomFieldValue
     {
         if (string.IsNullOrEmpty(_name))
         {
-            var customField = (await _issue.Jira.Fields.GetCustomFieldsAsync()).FirstOrDefault(f => f.Id == Id);
+            var customField = await _issue.Jira.Fields.GetCustomFieldsAsync()
+                .FirstOrDefaultAsync(f => f.Id == Id);
             if (customField == null)
             {
                 throw new InvalidOperationException(string.Format("Custom field with id '{0}' was not found.", Id));

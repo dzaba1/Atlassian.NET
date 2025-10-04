@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
-using System.Threading.Tasks;
 using Atlassian.Jira.Remote;
 
 namespace Atlassian.Jira;
@@ -34,10 +33,9 @@ public class IssuePriority : JiraNamedConstant
     {
     }
 
-    protected override async Task<IEnumerable<JiraNamedEntity>> GetEntitiesAsync(Jira jira, CancellationToken token)
+    protected override IAsyncEnumerable<JiraNamedEntity> GetEntitiesAsync(Jira jira, CancellationToken token)
     {
-        var priorities = await jira.Priorities.GetPrioritiesAsync(token).ConfigureAwait(false);
-        return priorities as IEnumerable<JiraNamedEntity>;
+        return jira.Priorities.GetPrioritiesAsync(token);
     }
 
     /// <summary>

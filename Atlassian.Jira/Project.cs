@@ -105,7 +105,7 @@ public class Project : JiraNamedEntity
     /// Gets the issue types for the current project.
     /// </summary>
     /// <param name="token">Cancellation token for this operation.</param>
-    public Task<IEnumerable<IssueType>> GetIssueTypesAsync(CancellationToken token = default)
+    public IAsyncEnumerable<IssueType> GetIssueTypesAsync(CancellationToken token = default)
     {
         return _jira.IssueTypes.GetIssueTypesForProjectAsync(Key, token);
     }
@@ -125,7 +125,7 @@ public class Project : JiraNamedEntity
     /// Gets the components for the current project.
     /// </summary>
     /// <param name="token">Cancellation token for this operation.</param>
-    public Task<IEnumerable<ProjectComponent>> GetComponentsAsync(CancellationToken token = default)
+    public IAsyncEnumerable<ProjectComponent> GetComponentsAsync(CancellationToken token = default)
     {
         return _jira.Components.GetComponentsAsync(Key, token);
     }
@@ -138,8 +138,9 @@ public class Project : JiraNamedEntity
     /// <param name="token">Cancellation token for this operation.</param>
     public async Task DeleteComponentAsync(string componentName, string moveIssuesTo = null, CancellationToken token = default)
     {
-        var components = await GetComponentsAsync(token).ConfigureAwait(false);
-        var component = components.First(c => string.Equals(c.Name, componentName));
+        var component = await GetComponentsAsync(token)
+            .FirstOrDefaultAsync(c => string.Equals(c.Name, componentName))
+            .ConfigureAwait(false);
 
         if (component == null)
         {
@@ -164,7 +165,7 @@ public class Project : JiraNamedEntity
     /// Gets the versions for this project.
     /// </summary>
     /// <param name="token">Cancellation token for this operation.</param>
-    public Task<IEnumerable<ProjectVersion>> GetVersionsAsync(CancellationToken token = default)
+    public IAsyncEnumerable<ProjectVersion> GetVersionsAsync(CancellationToken token = default)
     {
         return _jira.Versions.GetVersionsAsync(Key, token);
     }
@@ -189,8 +190,9 @@ public class Project : JiraNamedEntity
     /// <param name="token">Cancellation token for this operation.</param>
     public async Task DeleteVersionAsync(string versionName, string moveFixIssuesTo = null, string moveAffectedIssuesTo = null, CancellationToken token = default)
     {
-        var versions = await GetVersionsAsync(token).ConfigureAwait(false);
-        var version = versions.FirstOrDefault(v => string.Equals(v.Name, versionName, StringComparison.OrdinalIgnoreCase));
+        var version = await GetVersionsAsync(token)
+            .FirstOrDefaultAsync(v => string.Equals(v.Name, versionName, StringComparison.OrdinalIgnoreCase))
+            .ConfigureAwait(false);
 
         if (version == null)
         {

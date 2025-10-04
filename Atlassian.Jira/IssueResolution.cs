@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
-using System.Threading.Tasks;
 using Atlassian.Jira.Remote;
 
 namespace Atlassian.Jira;
@@ -33,10 +32,9 @@ public class IssueResolution : JiraNamedEntity
     {
     }
 
-    protected override async Task<IEnumerable<JiraNamedEntity>> GetEntitiesAsync(Jira jira, CancellationToken token)
+    protected override IAsyncEnumerable<JiraNamedEntity> GetEntitiesAsync(Jira jira, CancellationToken token)
     {
-        var results = await jira.Resolutions.GetResolutionsAsync(token).ConfigureAwait(false);
-        return results as IEnumerable<JiraNamedEntity>;
+        return jira.Resolutions.GetResolutionsAsync(token);
     }
 
     /// <summary>

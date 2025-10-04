@@ -26,7 +26,8 @@ public class ProjectComponentCollection : JiraNamedEntityCollection<ProjectCompo
     /// <param name="componentName">Component name</param>
     public async Task AddAsync(string componentName)
     {
-        var component = (await _jira.Components.GetComponentsAsync(_projectKey)).FirstOrDefault(v => v.Name.Equals(componentName, StringComparison.OrdinalIgnoreCase));
+        var component = await _jira.Components.GetComponentsAsync(_projectKey)
+            .FirstOrDefaultAsync(v => v.Name.Equals(componentName, StringComparison.OrdinalIgnoreCase));
 
         if (component == null)
         {

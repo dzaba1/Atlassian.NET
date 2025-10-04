@@ -46,7 +46,7 @@ public class JiraNamedEntity : IJiraEntity
     /// </summary>
     public string Name { get; protected set; }
 
-    protected virtual Task<IEnumerable<JiraNamedEntity>> GetEntitiesAsync(Jira jira, CancellationToken token)
+    protected virtual IAsyncEnumerable<JiraNamedEntity> GetEntitiesAsync(Jira jira, CancellationToken token)
     {
         throw new NotImplementedException();
     }
@@ -67,7 +67,9 @@ public class JiraNamedEntity : IJiraEntity
     {
         if (string.IsNullOrEmpty(Id) || string.IsNullOrEmpty(Name))
         {
-            var entities = await GetEntitiesAsync(jira, token).ConfigureAwait(false);
+            var entities = await GetEntitiesAsync(jira, token)
+                .ToArrayAsync()
+                .ConfigureAwait(false);
             var entity = entities.FirstOrDefault(e =>
                 (!string.IsNullOrEmpty(Name) && string.Equals(e.Name, Name, StringComparison.OrdinalIgnoreCase)) ||
                 (!string.IsNullOrEmpty(Id) && string.Equals(e.Id, Id, StringComparison.OrdinalIgnoreCase)));

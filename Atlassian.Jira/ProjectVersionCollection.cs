@@ -26,7 +26,8 @@ public class ProjectVersionCollection : JiraNamedEntityCollection<ProjectVersion
     /// <param name="versionName">Version name</param>
     public async Task AddAsync(string versionName)
     {
-        var version = (await _jira.Versions.GetVersionsAsync(_projectKey)).FirstOrDefault(v => v.Name.Equals(versionName, StringComparison.OrdinalIgnoreCase));
+        var version = await _jira.Versions.GetVersionsAsync(_projectKey)
+            .FirstOrDefaultAsync(v => v.Name.Equals(versionName, StringComparison.OrdinalIgnoreCase));
 
         if (version == null)
         {

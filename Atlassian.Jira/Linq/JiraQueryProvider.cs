@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace Atlassian.Jira.Linq;
 
@@ -29,19 +30,19 @@ public class JiraQueryProvider : IQueryProvider
     {
         bool isEnumerable = (typeof(T).Name == "IEnumerable`1");
 
-        return (T)Execute(expression, isEnumerable);
+        return (T)ExecuteAsync(expression, isEnumerable).Result;
     }
 
     public object Execute(Expression expression)
     {
-        return Execute(expression, true);
+        return ExecuteAsync(expression, true).Result;
     }
 
-    private object Execute(Expression expression, bool isEnumerable)
+    private async Task<object> ExecuteAsync(Expression expression, bool isEnumerable)
     {
         var jql = _translator.Process(expression);
 
-        var temp = _issues.GetIssuesFromJqlAsync(jql.Expression, jql.NumberOfResults, jql.SkipResults ?? 0).Result;
+        var temp = await _issues.GetIssuesFromJqlAsync(jql.Expression, jql.NumberOfResults, jql.SkipResults ?? 0);
         IQueryable<Issue> issues = temp.AsQueryable();
 
         if (isEnumerable)
