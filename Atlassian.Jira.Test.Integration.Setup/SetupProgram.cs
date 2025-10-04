@@ -1,6 +1,9 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using System;
+using System.CommandLine;
+using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -9,11 +12,57 @@ namespace Atlassian.Jira.Test.Integration.Setup;
 
 public class SetupProgram
 {
-    public const string URL = "http://localhost:8080";
-
-    static async Task Main(string[] args)
+    static async Task<int> Main(string[] args)
     {
-        await WaitForJira();
+        var rootCommand = new RootCommand("Attlasian SDK integration tests setup");
+
+        var hostOption = new Option<string>("--host", "-h")
+        {
+            Description = "Jira server host",
+            Required = true,
+        };
+        rootCommand.Options.Add(hostOption);
+
+        var portOption = new Option<int>("--port", "-p")
+        {
+            Description = "Jira server port",
+            Required = true,
+        };
+        rootCommand.Options.Add(portOption);
+
+        var testDataFileSuffixOption = new Option<string>("--testDataFileSuffix", "-tdfs")
+        {
+            Description = "Test data file suffix"
+        };
+        rootCommand.Options.Add(testDataFileSuffixOption);
+
+        rootCommand.SetAction(async parseResult =>
+        {
+            var host = parseResult.GetValue(hostOption);
+            var port = parseResult.GetValue(portOption);
+            var testDataFileSuffix = parseResult.GetValue(testDataFileSuffixOption);
+
+            await RunAsync(host, port, testDataFileSuffix);
+            return 0;
+        });
+
+        var parseResult = rootCommand.Parse(args);
+        if (parseResult.Errors.Any())
+        {
+            rootCommand.Parse("-h").Invoke();
+            return 1;
+        }
+        else
+        {
+            return await parseResult.InvokeAsync();
+        }
+    }
+
+    private static async Task RunAsync(string host, int port, string testDataFileSuffix)
+    {
+        var url = $"http://{host}:{port}";
+
+        await WaitForJira(url);
 
         var chromeService = ChromeDriverService.CreateDefaultService();
         var options = new ChromeOptions();
@@ -21,11 +70,11 @@ public class SetupProgram
         options.AddArgument("no-sandbox");
         using (var webDriver = new ChromeDriver(chromeService, options, TimeSpan.FromMinutes(5)))
         {
-            webDriver.Url = URL;
+            webDriver.Url = url;
 
             try
             {
-                SetupJira(webDriver, args);
+                SetupJira(webDriver, testDataFileSuffix);
                 webDriver.Quit();
             }
             catch (Exception ex)
@@ -39,10 +88,11 @@ public class SetupProgram
                 Console.ReadKey();
                 webDriver.Quit();
             }
-        };
+        }
+        ;
     }
 
-    private static async Task WaitForJira()
+    private static async Task WaitForJira(string url)
     {
         using (var client = new HttpClient())
         {
@@ -53,11 +103,11 @@ public class SetupProgram
             {
                 try
                 {
-                    Console.Write($"Pinging server {URL}.");
+                    Console.Write($"Pinging server {url}.");
 
                     retryCount++;
                     await Task.Delay(2000);
-                    response = await client.GetAsync(URL);
+                    response = await client.GetAsync(url);
                     response.EnsureSuccessStatusCode();
                 }
                 catch (HttpRequestException)
@@ -90,7 +140,7 @@ public class SetupProgram
         }
     }
 
-    private static void SetupJira(ChromeDriver webDriver, string[] args)
+    private static void SetupJira(ChromeDriver webDriver, string testDataFileSuffix)
     {
         Console.WriteLine("--- Starting to setup Jira ---");
         webDriver.WaitForElement(By.Id("logo"), TimeSpan.FromMinutes(5));
@@ -123,9 +173,9 @@ public class SetupProgram
         if (step <= 4)
         {
             var testDataFile = "TestData.zip";
-            if (args != null && args.Length > 0 && !string.IsNullOrWhiteSpace(args[0]))
+            if (!string.IsNullOrWhiteSpace(testDataFileSuffix))
             {
-                testDataFile = $"TestData_{args[0]}.zip";
+                testDataFile = $"TestData_{testDataFileSuffix}.zip";
             }
 
             Console.WriteLine($"Wait for the import data page and import the test data. Using data file: {testDataFile}");
