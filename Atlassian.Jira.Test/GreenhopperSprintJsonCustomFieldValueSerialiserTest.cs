@@ -2,16 +2,16 @@
 using Newtonsoft.Json.Linq;
 using Xunit;
 
-namespace Atlassian.Jira.Test
-{
-    public class GreenhopperSprintJsonCustomFieldValueSerialiserTest
-    {
-        [Fact]
-        public void Test_FromJson()
-        {
-            var serialiser = new GreenhopperSprintJsonCustomFieldValueSerialiser();
+namespace Atlassian.Jira.Test;
 
-            var actual = serialiser.FromJson(@"[
+public class GreenhopperSprintJsonCustomFieldValueSerialiserTest
+{
+    [Fact]
+    public void Test_FromJson()
+    {
+        var serialiser = new GreenhopperSprintJsonCustomFieldValueSerialiser();
+
+        var actual = serialiser.FromJson(@"[
 {
     'id': 1,
     'name': 'Sprint1',
@@ -31,23 +31,22 @@ namespace Atlassian.Jira.Test
 }
             ]".Replace('\'', '\"'));
 
-            var expected = new[] {"Sprint2", "Sprint1"};
-            Assert.Equal(expected, actual);
-        }
+        var expected = new[] {"Sprint2", "Sprint1"};
+        Assert.Equal(expected, actual);
+    }
 
-        [Fact]
-        public void Test_ToJson()
+    [Fact]
+    public void Test_ToJson()
+    {
+        var serialiser = new GreenhopperSprintJsonCustomFieldValueSerialiser();
+
+        var actual = serialiser.ToJson(new[]
         {
-            var serialiser = new GreenhopperSprintJsonCustomFieldValueSerialiser();
+            "Sprint1",
+            "Sprint2",
+        });
 
-            var actual = serialiser.ToJson(new[]
-            {
-                "Sprint1",
-                "Sprint2",
-            });
-
-            var expected = (JToken) "Sprint1";
-            Assert.Equal(expected.ToString(), actual.ToString());
-        }
+        var expected = (JToken) "Sprint1";
+        Assert.Equal(expected.ToString(), actual.ToString());
     }
 }

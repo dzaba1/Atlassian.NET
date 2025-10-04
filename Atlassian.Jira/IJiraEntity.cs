@@ -1,13 +1,12 @@
-﻿namespace Atlassian.Jira
+﻿namespace Atlassian.Jira;
+
+/// <summary>
+/// Represents a Jira entity with a unique identifier.
+/// </summary>
+public interface IJiraEntity
 {
     /// <summary>
-    /// Represents a Jira entity with a unique identifier.
+    /// Unique identifier for this entity.
     /// </summary>
-    public interface IJiraEntity
-    {
-        /// <summary>
-        /// Unique identifier for this entity.
-        /// </summary>
-        string Id { get; }
-    }
+    string Id { get; }
 }

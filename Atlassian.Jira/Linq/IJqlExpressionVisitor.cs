@@ -1,10 +1,9 @@
-﻿namespace Atlassian.Jira.Linq
+﻿namespace Atlassian.Jira.Linq;
+
+/// <summary>
+/// Abstracts the translation of an Expression tree into JQL
+/// </summary>
+public interface IJqlExpressionVisitor
 {
-    /// <summary>
-    /// Abstracts the translation of an Expression tree into JQL
-    /// </summary>
-    public interface IJqlExpressionVisitor
-    {
-        JqlData Process(System.Linq.Expressions.Expression expression);
-    }
+    JqlData Process(System.Linq.Expressions.Expression expression);
 }

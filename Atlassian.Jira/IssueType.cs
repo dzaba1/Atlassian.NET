@@ -6,135 +6,134 @@ using System.Threading;
 using System.Threading.Tasks;
 using Atlassian.Jira.Remote;
 
-namespace Atlassian.Jira
-{
-    /// <summary>
-    /// The type of the issue as defined in JIRA
-    /// </summary>
-    [SuppressMessage("N/A", "CS0660", Justification = "Operator overloads are used for LINQ to JQL provider.")]
-    [SuppressMessage("N/A", "CS0661", Justification = "Operator overloads are used for LINQ to JQL provider.")]
+namespace Atlassian.Jira;
+
+/// <summary>
+/// The type of the issue as defined in JIRA
+/// </summary>
+[SuppressMessage("N/A", "CS0660", Justification = "Operator overloads are used for LINQ to JQL provider.")]
+[SuppressMessage("N/A", "CS0661", Justification = "Operator overloads are used for LINQ to JQL provider.")]
 #pragma warning disable CS0660 // Type defines operator == or operator != but does not override Object.Equals(object o)
 #pragma warning disable CS0661 // Type defines operator == or operator != but does not override Object.GetHashCode()
-    public class IssueType : JiraNamedConstant
+public class IssueType : JiraNamedConstant
 #pragma warning restore CS0661 // Type defines operator == or operator != but does not override Object.GetHashCode()
 #pragma warning restore CS0660 // Type defines operator == or operator != but does not override Object.Equals(object o)
+{
+    /// <summary>
+    /// Creates an instance of the IssueType based on a remote entity.
+    /// </summary>
+    public IssueType(RemoteIssueType remoteIssueType)
+        : base(remoteIssueType)
     {
-        /// <summary>
-        /// Creates an instance of the IssueType based on a remote entity.
-        /// </summary>
-        public IssueType(RemoteIssueType remoteIssueType)
-            : base(remoteIssueType)
+        IsSubTask = remoteIssueType.subTask;
+        Statuses = remoteIssueType.statuses?.Select(x => new IssueStatus(x)).ToArray();
+    }
+
+    /// <summary>
+    /// Creates an instance of the IssueType with given id and name.
+    /// </summary>
+    /// <param name="id">Identifiers of the issue type.</param>
+    /// <param name="name">Name of the issue type.</param>
+    /// <param name="isSubTask">Whether the issue type is a sub task.</param>
+    public IssueType(string id, string name = null, bool isSubTask = false)
+        : base(id, name)
+    {
+        IsSubTask = isSubTask;
+    }
+
+    /// <summary>
+    /// Whether this issue type represents a sub-task.
+    /// </summary>
+    public bool IsSubTask { get; private set; }
+
+    /// <summary>
+    /// The list of valid status values for this issue type.
+    /// </summary>
+    public IssueStatus[] Statuses { get; private set; }
+
+    public bool SearchByProjectOnly { get; set; }
+
+    internal string ProjectKey { get; set; }
+
+    protected override async Task<IEnumerable<JiraNamedEntity>> GetEntitiesAsync(Jira jira, CancellationToken token)
+    {
+        var results = await jira.IssueTypes.GetIssueTypesAsync(token).ConfigureAwait(false);
+
+        if (!string.IsNullOrEmpty(ProjectKey) &&
+            (SearchByProjectOnly || results.Distinct(new JiraEntityNameEqualityComparer()).Count() != results.Count()))
         {
-            IsSubTask = remoteIssueType.subTask;
-            Statuses = remoteIssueType.statuses?.Select(x => new IssueStatus(x)).ToArray();
+            // There are multiple issue types with the same name. Possibly because there are a combination
+            //  of classic and NextGen projects in Jira. Get the issue types from the project if it is defined.
+            results = await jira.IssueTypes.GetIssueTypesForProjectAsync(ProjectKey).ConfigureAwait(false);
         }
 
-        /// <summary>
-        /// Creates an instance of the IssueType with given id and name.
-        /// </summary>
-        /// <param name="id">Identifiers of the issue type.</param>
-        /// <param name="name">Name of the issue type.</param>
-        /// <param name="isSubTask">Whether the issue type is a sub task.</param>
-        public IssueType(string id, string name = null, bool isSubTask = false)
-            : base(id, name)
+        return results as IEnumerable<JiraNamedEntity>;
+    }
+
+    /// <summary>
+    /// Allows assignation by name
+    /// </summary>
+    public static implicit operator IssueType(string name)
+    {
+        if (name != null)
         {
-            IsSubTask = isSubTask;
-        }
-
-        /// <summary>
-        /// Whether this issue type represents a sub-task.
-        /// </summary>
-        public bool IsSubTask { get; private set; }
-
-        /// <summary>
-        /// The list of valid status values for this issue type.
-        /// </summary>
-        public IssueStatus[] Statuses { get; private set; }
-
-        public bool SearchByProjectOnly { get; set; }
-
-        internal string ProjectKey { get; set; }
-
-        protected override async Task<IEnumerable<JiraNamedEntity>> GetEntitiesAsync(Jira jira, CancellationToken token)
-        {
-            var results = await jira.IssueTypes.GetIssueTypesAsync(token).ConfigureAwait(false);
-
-            if (!string.IsNullOrEmpty(ProjectKey) &&
-                (SearchByProjectOnly || results.Distinct(new JiraEntityNameEqualityComparer()).Count() != results.Count()))
+            int id;
+            if (int.TryParse(name, out id))
             {
-                // There are multiple issue types with the same name. Possibly because there are a combination
-                //  of classic and NextGen projects in Jira. Get the issue types from the project if it is defined.
-                results = await jira.IssueTypes.GetIssueTypesForProjectAsync(ProjectKey).ConfigureAwait(false);
-            }
-
-            return results as IEnumerable<JiraNamedEntity>;
-        }
-
-        /// <summary>
-        /// Allows assignation by name
-        /// </summary>
-        public static implicit operator IssueType(string name)
-        {
-            if (name != null)
-            {
-                int id;
-                if (int.TryParse(name, out id))
-                {
-                    return new IssueType(name /*as id*/);
-                }
-                else
-                {
-                    return new IssueType(null, name);
-                }
+                return new IssueType(name /*as id*/);
             }
             else
             {
-                return null;
+                return new IssueType(null, name);
             }
         }
-
-        /// <summary>
-        /// Operator overload to simplify LINQ queries
-        /// </summary>
-        /// <remarks>
-        /// Allows calls in the form of issue.Priority == "High"
-        /// </remarks>
-        public static bool operator ==(IssueType entity, string name)
+        else
         {
-            if ((object)entity == null)
-            {
-                return name == null;
-            }
-            else if (name == null)
-            {
-                return false;
-            }
-            else
-            {
-                return entity.Name == name;
-            }
+            return null;
         }
+    }
 
-        /// <summary>
-        /// Operator overload to simplify LINQ queries
-        /// </summary>
-        /// <remarks>
-        /// Allows calls in the form of issue.Priority != "High"
-        /// </remarks>
-        public static bool operator !=(IssueType entity, string name)
+    /// <summary>
+    /// Operator overload to simplify LINQ queries
+    /// </summary>
+    /// <remarks>
+    /// Allows calls in the form of issue.Priority == "High"
+    /// </remarks>
+    public static bool operator ==(IssueType entity, string name)
+    {
+        if ((object)entity == null)
         {
-            if ((object)entity == null)
-            {
-                return name != null;
-            }
-            else if (name == null)
-            {
-                return true;
-            }
-            else
-            {
-                return entity.Name != name;
-            }
+            return name == null;
+        }
+        else if (name == null)
+        {
+            return false;
+        }
+        else
+        {
+            return entity.Name == name;
+        }
+    }
+
+    /// <summary>
+    /// Operator overload to simplify LINQ queries
+    /// </summary>
+    /// <remarks>
+    /// Allows calls in the form of issue.Priority != "High"
+    /// </remarks>
+    public static bool operator !=(IssueType entity, string name)
+    {
+        if ((object)entity == null)
+        {
+            return name != null;
+        }
+        else if (name == null)
+        {
+            return true;
+        }
+        else
+        {
+            return entity.Name != name;
         }
     }
 }

@@ -3,150 +3,149 @@ using System.Threading;
 using System.Threading.Tasks;
 using Atlassian.Jira.Remote;
 
-namespace Atlassian.Jira
+namespace Atlassian.Jira;
+
+/// <summary>
+/// A version associated with a project
+/// </summary>
+public class ProjectVersion : JiraNamedEntity
 {
+    private readonly Jira _jira;
+    private RemoteVersion _remoteVersion;
+
     /// <summary>
-    /// A version associated with a project
+    /// Creates a new instance of a ProjectVersion.
     /// </summary>
-    public class ProjectVersion : JiraNamedEntity
+    /// <param name="jira">The jira instance.</param>
+    /// <param name="remoteVersion">The remote version.</param>
+    public ProjectVersion(Jira jira, RemoteVersion remoteVersion)
+        : base(remoteVersion)
     {
-        private readonly Jira _jira;
-        private RemoteVersion _remoteVersion;
-
-        /// <summary>
-        /// Creates a new instance of a ProjectVersion.
-        /// </summary>
-        /// <param name="jira">The jira instance.</param>
-        /// <param name="remoteVersion">The remote version.</param>
-        public ProjectVersion(Jira jira, RemoteVersion remoteVersion)
-            : base(remoteVersion)
+        if (jira == null)
         {
-            if (jira == null)
-            {
-                throw new ArgumentNullException("jira");
-            }
-
-            _jira = jira;
-            _remoteVersion = remoteVersion;
+            throw new ArgumentNullException("jira");
         }
 
-        internal RemoteVersion RemoteVersion
-        {
-            get
-            {
-                return _remoteVersion;
-            }
-        }
+        _jira = jira;
+        _remoteVersion = remoteVersion;
+    }
 
-        /// <summary>
-        /// Gets the project key associated with this version.
-        /// </summary>
-        public string ProjectKey
+    internal RemoteVersion RemoteVersion
+    {
+        get
         {
-            get
-            {
-                return _remoteVersion.ProjectKey;
-            }
+            return _remoteVersion;
         }
+    }
 
-        /// <summary>
-        /// Whether this version has been archived
-        /// </summary>
-        public bool IsArchived
+    /// <summary>
+    /// Gets the project key associated with this version.
+    /// </summary>
+    public string ProjectKey
+    {
+        get
         {
-            get
-            {
-                return _remoteVersion.archived;
-            }
-            set
-            {
-                _remoteVersion.archived = value;
-            }
+            return _remoteVersion.ProjectKey;
         }
+    }
 
-        /// <summary>
-        /// Whether this version has been released
-        /// </summary>
-        public bool IsReleased
+    /// <summary>
+    /// Whether this version has been archived
+    /// </summary>
+    public bool IsArchived
+    {
+        get
         {
-            get
-            {
-                return _remoteVersion.released;
-            }
-            set
-            {
-                _remoteVersion.released = value;
-            }
+            return _remoteVersion.archived;
         }
+        set
+        {
+            _remoteVersion.archived = value;
+        }
+    }
 
-        /// <summary>
-        /// The start date for this version
-        /// </summary>
-        public DateTime? StartDate
+    /// <summary>
+    /// Whether this version has been released
+    /// </summary>
+    public bool IsReleased
+    {
+        get
         {
-            get
-            {
-                return _remoteVersion.startDate;
-            }
-            set
-            {
-                _remoteVersion.startDate = value;
-            }
+            return _remoteVersion.released;
         }
+        set
+        {
+            _remoteVersion.released = value;
+        }
+    }
 
-        /// <summary>
-        /// The released date for this version (null if not yet released)
-        /// </summary>
-        public DateTime? ReleasedDate
+    /// <summary>
+    /// The start date for this version
+    /// </summary>
+    public DateTime? StartDate
+    {
+        get
         {
-            get
-            {
-                return _remoteVersion.releaseDate;
-            }
-            set
-            {
-                _remoteVersion.releaseDate = value;
-            }
+            return _remoteVersion.startDate;
         }
+        set
+        {
+            _remoteVersion.startDate = value;
+        }
+    }
 
-        /// <summary>
-        /// The release description for this version (null if not available)
-        /// </summary>
-        public string Description
+    /// <summary>
+    /// The released date for this version (null if not yet released)
+    /// </summary>
+    public DateTime? ReleasedDate
+    {
+        get
         {
-            get
-            {
-                return _remoteVersion.description;
-            }
-            set
-            {
-                _remoteVersion.description = value;
-            }
+            return _remoteVersion.releaseDate;
         }
+        set
+        {
+            _remoteVersion.releaseDate = value;
+        }
+    }
 
-        /// <summary>
-        /// Save field changes to the server.
-        /// </summary>
-        public void SaveChanges()
+    /// <summary>
+    /// The release description for this version (null if not available)
+    /// </summary>
+    public string Description
+    {
+        get
         {
-            try
-            {
-                SaveChangesAsync().Wait();
-            }
-            catch (AggregateException ex)
-            {
-                throw ex.Flatten().InnerException;
-            }
+            return _remoteVersion.description;
         }
+        set
+        {
+            _remoteVersion.description = value;
+        }
+    }
 
-        /// <summary>
-        /// Save field changes to the server.
-        /// </summary>
-        /// <param name="token">Cancellation token for this operation.</param>
-        public async Task SaveChangesAsync(CancellationToken token = default)
+    /// <summary>
+    /// Save field changes to the server.
+    /// </summary>
+    public void SaveChanges()
+    {
+        try
         {
-            var version = await _jira.Versions.UpdateVersionAsync(this, token).ConfigureAwait(false);
-            _remoteVersion = version.RemoteVersion;
+            SaveChangesAsync().Wait();
         }
+        catch (AggregateException ex)
+        {
+            throw ex.Flatten().InnerException;
+        }
+    }
+
+    /// <summary>
+    /// Save field changes to the server.
+    /// </summary>
+    /// <param name="token">Cancellation token for this operation.</param>
+    public async Task SaveChangesAsync(CancellationToken token = default)
+    {
+        var version = await _jira.Versions.UpdateVersionAsync(this, token).ConfigureAwait(false);
+        _remoteVersion = version.RemoteVersion;
     }
 }

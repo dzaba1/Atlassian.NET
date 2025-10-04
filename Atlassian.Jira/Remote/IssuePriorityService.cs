@@ -4,28 +4,27 @@ using System.Threading;
 using System.Threading.Tasks;
 using RestSharp;
 
-namespace Atlassian.Jira.Remote
+namespace Atlassian.Jira.Remote;
+
+internal class IssuePriorityService : IIssuePriorityService
 {
-    internal class IssuePriorityService : IIssuePriorityService
+    private readonly Jira _jira;
+
+    public IssuePriorityService(Jira jira)
     {
-        private readonly Jira _jira;
+        _jira = jira;
+    }
 
-        public IssuePriorityService(Jira jira)
+    public async Task<IEnumerable<IssuePriority>> GetPrioritiesAsync(CancellationToken token = default)
+    {
+        var cache = _jira.Cache;
+
+        if (!cache.Priorities.Any())
         {
-            _jira = jira;
+            var priorities = await _jira.RestClient.ExecuteRequestAsync<RemotePriority[]>(Method.GET, "rest/api/2/priority", null, token).ConfigureAwait(false);
+            cache.Priorities.TryAdd(priorities.Select(p => new IssuePriority(p)));
         }
 
-        public async Task<IEnumerable<IssuePriority>> GetPrioritiesAsync(CancellationToken token = default)
-        {
-            var cache = _jira.Cache;
-
-            if (!cache.Priorities.Any())
-            {
-                var priorities = await _jira.RestClient.ExecuteRequestAsync<RemotePriority[]>(Method.GET, "rest/api/2/priority", null, token).ConfigureAwait(false);
-                cache.Priorities.TryAdd(priorities.Select(p => new IssuePriority(p)));
-            }
-
-            return cache.Priorities.Values;
-        }
+        return cache.Priorities.Values;
     }
 }

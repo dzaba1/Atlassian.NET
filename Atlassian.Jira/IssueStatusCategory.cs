@@ -1,43 +1,42 @@
 ﻿using Atlassian.Jira.Remote;
 
-namespace Atlassian.Jira
+namespace Atlassian.Jira;
+
+/// <summary>
+/// The category of an issue status as defined in JIRA.
+/// </summary>
+public class IssueStatusCategory : JiraNamedEntity
 {
+    private readonly RemoteStatusCategory _remoteStatusCategory;
+
     /// <summary>
-    /// The category of an issue status as defined in JIRA.
+    /// Creates an instance of the IssueStatusCategory based on a remote entity.
     /// </summary>
-    public class IssueStatusCategory : JiraNamedEntity
+    public IssueStatusCategory(RemoteStatusCategory remoteStatusCategory)
+        : base(remoteStatusCategory)
     {
-        private readonly RemoteStatusCategory _remoteStatusCategory;
+        _remoteStatusCategory = remoteStatusCategory;
+    }
 
-        /// <summary>
-        /// Creates an instance of the IssueStatusCategory based on a remote entity.
-        /// </summary>
-        public IssueStatusCategory(RemoteStatusCategory remoteStatusCategory)
-            : base(remoteStatusCategory)
+    /// <summary>
+    /// The color assigned to this category.
+    /// </summary>
+    public string ColorName
+    {
+        get
         {
-            _remoteStatusCategory = remoteStatusCategory;
+            return _remoteStatusCategory?.ColorName;
         }
+    }
 
-        /// <summary>
-        /// The color assigned to this category.
-        /// </summary>
-        public string ColorName
+    /// <summary>
+    /// The key assigned to this category.
+    /// </summary>
+    public string Key
+    {
+        get
         {
-            get
-            {
-                return _remoteStatusCategory?.ColorName;
-            }
-        }
-
-        /// <summary>
-        /// The key assigned to this category.
-        /// </summary>
-        public string Key
-        {
-            get
-            {
-                return _remoteStatusCategory?.Key;
-            }
+            return _remoteStatusCategory?.Key;
         }
     }
 }

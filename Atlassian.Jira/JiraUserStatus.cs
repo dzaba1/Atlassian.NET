@@ -1,11 +1,10 @@
 ﻿using System;
 
-namespace Atlassian.Jira
+namespace Atlassian.Jira;
+
+[Flags]
+public enum JiraUserStatus
 {
-    [Flags]
-    public enum JiraUserStatus
-    {
-        Active = 1,
-        Inactive = 2
-    }
+    Active = 1,
+    Inactive = 2
 }

@@ -5,45 +5,44 @@ using System.Threading;
 using System.Threading.Tasks;
 using RestSharp;
 
-namespace Atlassian.Jira.Remote
+namespace Atlassian.Jira.Remote;
+
+internal class IssueTypeService : IIssueTypeService
 {
-    internal class IssueTypeService : IIssueTypeService
+    private readonly Jira _jira;
+
+    public IssueTypeService(Jira jira)
     {
-        private readonly Jira _jira;
+        _jira = jira;
+    }
 
-        public IssueTypeService(Jira jira)
+    public async Task<IEnumerable<IssueType>> GetIssueTypesAsync(CancellationToken token = default)
+    {
+        var cache = _jira.Cache;
+
+        if (!cache.IssueTypes.Any())
         {
-            _jira = jira;
+            var remoteIssueTypes = await _jira.RestClient.ExecuteRequestAsync<RemoteIssueType[]>(Method.GET, "rest/api/2/issuetype", null, token).ConfigureAwait(false);
+            var issueTypes = remoteIssueTypes.Select(t => new IssueType(t));
+            cache.IssueTypes.TryAdd(issueTypes);
         }
 
-        public async Task<IEnumerable<IssueType>> GetIssueTypesAsync(CancellationToken token = default)
+        return cache.IssueTypes.Values;
+    }
+
+    public async Task<IEnumerable<IssueType>> GetIssueTypesForProjectAsync(string projectKey, CancellationToken token = default)
+    {
+        var cache = _jira.Cache;
+
+        if (!cache.ProjectIssueTypes.TryGetValue(projectKey, out JiraEntityDictionary<IssueType> _))
         {
-            var cache = _jira.Cache;
+            var resource = string.Format("rest/api/2/project/{0}/statuses", projectKey);
+            var results = await _jira.RestClient.ExecuteRequestAsync<RemoteIssueType[]>(Method.GET, resource, null, token).ConfigureAwait(false);
+            var issueTypes = results.Select(x => new IssueType(x));
 
-            if (!cache.IssueTypes.Any())
-            {
-                var remoteIssueTypes = await _jira.RestClient.ExecuteRequestAsync<RemoteIssueType[]>(Method.GET, "rest/api/2/issuetype", null, token).ConfigureAwait(false);
-                var issueTypes = remoteIssueTypes.Select(t => new IssueType(t));
-                cache.IssueTypes.TryAdd(issueTypes);
-            }
-
-            return cache.IssueTypes.Values;
+            cache.ProjectIssueTypes.TryAdd(projectKey, new JiraEntityDictionary<IssueType>(issueTypes));
         }
 
-        public async Task<IEnumerable<IssueType>> GetIssueTypesForProjectAsync(string projectKey, CancellationToken token = default)
-        {
-            var cache = _jira.Cache;
-
-            if (!cache.ProjectIssueTypes.TryGetValue(projectKey, out JiraEntityDictionary<IssueType> _))
-            {
-                var resource = string.Format("rest/api/2/project/{0}/statuses", projectKey);
-                var results = await _jira.RestClient.ExecuteRequestAsync<RemoteIssueType[]>(Method.GET, resource, null, token).ConfigureAwait(false);
-                var issueTypes = results.Select(x => new IssueType(x));
-
-                cache.ProjectIssueTypes.TryAdd(projectKey, new JiraEntityDictionary<IssueType>(issueTypes));
-            }
-
-            return cache.ProjectIssueTypes[projectKey].Values;
-        }
+        return cache.ProjectIssueTypes[projectKey].Values;
     }
 }

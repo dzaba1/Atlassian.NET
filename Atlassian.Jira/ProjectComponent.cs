@@ -1,41 +1,40 @@
 ﻿using Atlassian.Jira.Remote;
 
-namespace Atlassian.Jira
+namespace Atlassian.Jira;
+
+/// <summary>
+/// A component associated with a project
+/// </summary>
+public class ProjectComponent : JiraNamedEntity
 {
+    private readonly RemoteComponent _remoteComponent;
+
     /// <summary>
-    /// A component associated with a project
+    /// Creates a new instance of ProjectComponent.
     /// </summary>
-    public class ProjectComponent : JiraNamedEntity
+    /// <param name="remoteComponent">The remote component.</param>
+    public ProjectComponent(RemoteComponent remoteComponent)
+        : base(remoteComponent)
     {
-        private readonly RemoteComponent _remoteComponent;
+        _remoteComponent = remoteComponent;
+    }
 
-        /// <summary>
-        /// Creates a new instance of ProjectComponent.
-        /// </summary>
-        /// <param name="remoteComponent">The remote component.</param>
-        public ProjectComponent(RemoteComponent remoteComponent)
-            : base(remoteComponent)
+    internal RemoteComponent RemoteComponent
+    {
+        get
         {
-            _remoteComponent = remoteComponent;
+            return _remoteComponent;
         }
+    }
 
-        internal RemoteComponent RemoteComponent
+    /// <summary>
+    /// Gets the project key associated with this component.
+    /// </summary>
+    public string ProjectKey
+    {
+        get
         {
-            get
-            {
-                return _remoteComponent;
-            }
-        }
-
-        /// <summary>
-        /// Gets the project key associated with this component.
-        /// </summary>
-        public string ProjectKey
-        {
-            get
-            {
-                return _remoteComponent.ProjectKey;
-            }
+            return _remoteComponent.ProjectKey;
         }
     }
 }

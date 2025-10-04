@@ -1,9 +1,8 @@
-﻿namespace Atlassian.Jira.Linq
+﻿namespace Atlassian.Jira.Linq;
+
+public class JqlData
 {
-    public class JqlData
-    {
-        public string Expression { get; set; }
-        public int? NumberOfResults { get; set; }
-        public int? SkipResults { get; set; }
-    }
+    public string Expression { get; set; }
+    public int? NumberOfResults { get; set; }
+    public int? SkipResults { get; set; }
 }

@@ -1,48 +1,47 @@
 ﻿using System;
 using Atlassian.Jira.Remote;
 
-namespace Atlassian.Jira
+namespace Atlassian.Jira;
+
+public class CustomField : JiraNamedEntity
 {
-    public class CustomField : JiraNamedEntity
+    private readonly RemoteField _remoteField;
+
+    /// <summary>
+    /// Creates an instance of a CustomField from a remote field definition.
+    /// </summary>
+    public CustomField(RemoteField remoteField)
+        : base(remoteField)
     {
-        private readonly RemoteField _remoteField;
+        _remoteField = remoteField;
 
-        /// <summary>
-        /// Creates an instance of a CustomField from a remote field definition.
-        /// </summary>
-        public CustomField(RemoteField remoteField)
-            : base(remoteField)
+        if (string.IsNullOrEmpty(this.Id) && !string.IsNullOrEmpty(CustomIdentifier))
         {
-            _remoteField = remoteField;
-
-            if (string.IsNullOrEmpty(this.Id) && !string.IsNullOrEmpty(CustomIdentifier))
-            {
-                this.Id = $"customfield_{CustomIdentifier}";
-            }
+            this.Id = $"customfield_{CustomIdentifier}";
         }
+    }
 
-        internal RemoteField RemoteField
+    internal RemoteField RemoteField
+    {
+        get
         {
-            get
-            {
-                return this._remoteField;
-            }
+            return this._remoteField;
         }
+    }
 
-        public string CustomType
+    public string CustomType
+    {
+        get
         {
-            get
-            {
-                return _remoteField.Schema?.Custom;
-            }
+            return _remoteField.Schema?.Custom;
         }
+    }
 
-        public string CustomIdentifier
+    public string CustomIdentifier
+    {
+        get
         {
-            get
-            {
-                return _remoteField.Schema?.CustomId;
-            }
+            return _remoteField.Schema?.CustomId;
         }
     }
 }

@@ -3,27 +3,26 @@ using Newtonsoft.Json;
 using System;
 using Xunit;
 
-namespace Atlassian.Jira.Test
+namespace Atlassian.Jira.Test;
+
+public class OAuthAccessTokenTest
 {
-    public class OAuthAccessTokenTest
+    [Fact]
+    public void OAuthAccessToken_CanDeserialize()
     {
-        [Fact]
-        public void OAuthAccessToken_CanDeserialize()
-        {
-            // Arrange
-            var accessToken = new OAuthAccessToken(
-                "oauth_token",
-                "oauth_token_secret",
-                DateTimeOffset.Now);
-            var json = JsonConvert.SerializeObject(accessToken);
+        // Arrange
+        var accessToken = new OAuthAccessToken(
+            "oauth_token",
+            "oauth_token_secret",
+            DateTimeOffset.Now);
+        var json = JsonConvert.SerializeObject(accessToken);
 
-            // Act
-            var deserializedAccessToken = JsonConvert.DeserializeObject<OAuthAccessToken>(json);
+        // Act
+        var deserializedAccessToken = JsonConvert.DeserializeObject<OAuthAccessToken>(json);
 
-            // Assert
-            Assert.Equal(accessToken.OAuthToken, deserializedAccessToken.OAuthToken);
-            Assert.Equal(accessToken.OAuthTokenSecret, deserializedAccessToken.OAuthTokenSecret);
-            Assert.Equal(accessToken.OAuthTokenExpiry, deserializedAccessToken.OAuthTokenExpiry);
-        }
+        // Assert
+        Assert.Equal(accessToken.OAuthToken, deserializedAccessToken.OAuthToken);
+        Assert.Equal(accessToken.OAuthTokenSecret, deserializedAccessToken.OAuthTokenSecret);
+        Assert.Equal(accessToken.OAuthTokenExpiry, deserializedAccessToken.OAuthTokenExpiry);
     }
 }

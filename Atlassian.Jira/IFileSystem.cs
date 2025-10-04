@@ -1,7 +1,6 @@
-﻿namespace Atlassian.Jira
+﻿namespace Atlassian.Jira;
+
+public interface IFileSystem
 {
-    public interface IFileSystem
-    {
-        byte[] FileReadAllBytes(string path);
-    }
+    byte[] FileReadAllBytes(string path);
 }

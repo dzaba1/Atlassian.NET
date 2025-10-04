@@ -6,49 +6,48 @@ using LTAF;
 using Xunit;
 using UniTestAssert = Xunit.Assert;
 
-namespace Atlassian.Jira.Test.Integration
+namespace Atlassian.Jira.Test.Integration;
+
+public class OAuthTokenHelperTest
 {
-    public class OAuthTokenHelperTest
+    [Fact]
+    public async Task CanGenerateRequestAndAccessTokens()
     {
-        [Fact]
-        public async Task CanGenerateRequestAndAccessTokens()
-        {
-            // Arrange
-            var oAuthTokenSettings = new OAuthRequestTokenSettings(
-                JiraProvider.HOST,
-                JiraProvider.OAUTHCONSUMERKEY,
-                JiraProvider.OAUTHCONSUMERSECRET);
+        // Arrange
+        var oAuthTokenSettings = new OAuthRequestTokenSettings(
+            JiraProvider.HOST,
+            JiraProvider.OAUTHCONSUMERKEY,
+            JiraProvider.OAUTHCONSUMERSECRET);
 
-            // Generate request token
-            var oAuthRequestToken = await OAuthTokenHelper.GenerateRequestTokenAsync(oAuthTokenSettings);
+        // Generate request token
+        var oAuthRequestToken = await OAuthTokenHelper.GenerateRequestTokenAsync(oAuthTokenSettings);
 
-            // Verify request token exists
-            UniTestAssert.NotNull(oAuthRequestToken);
+        // Verify request token exists
+        UniTestAssert.NotNull(oAuthRequestToken);
 
-            // Attempt to get an access token before it has been authorized.
-            var oAuthAccessTokenSettings = new OAuthAccessTokenSettings(oAuthTokenSettings, oAuthRequestToken);
-            var accessToken = await OAuthTokenHelper.ObtainAccessTokenAsync(oAuthAccessTokenSettings, CancellationToken.None);
+        // Attempt to get an access token before it has been authorized.
+        var oAuthAccessTokenSettings = new OAuthAccessTokenSettings(oAuthTokenSettings, oAuthRequestToken);
+        var accessToken = await OAuthTokenHelper.ObtainAccessTokenAsync(oAuthAccessTokenSettings, CancellationToken.None);
 
-            // Verify no access token is granted.
-            UniTestAssert.Null(accessToken);
+        // Verify no access token is granted.
+        UniTestAssert.Null(accessToken);
 
-            // Login to Jira
-            var page = new HtmlPage(new Uri(JiraProvider.HOST));
-            page.Navigate("/login.jsp");
-            var elements = page.RootElement.ChildElements;
-            elements.Find("username").SetText(JiraProvider.USERNAME);
-            elements.Find("password").SetText(JiraProvider.PASSWORD);
-            elements.Find("submit").Click();
+        // Login to Jira
+        var page = new HtmlPage(new Uri(JiraProvider.HOST));
+        page.Navigate("/login.jsp");
+        var elements = page.RootElement.ChildElements;
+        elements.Find("username").SetText(JiraProvider.USERNAME);
+        elements.Find("password").SetText(JiraProvider.PASSWORD);
+        elements.Find("submit").Click();
 
-            // Authorize token
-            page.Navigate(oAuthRequestToken.AuthorizeUri);
-            page.RootElement.ChildElements.Find("approve").Click();
+        // Authorize token
+        page.Navigate(oAuthRequestToken.AuthorizeUri);
+        page.RootElement.ChildElements.Find("approve").Click();
 
-            // Re-Attempt to get an access token
-            accessToken = await OAuthTokenHelper.ObtainAccessTokenAsync(oAuthAccessTokenSettings, CancellationToken.None);
+        // Re-Attempt to get an access token
+        accessToken = await OAuthTokenHelper.ObtainAccessTokenAsync(oAuthAccessTokenSettings, CancellationToken.None);
 
-            // Verify access token exists.
-            UniTestAssert.NotNull(accessToken);
-        }
+        // Verify access token exists.
+        UniTestAssert.NotNull(accessToken);
     }
 }

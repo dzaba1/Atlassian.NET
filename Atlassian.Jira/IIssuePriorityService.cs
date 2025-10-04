@@ -2,17 +2,16 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Atlassian.Jira
+namespace Atlassian.Jira;
+
+/// <summary>
+/// Represents the operations on the issue priorities of jira.
+/// </summary>
+public interface IIssuePriorityService
 {
     /// <summary>
-    /// Represents the operations on the issue priorities of jira.
+    /// Returns all the issue priorities within JIRA.
     /// </summary>
-    public interface IIssuePriorityService
-    {
-        /// <summary>
-        /// Returns all the issue priorities within JIRA.
-        /// </summary>
-        /// <param name="token">Cancellation token for this operation.</param>
-        Task<IEnumerable<IssuePriority>> GetPrioritiesAsync(CancellationToken token = default);
-    }
+    /// <param name="token">Cancellation token for this operation.</param>
+    Task<IEnumerable<IssuePriority>> GetPrioritiesAsync(CancellationToken token = default);
 }

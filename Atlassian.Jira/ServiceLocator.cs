@@ -1,71 +1,70 @@
 ﻿using System;
 using System.Collections.Concurrent;
 
-namespace Atlassian.Jira
+namespace Atlassian.Jira;
+
+/// <summary>
+/// Locates services used by jira client.
+/// </summary>
+public class ServiceLocator
 {
+    private readonly ConcurrentDictionary<Type, object> _factories;
+    private readonly ConcurrentDictionary<Type, object> _services;
+
     /// <summary>
-    /// Locates services used by jira client.
+    /// Creates a new instance of ServiceLocator.
     /// </summary>
-    public class ServiceLocator
+    public ServiceLocator()
     {
-        private readonly ConcurrentDictionary<Type, object> _factories;
-        private readonly ConcurrentDictionary<Type, object> _services;
+        _factories = new ConcurrentDictionary<Type, object>();
+        _services = new ConcurrentDictionary<Type, object>();
+    }
 
-        /// <summary>
-        /// Creates a new instance of ServiceLocator.
-        /// </summary>
-        public ServiceLocator()
+    /// <summary>
+    /// Registers a service.
+    /// </summary>
+    /// <param name="factory">Factory that creates the service instance.</param>
+    public void Register<TService>(Func<TService> factory)
+    {
+        Type serviceType = typeof(TService);
+        object factoryObj = null;
+
+        _factories.AddOrUpdate(serviceType, factory, (s, f) => factory);
+        _services.TryRemove(serviceType, out factoryObj);
+    }
+
+    /// <summary>
+    /// Gets a service.
+    /// </summary>
+    public TService Get<TService>()
+    {
+        Type serviceType = typeof(TService);
+        object factoryObj = null;
+        object serviceObj = null;
+
+        if (_services.TryGetValue(serviceType, out serviceObj))
         {
-            _factories = new ConcurrentDictionary<Type, object>();
-            _services = new ConcurrentDictionary<Type, object>();
+            return (TService)serviceObj;
         }
-
-        /// <summary>
-        /// Registers a service.
-        /// </summary>
-        /// <param name="factory">Factory that creates the service instance.</param>
-        public void Register<TService>(Func<TService> factory)
+        else if (_factories.TryGetValue(serviceType, out factoryObj))
         {
-            Type serviceType = typeof(TService);
-            object factoryObj = null;
+            serviceObj = ((Func<TService>)factoryObj).Invoke();
+            _services.TryAdd(serviceType, serviceObj);
 
-            _factories.AddOrUpdate(serviceType, factory, (s, f) => factory);
-            _services.TryRemove(serviceType, out factoryObj);
+            return (TService)serviceObj;
         }
-
-        /// <summary>
-        /// Gets a service.
-        /// </summary>
-        public TService Get<TService>()
+        else
         {
-            Type serviceType = typeof(TService);
-            object factoryObj = null;
-            object serviceObj = null;
-
-            if (_services.TryGetValue(serviceType, out serviceObj))
-            {
-                return (TService)serviceObj;
-            }
-            else if (_factories.TryGetValue(serviceType, out factoryObj))
-            {
-                serviceObj = ((Func<TService>)factoryObj).Invoke();
-                _services.TryAdd(serviceType, serviceObj);
-
-                return (TService)serviceObj;
-            }
-            else
-            {
-                throw new InvalidOperationException(string.Format("Service '{0}' not found.", typeof(TService)));
-            }
+            throw new InvalidOperationException(string.Format("Service '{0}' not found.", typeof(TService)));
         }
+    }
 
-        /// <summary>
-        /// Removes all registered services.
-        /// </summary>
-        public void Clear()
-        {
-            _factories.Clear();
-            _services.Clear();
-        }
+    /// <summary>
+    /// Removes all registered services.
+    /// </summary>
+    public void Clear()
+    {
+        _factories.Clear();
+        _services.Clear();
     }
 }

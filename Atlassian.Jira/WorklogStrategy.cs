@@ -1,12 +1,11 @@
-﻿namespace Atlassian.Jira
+﻿namespace Atlassian.Jira;
+
+/// <summary>
+/// The worklog time remaining strategy
+/// </summary>
+public enum WorklogStrategy
 {
-    /// <summary>
-    /// The worklog time remaining strategy
-    /// </summary>
-    public enum WorklogStrategy
-    {
-        AutoAdjustRemainingEstimate,
-        RetainRemainingEstimate,
-        NewRemainingEstimate
-    }
+    AutoAdjustRemainingEstimate,
+    RetainRemainingEstimate,
+    NewRemainingEstimate
 }

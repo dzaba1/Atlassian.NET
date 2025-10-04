@@ -2,28 +2,27 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Atlassian.Jira.Remote
+namespace Atlassian.Jira.Remote;
+
+internal class ServerInfoService : IServerInfoService
 {
-    internal class ServerInfoService : IServerInfoService
+    private readonly Jira _jira;
+
+    public ServerInfoService(Jira jira)
     {
-        private readonly Jira _jira;
+        _jira = jira;
+    }
 
-        public ServerInfoService(Jira jira)
+    public async Task<ServerInfo> GetServerInfoAsync(bool doHealthCheck = false, CancellationToken token = default)
+    {
+        var resource = "rest/api/2/serverInfo";
+        if (doHealthCheck)
         {
-            _jira = jira;
+            resource += "?doHealthCheck=true";
         }
 
-        public async Task<ServerInfo> GetServerInfoAsync(bool doHealthCheck = false, CancellationToken token = default)
-        {
-            var resource = "rest/api/2/serverInfo";
-            if (doHealthCheck)
-            {
-                resource += "?doHealthCheck=true";
-            }
+        var remoteServerInfo = await _jira.RestClient.ExecuteRequestAsync<RemoteServerInfo>(Method.GET, resource, null, token).ConfigureAwait(false);
 
-            var remoteServerInfo = await _jira.RestClient.ExecuteRequestAsync<RemoteServerInfo>(Method.GET, resource, null, token).ConfigureAwait(false);
-
-            return new ServerInfo(remoteServerInfo);
-        }
+        return new ServerInfo(remoteServerInfo);
     }
 }

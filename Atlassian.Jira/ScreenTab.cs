@@ -1,20 +1,19 @@
 ﻿using Atlassian.Jira.Remote;
 
-namespace Atlassian.Jira
+namespace Atlassian.Jira;
+
+/// <summary>
+/// A screen tab.
+/// </summary>
+/// <seealso cref="Atlassian.Jira.JiraNamedEntity" />
+public class ScreenTab : JiraNamedEntity
 {
     /// <summary>
-    /// A screen tab.
+    /// Initializes a new instance of the <see cref="ScreenTab"/> class.
     /// </summary>
-    /// <seealso cref="Atlassian.Jira.JiraNamedEntity" />
-    public class ScreenTab : JiraNamedEntity
+    /// <param name="remoteScreenTab">The remote screen tab.</param>
+    public ScreenTab(RemoteScreenTab remoteScreenTab)
+        : base(remoteScreenTab)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ScreenTab"/> class.
-        /// </summary>
-        /// <param name="remoteScreenTab">The remote screen tab.</param>
-        public ScreenTab(RemoteScreenTab remoteScreenTab)
-            : base(remoteScreenTab)
-        {
-        }
     }
 }
