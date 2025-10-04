@@ -10,7 +10,7 @@ namespace Atlassian.Jira.Test;
 public class CustomFieldCollectionTest
 {
     [Fact]
-    public void IndexByName_ShouldThrowIfUnableToFindRemoteValue()
+    public async Task IndexByName_ShouldThrowIfUnableToFindRemoteValue()
     {
         var jira = TestableJira.Create();
         jira.SetupIssues(new RemoteIssue() { key = "123" });
@@ -27,17 +27,17 @@ public class CustomFieldCollectionTest
                         }
         }.ToLocal(jira);
 
-        Assert.Throws<InvalidOperationException>(() => issue["CustomField"]);
+        await Assert.ThrowsAsync<InvalidOperationException>(() => issue.GetCustomFieldAsync("CustomField"));
     }
 
     [Fact]
-    public void IndexByName_ShouldReturnRemoteValue()
+    public async Task IndexByName_ShouldReturnRemoteValue()
     {
         //arrange
         var jira = TestableJira.Create();
         var customField = new CustomField(new RemoteField() { id = "123", name = "CustomField" });
         jira.IssueFieldService.Setup(c => c.GetCustomFieldsAsync(CancellationToken.None))
-            .Returns(Task.FromResult(Enumerable.Repeat<CustomField>(customField, 1)));
+            .Returns(Enumerable.Repeat<CustomField>(customField, 1).ToAsyncEnumerable());
 
         var issue = new RemoteIssue()
         {
@@ -52,21 +52,21 @@ public class CustomFieldCollectionTest
         }.ToLocal(jira);
 
         //assert
-        Assert.Equal("abc", issue["CustomField"]);
-        Assert.Equal("123", issue.CustomFields["CustomField"].Id);
+        Assert.Equal("abc", await issue.GetCustomFieldAsync("CustomField"));
+        Assert.Equal("123", (await issue.CustomFields.GetCustomFieldAsync("CustomField")).Id);
 
-        issue["customfield"] = "foobar";
-        Assert.Equal("foobar", issue["customfield"]);
+        await issue.SetCustomFieldAsync("customfield", "foobar");
+        Assert.Equal("foobar", await issue.GetCustomFieldAsync("customfield"));
     }
 
     [Fact]
-    public void WillThrowErrorIfCustomFieldNotFound()
+    public async Task WillThrowErrorIfCustomFieldNotFound()
     {
         // Arrange
         var jira = TestableJira.Create();
         var customField = new CustomField(new RemoteField() { id = "123", name = "CustomField" });
         jira.IssueFieldService.Setup(c => c.GetCustomFieldsAsync(CancellationToken.None))
-            .Returns(Task.FromResult(Enumerable.Repeat<CustomField>(customField, 1)));
+            .Returns(Enumerable.Repeat<CustomField>(customField, 1).ToAsyncEnumerable());
 
         var issue = new RemoteIssue()
         {
@@ -76,6 +76,6 @@ public class CustomFieldCollectionTest
         }.ToLocal(jira);
 
         // Act / Assert
-        Assert.Throws<InvalidOperationException>(() => issue.CustomFields["NonExistantField"].Values[0]);
+        await Assert.ThrowsAsync<InvalidOperationException>(async () => _ = (await issue.CustomFields.GetCustomFieldAsync("NonExistantField")).Values[0]);
     }
 }

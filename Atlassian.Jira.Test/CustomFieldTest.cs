@@ -12,13 +12,13 @@ namespace Atlassian.Jira.Test;
 public class CustomFieldTest
 {
     [Fact]
-    public void Name_ShouldRetriveValueFromRemote()
+    public async Task Name_ShouldRetriveValueFromRemote()
     {
         //arrange
         var jira = TestableJira.Create();
         var customField = new CustomField(new RemoteField() { id = "123", name = "CustomField" });
         jira.IssueFieldService.Setup(c => c.GetCustomFieldsAsync(CancellationToken.None))
-            .Returns(Task.FromResult(Enumerable.Repeat<CustomField>(customField, 1)));
+            .Returns(Enumerable.Repeat<CustomField>(customField, 1).ToAsyncEnumerable());
 
         var issue = new RemoteIssue()
         {
@@ -33,11 +33,11 @@ public class CustomFieldTest
         }.ToLocal(jira);
 
         //assert
-        Assert.Equal("CustomField", issue.CustomFields[0].Name);
+        Assert.Equal("CustomField", await issue.CustomFields[0].GetNameAsync());
     }
 
     [Fact]
-    public void WhenAddingArrayOfValues_CanSerializeAsStringArrayWhenNoSerializerIsFound()
+    public async Task WhenAddingArrayOfValues_CanSerializeAsStringArrayWhenNoSerializerIsFound()
     {
         // arrange issue
         var jira = TestableJira.Create();
@@ -46,12 +46,12 @@ public class CustomFieldTest
         var issue = new RemoteIssue() { project = "projectKey", key = "issueKey" }.ToLocal(jira);
 
         jira.IssueFieldService.Setup(c => c.GetCustomFieldsAsync(CancellationToken.None))
-            .Returns(Task.FromResult(Enumerable.Repeat(customField, 1)));
+            .Returns(Enumerable.Repeat(customField, 1).ToAsyncEnumerable());
 
-        issue.CustomFields.AddArray("Custom Field", "val1", "val2");
+        await issue.CustomFields.AddArrayAsync("Custom Field", "val1", "val2");
 
         // arrange serialization
-        var remoteIssue = issue.ToRemote();
+        var remoteIssue = await issue.ToRemoteAsync();
         var converter = new RemoteIssueJsonConverter(new List<RemoteField> { remoteField }, new Dictionary<string, ICustomFieldValueSerializer>());
         var serializerSettings = new JsonSerializerSettings();
         serializerSettings.NullValueHandling = NullValueHandling.Ignore;

@@ -463,26 +463,6 @@ public class Issue : IRemoteIssueFieldProvider
     /// <summary>
     /// Saves field changes to server.
     /// </summary>
-    public async Task SaveChangesAsync()
-    {
-        Issue serverIssue = null;
-        if (string.IsNullOrEmpty(_originalIssue.key))
-        {
-            var newKey = await _jira.Issues.CreateIssueAsync(this);
-            serverIssue = await _jira.Issues.GetIssueAsync(newKey);
-        }
-        else
-        {
-            await _jira.Issues.UpdateIssueAsync(this);
-            serverIssue = await _jira.Issues.GetIssueAsync(_originalIssue.key);
-        }
-
-        Initialize(serverIssue.OriginalRemoteIssue);
-    }
-
-    /// <summary>
-    /// Saves field changes to server.
-    /// </summary>
     /// <param name="token">Cancellation token for this operation.</param>
     public async Task<Issue> SaveChangesAsync(CancellationToken token = default)
     {
@@ -629,7 +609,7 @@ public class Issue : IRemoteIssueFieldProvider
     /// Add one or more attachments to this issue
     /// </summary>
     /// <param name="filePaths">Full paths of files to upload</param>
-    public async Task AddAttachment(params string[] filePaths)
+    public async Task AddAttachmentAsync(params string[] filePaths)
     {
         var attachments = filePaths.Select(f => new UploadAttachmentInfo(Path.GetFileName(f), _jira.FileSystem.FileReadAllBytes(f))).ToArray();
 

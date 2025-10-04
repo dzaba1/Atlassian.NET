@@ -2,6 +2,7 @@
 using RestSharp;
 using RestSharp.Authenticators;
 using System;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -49,7 +50,7 @@ public class RestTest
         var issue = await jira.Issues.GetIssueAsync("TST-1");
         Assert.Equal("Sample bug in Test Project", issue.Summary);
 
-        var types = await jira.IssueTypes.GetIssueTypesAsync();
+        var types = await jira.IssueTypes.GetIssueTypesAsync().ToArrayAsync();
         Assert.NotEmpty(types);
     }
 
@@ -74,7 +75,7 @@ public class RestTest
             Assignee = "admin"
         };
 
-        issue.SaveChanges();
+        await issue.SaveChangesAsync();
 
         var rawBody = string.Format("{{ \"jql\": \"Key=\\\"{0}\\\"\" }}", issue.Key.Value);
         var json = await jira.RestClient.ExecuteRequestAsync(Method.POST, "rest/api/2/search", rawBody);

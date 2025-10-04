@@ -53,7 +53,7 @@ public class IssueQueryTest
             Assignee = "admin"
         };
 
-        issue.SaveChanges();
+        await issue.SaveChangesAsync();
 
         await issue.AddCommentAsync("My comment");
         await issue.AddWorklogAsync("1d");
@@ -102,12 +102,13 @@ public class IssueQueryTest
         var summaryValue = "Test-Summary-" + Guid.NewGuid().ToString();
         for (int i = 0; i < 3; i++)
         {
-            new Issue(jira, "TST")
+            var issue = new Issue(jira, "TST")
             {
                 Type = "1",
                 Summary = summaryValue,
                 Assignee = "admin"
-            }.SaveChanges();
+            };
+            await issue.SaveChangesAsync();
         }
 
         // Act: Query for paged issues.
@@ -186,7 +187,7 @@ public class IssueQueryTest
 
     [Theory]
     [ClassData(typeof(JiraProvider))]
-    public void QueryIssueWithLabel(Jira jira)
+    public async Task QueryIssueWithLabel(Jira jira)
     {
         var issue = new Issue(jira, "TST")
         {
@@ -196,7 +197,7 @@ public class IssueQueryTest
         };
 
         issue.Labels.Add("test-label");
-        issue.SaveChanges();
+        await issue.SaveChangesAsync();
 
         var serverIssue = (from i in jira.Issues.Queryable
                            where i.Labels == "test-label"
@@ -218,12 +219,12 @@ public class IssueQueryTest
 
     [Theory]
     [ClassData(typeof(JiraProvider))]
-    public void QueryIssuesWithTakeExpression(Jira jira)
+    public async Task QueryIssuesWithTakeExpression(Jira jira)
     {
         // create 2 issues with same summary
         var randomNumber = _random.Next(int.MaxValue);
-        (new Issue(jira, "TST") { Type = "1", Summary = "Test Summary " + randomNumber, Assignee = "admin" }).SaveChanges();
-        (new Issue(jira, "TST") { Type = "1", Summary = "Test Summary " + randomNumber, Assignee = "admin" }).SaveChanges();
+        await (new Issue(jira, "TST") { Type = "1", Summary = "Test Summary " + randomNumber, Assignee = "admin" }).SaveChangesAsync();
+        await (new Issue(jira, "TST") { Type = "1", Summary = "Test Summary " + randomNumber, Assignee = "admin" }).SaveChangesAsync();
 
         // query with take method to only return 1
         var issues = (from i in jira.Issues.Queryable
@@ -235,12 +236,12 @@ public class IssueQueryTest
 
     [Theory]
     [ClassData(typeof(JiraProvider))]
-    public void MaximumNumberOfIssuesPerRequest(Jira jira)
+    public async Task MaximumNumberOfIssuesPerRequest(Jira jira)
     {
         // create 2 issues with same summary
         var randomNumber = _random.Next(int.MaxValue);
-        (new Issue(jira, "TST") { Type = "1", Summary = "Test Summary " + randomNumber, Assignee = "admin" }).SaveChanges();
-        (new Issue(jira, "TST") { Type = "1", Summary = "Test Summary " + randomNumber, Assignee = "admin" }).SaveChanges();
+        await (new Issue(jira, "TST") { Type = "1", Summary = "Test Summary " + randomNumber, Assignee = "admin" }).SaveChangesAsync();
+        await (new Issue(jira, "TST") { Type = "1", Summary = "Test Summary " + randomNumber, Assignee = "admin" }).SaveChangesAsync();
 
         //set maximum issues and query
         jira.Issues.MaxIssuesPerRequest = 1;

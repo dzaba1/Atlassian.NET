@@ -89,11 +89,11 @@ public class IssueTest
     public class ToRemote
     {
         [Fact]
-        public void IfFieldsNotSet_ShouldLeaveFieldsNull()
+        public async Task IfFieldsNotSet_ShouldLeaveFieldsNull()
         {
             var issue = CreateIssue("ProjectKey");
 
-            var remoteIssue = issue.ToRemote();
+            var remoteIssue = await issue.ToRemoteAsync();
 
             Assert.Null(remoteIssue.affectsVersions);
             Assert.Null(remoteIssue.assignee);
@@ -116,7 +116,7 @@ public class IssueTest
         }
 
         [Fact]
-        public void IfFieldsSet_ShouldPopulateFields()
+        public async Task IfFieldsSet_ShouldPopulateFields()
         {
             var jira = TestableJira.Create();
             var issue = jira.CreateIssue("ProjectKey");
@@ -124,9 +124,9 @@ public class IssueTest
             var component = new RemoteComponent() { id = "1" }.ToLocal();
 
             jira.IssueTypeService.Setup(s => s.GetIssueTypesAsync(CancellationToken.None))
-                .Returns(Task.FromResult(Enumerable.Repeat(new IssueType("4", "issuetype"), 1)));
+                .Returns(Enumerable.Repeat(new IssueType("4", "issuetype"), 1).ToAsyncEnumerable());
             jira.IssuePriorityService.Setup(s => s.GetPrioritiesAsync(CancellationToken.None))
-                .Returns(Task.FromResult(Enumerable.Repeat(new IssuePriority("1", "priority"), 1)));
+                .Returns(Enumerable.Repeat(new IssuePriority("1", "priority"), 1).ToAsyncEnumerable());
 
             issue.AffectsVersions.Add(version);
             issue.Assignee = "assignee";
@@ -143,7 +143,7 @@ public class IssueTest
             issue.Summary = "summary";
             issue.Type = "4";
 
-            var remoteIssue = issue.ToRemote();
+            var remoteIssue = await issue.ToRemoteAsync();
 
             Assert.Single(remoteIssue.affectsVersions);
             Assert.Equal("assignee", remoteIssue.assignee);
@@ -164,17 +164,17 @@ public class IssueTest
         }
 
         [Fact]
-        public void ToRemote_IfTypeSetByName_FetchId()
+        public async Task ToRemote_IfTypeSetByName_FetchId()
         {
             var jira = TestableJira.Create();
             var issue = jira.CreateIssue("ProjectKey");
             var issueType = new IssueType(new RemoteIssueType() { id = "1", name = "Bug" });
             jira.IssueTypeService.Setup(s => s.GetIssueTypesAsync(CancellationToken.None))
-                .Returns(Task.FromResult(Enumerable.Repeat<IssueType>(issueType, 1)));
+                .Returns(Enumerable.Repeat<IssueType>(issueType, 1).ToAsyncEnumerable());
 
             issue.Type = "Bug";
 
-            var remoteIssue = issue.ToRemote();
+            var remoteIssue = await issue.ToRemoteAsync();
             Assert.Equal("1", remoteIssue.type.id);
         }
     }
@@ -195,10 +195,10 @@ public class IssueTest
 
             jira.IssueService.SetupIssues(jira, remoteIssue);
             jira.IssueFieldService.Setup(c => c.GetCustomFieldsAsync(CancellationToken.None))
-                .Returns(Task.FromResult(Enumerable.Repeat<CustomField>(customField, 1)));
+                .Returns(Enumerable.Repeat<CustomField>(customField, 1).ToAsyncEnumerable());
 
             var issue = jira.CreateIssue("TST");
-            issue["My Custom Field"] = "test value";
+            await issue.SetCustomFieldAsync("My Custom Field", "test value");
 
             var result = await GetUpdatedFieldsForIssueAsync(issue);
             Assert.Single(result);
@@ -226,9 +226,9 @@ public class IssueTest
             jira.IssueService.Setup(s => s.GetIssueAsync("TST-1", CancellationToken.None))
                 .Returns(Task.FromResult(new Issue(jira, remoteIssue)));
             jira.IssueFieldService.Setup(c => c.GetCustomFieldsAsync(CancellationToken.None))
-                .Returns(Task.FromResult(Enumerable.Repeat<CustomField>(customField, 1)));
+                .Returns(Enumerable.Repeat<CustomField>(customField, 1).ToAsyncEnumerable());
             jira.IssueTypeService.Setup(s => s.GetIssueTypesAsync(CancellationToken.None))
-                .Returns(Task.FromResult(Enumerable.Repeat(new IssueType("1"), 1)));
+                .Returns(Enumerable.Repeat(new IssueType("1"), 1).ToAsyncEnumerable());
 
             var issue = await jira.Issues.GetIssueAsync("TST-1");
 
@@ -257,12 +257,12 @@ public class IssueTest
             jira.IssueService.Setup(s => s.GetIssueAsync("TST-1", CancellationToken.None))
                 .Returns(Task.FromResult(new Issue(jira, remoteIssue)));
             jira.IssueFieldService.Setup(c => c.GetCustomFieldsAsync(CancellationToken.None))
-                .Returns(Task.FromResult(Enumerable.Repeat<CustomField>(customField, 1)));
+                .Returns(Enumerable.Repeat<CustomField>(customField, 1).ToAsyncEnumerable());
             jira.IssueTypeService.Setup(s => s.GetIssueTypesAsync(CancellationToken.None))
-                .Returns(Task.FromResult(Enumerable.Repeat(new IssueType("1"), 1)));
+                .Returns(Enumerable.Repeat(new IssueType("1"), 1).ToAsyncEnumerable());
 
             var issue = await jira.Issues.GetIssueAsync("TST-1");
-            issue["My Custom Field"] = "My New Value";
+            await issue.SetCustomFieldAsync("My Custom Field", "My New Value");
 
             var result = await GetUpdatedFieldsForIssueAsync(issue);
             Assert.Single(result);
@@ -278,7 +278,7 @@ public class IssueTest
             issue.Priority = "5";
 
             jira.IssuePriorityService.Setup(s => s.GetPrioritiesAsync(CancellationToken.None))
-                .Returns(Task.FromResult(Enumerable.Repeat(new IssuePriority("5"), 1)));
+                .Returns(Enumerable.Repeat(new IssuePriority("5"), 1).ToAsyncEnumerable());
 
             var result = await GetUpdatedFieldsForIssueAsync(issue);
             Assert.Single(result);
@@ -291,7 +291,7 @@ public class IssueTest
             var jira = TestableJira.Create();
             var issueType = new IssueType(new RemoteIssueType() { id = "2", name = "Task" });
             jira.IssueTypeService.Setup(s => s.GetIssueTypesAsync(CancellationToken.None))
-                .Returns(Task.FromResult(Enumerable.Repeat<IssueType>(issueType, 1)));
+                .Returns(Enumerable.Repeat<IssueType>(issueType, 1).ToAsyncEnumerable());
             var issue = jira.CreateIssue("FOO");
             issue.Type = "Task";
 
@@ -306,7 +306,7 @@ public class IssueTest
             var jira = TestableJira.Create();
             var issueType = new IssueType(new RemoteIssueType() { id = "5", name = "Task" });
             jira.IssueTypeService.Setup(s => s.GetIssueTypesAsync(CancellationToken.None))
-                .Returns(Task.FromResult(Enumerable.Repeat(issueType, 1)));
+                .Returns(Enumerable.Repeat(issueType, 1).ToAsyncEnumerable());
             var remoteIssue = new RemoteIssue()
             {
                 type = new RemoteIssueType() { id = "5" },
@@ -351,11 +351,11 @@ public class IssueTest
             issue.Priority = "4";
 
             jira.IssuePriorityService.Setup(s => s.GetPrioritiesAsync(CancellationToken.None))
-                .Returns(Task.FromResult(Enumerable.Repeat(new IssuePriority("4"), 1)));
+                .Returns(Enumerable.Repeat(new IssuePriority("4"), 1).ToAsyncEnumerable());
             jira.IssueResolutionService.Setup(s => s.GetResolutionsAsync(CancellationToken.None))
-                .Returns(Task.FromResult(Enumerable.Repeat(new IssueResolution("3"), 1)));
+                .Returns(Enumerable.Repeat(new IssueResolution("3"), 1).ToAsyncEnumerable());
             jira.IssueTypeService.Setup(s => s.GetIssueTypesAsync(CancellationToken.None))
-                .Returns(Task.FromResult(Enumerable.Repeat(new IssueType("2"), 1)));
+                .Returns(Enumerable.Repeat(new IssueType("2"), 1).ToAsyncEnumerable());
 
             Assert.Equal(8, (await GetUpdatedFieldsForIssueAsync(issue)).Length);
         }
@@ -388,7 +388,7 @@ public class IssueTest
             issue.Priority = "5";
 
             jira.IssuePriorityService.Setup(s => s.GetPrioritiesAsync(CancellationToken.None))
-                .Returns(Task.FromResult(Enumerable.Repeat(new IssuePriority("5"), 1)));
+                .Returns(Enumerable.Repeat(new IssuePriority("5"), 1).ToAsyncEnumerable());
             Assert.Empty(await GetUpdatedFieldsForIssueAsync(issue));
         }
 
@@ -400,7 +400,7 @@ public class IssueTest
             issue.Priority = "5";
 
             jira.IssuePriorityService.Setup(s => s.GetPrioritiesAsync(CancellationToken.None))
-                .Returns(Task.FromResult(Enumerable.Repeat(new IssuePriority("5"), 1)));
+                .Returns(Enumerable.Repeat(new IssuePriority("5"), 1).ToAsyncEnumerable());
 
             Assert.Single(await GetUpdatedFieldsForIssueAsync(issue));
         }
@@ -471,11 +471,11 @@ public class IssueTest
     public class GetAttachments
     {
         [Fact]
-        public void IfIssueNotCreated_ShouldThrowException()
+        public async Task IfIssueNotCreated_ShouldThrowException()
         {
             var issue = CreateIssue();
 
-            Assert.Throws<InvalidOperationException>(() => issue.GetAttachmentsAsync().Result);
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await issue.GetAttachmentsAsync().ToArrayAsync());
         }
 
         [Fact]
@@ -485,12 +485,13 @@ public class IssueTest
             var jira = TestableJira.Create();
             var remoteAttachment = new RemoteAttachment() { filename = "attach.txt" };
             jira.IssueService.Setup(j => j.GetAttachmentsAsync("issueKey", It.IsAny<CancellationToken>()))
-                .Returns(Task.FromResult(Enumerable.Repeat<Attachment>(new Attachment(jira, remoteAttachment), 1)));
+                .Returns(Enumerable.Repeat<Attachment>(new Attachment(jira, remoteAttachment), 1).ToAsyncEnumerable());
 
             var issue = (new RemoteIssue() { key = "issueKey" }).ToLocal(jira);
 
             //act
-            var attachments = await issue.GetAttachmentsAsync();
+            var attachments = await issue.GetAttachmentsAsync()
+                .ToArrayAsync();
 
             //assert
             Assert.Single(attachments);
@@ -501,11 +502,11 @@ public class IssueTest
     public class AddAttachment
     {
         [Fact]
-        public void AddAttachment_IfIssueNotCreated_ShouldThrowAnException()
+        public async Task AddAttachment_IfIssueNotCreated_ShouldThrowAnException()
         {
             var issue = CreateIssue();
 
-            Assert.Throws<InvalidOperationException>(() => issue.AddAttachment("foo", new byte[] { 1 }));
+            await Assert.ThrowsAsync<InvalidOperationException>(() => issue.AddAttachmentAsync("foo", new byte[] { 1 }));
         }
     }
 
@@ -524,11 +525,11 @@ public class IssueTest
     public class GetComments
     {
         [Fact]
-        public void IfIssueNotCreated_ShouldThrowException()
+        public async Task IfIssueNotCreated_ShouldThrowException()
         {
             var issue = CreateIssue();
 
-            Assert.Throws<InvalidOperationException>(() => issue.GetCommentsAsync().Result);
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await issue.GetCommentsAsync().ToArrayAsync());
         }
 
         [Fact]
@@ -537,11 +538,12 @@ public class IssueTest
             //arrange
             var jira = TestableJira.Create();
             jira.IssueService.Setup(j => j.GetCommentsAsync("issueKey", It.IsAny<CancellationToken>()))
-                .Returns(Task.FromResult(Enumerable.Repeat<Comment>(new Comment() { Body = "the comment" }, 1)));
+                .Returns(Enumerable.Repeat<Comment>(new Comment() { Body = "the comment" }, 1).ToAsyncEnumerable());
             var issue = (new RemoteIssue() { key = "issueKey" }).ToLocal(jira);
 
             //act
-            var comments = await issue.GetCommentsAsync();
+            var comments = await issue.GetCommentsAsync()
+                .ToArrayAsync();
 
             //assert
             Assert.Single(comments);

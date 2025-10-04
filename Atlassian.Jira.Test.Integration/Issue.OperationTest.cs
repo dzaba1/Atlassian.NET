@@ -21,7 +21,7 @@ public class IssueOperationsTest
         issue.Type = "1";
         issue.Summary = "Test issue to assign" + _random.Next(int.MaxValue);
 
-        issue.SaveChanges();
+        await issue.SaveChangesAsync();
         Assert.Equal("admin", issue.Assignee);
 
         await issue.AssignAsync("test");
@@ -36,7 +36,7 @@ public class IssueOperationsTest
     public async Task GetChangeLogsForIssue(Jira jira)
     {
         var issue = await jira.Issues.GetIssueAsync("TST-1");
-        var changelogs = (await issue.GetChangeLogsAsync()).OrderBy(log => log.CreatedDate);
+        var changelogs = await issue.GetChangeLogsAsync().OrderBy(log => log.CreatedDate).ToArrayAsync();
         Assert.True(changelogs.Count() >= 4);
 
         var firstChangeLog = changelogs.First();
@@ -60,15 +60,15 @@ public class IssueOperationsTest
         var issue = jira.CreateIssue("TST");
         issue.Type = "1";
         issue.Summary = "Test issue with watchers" + _random.Next(int.MaxValue);
-        issue.SaveChanges();
+        await issue.SaveChangesAsync();
 
         await issue.AddWatcherAsync("test");
-        Assert.Equal(2, (await issue.GetWatchersAsync()).Count());
+        Assert.Equal(2, await issue.GetWatchersAsync().CountAsync());
 
         await issue.DeleteWatcherAsync("admin");
-        Assert.Single(await issue.GetWatchersAsync());
+        Assert.Single(await issue.GetWatchersAsync().ToArrayAsync());
 
-        var user = (await issue.GetWatchersAsync()).First();
+        var user = await issue.GetWatchersAsync().FirstAsync();
         Assert.Equal("test", user.Username);
         Assert.True(user.IsActive);
         Assert.Equal("Tester", user.DisplayName);
@@ -83,7 +83,7 @@ public class IssueOperationsTest
         var issue = jira.CreateIssue("TST");
         issue.Type = "1";
         issue.Summary = "Test issue with watchers" + _random.Next(int.MaxValue);
-        issue.SaveChanges();
+        await issue.SaveChangesAsync();
 
         // Create user with e-mail as username.
         var rand = _random.Next(int.MaxValue);
@@ -101,7 +101,7 @@ public class IssueOperationsTest
         await issue.AddWatcherAsync(userInfo.Email);
 
         // Verify the watchers of the issue contains the username.
-        var watchers = await issue.GetWatchersAsync();
+        var watchers = await issue.GetWatchersAsync().ToArrayAsync();
         Assert.Contains(watchers, w => string.Equals(w.Username, userInfo.Username));
 
         // Delete user.
@@ -115,12 +115,12 @@ public class IssueOperationsTest
         var parentTask = jira.CreateIssue("TST");
         parentTask.Type = "1";
         parentTask.Summary = "Test issue with SubTask" + _random.Next(int.MaxValue);
-        parentTask.SaveChanges();
+        await parentTask.SaveChangesAsync();
 
         var subTask = jira.CreateIssue("TST", parentTask.Key.Value);
         subTask.Type = "5"; // SubTask issue type.
         subTask.Summary = "Test SubTask" + _random.Next(int.MaxValue);
-        subTask.SaveChanges();
+        await subTask.SaveChangesAsync();
 
         var results = await parentTask.GetSubTasksAsync();
         Assert.Single(results);
@@ -134,9 +134,9 @@ public class IssueOperationsTest
         var issue = jira.CreateIssue("TST");
         issue.Summary = "Issue with no links " + _random.Next(int.MaxValue);
         issue.Type = "Bug";
-        issue.SaveChanges();
+        await issue.SaveChangesAsync();
 
-        Assert.Empty(await issue.GetIssueLinksAsync());
+        Assert.Empty(await issue.GetIssueLinksAsync().ToArrayAsync());
     }
 
     [Theory]
@@ -163,7 +163,7 @@ public class IssueOperationsTest
         await issue1.LinkToIssueAsync(issue3.Key.Value, "Related");
 
         // Verify links of 1st issue.
-        var issueLinks = await issue1.GetIssueLinksAsync();
+        var issueLinks = await issue1.GetIssueLinksAsync().ToArrayAsync();
         Assert.Equal(2, issueLinks.Count());
         Assert.True(issueLinks.All(l => l.OutwardIssue.Key.Value == issue1.Key.Value));
         Assert.Contains(issueLinks, l => l.LinkType.Name == "Duplicate");
@@ -172,24 +172,24 @@ public class IssueOperationsTest
         Assert.Contains(issueLinks, l => l.InwardIssue.Key.Value == issue3.Key.Value);
 
         // Verify link of 2nd issue.
-        var issueLink = (await issue2.GetIssueLinksAsync()).Single();
+        var issueLink = await issue2.GetIssueLinksAsync().SingleAsync();
         Assert.Equal("Duplicate", issueLink.LinkType.Name);
         Assert.Equal(issue1.Key.Value, issueLink.OutwardIssue.Key.Value);
         Assert.Equal(issue2.Key.Value, issueLink.InwardIssue.Key.Value);
 
         // Verify link of 3rd issue.
-        issueLink = (await issue3.GetIssueLinksAsync()).Single();
+        issueLink = await issue3.GetIssueLinksAsync().SingleAsync();
         Assert.Equal("Related", issueLink.LinkType.Name);
         Assert.Equal(issue1.Key.Value, issueLink.OutwardIssue.Key.Value);
         Assert.Equal(issue3.Key.Value, issueLink.InwardIssue.Key.Value);
 
         // Verify retrieving subset of links of 1st issue
-        var issueLinkOfType = (await issue1.GetIssueLinksAsync(new List<string>() { "Duplicate" })).Single();
+        var issueLinkOfType = await issue1.GetIssueLinksAsync(new List<string>() { "Duplicate" }).SingleAsync();
         Assert.Equal("Duplicate", issueLinkOfType.LinkType.Name);
         Assert.Equal(issue1.Key.Value, issueLinkOfType.OutwardIssue.Key.Value);
         Assert.Equal(issue2.Key.Value, issueLinkOfType.InwardIssue.Key.Value);
 
-        issueLinkOfType = (await issue1.GetIssueLinksAsync(new List<string>() { "Related" })).Single();
+        issueLinkOfType = await issue1.GetIssueLinksAsync(new List<string>() { "Related" }).SingleAsync();
         Assert.Equal("Related", issueLinkOfType.LinkType.Name);
         Assert.Equal(issue1.Key.Value, issueLinkOfType.OutwardIssue.Key.Value);
         Assert.Equal(issue3.Key.Value, issueLinkOfType.InwardIssue.Key.Value);
@@ -202,10 +202,10 @@ public class IssueOperationsTest
         var issue = jira.CreateIssue("TST");
         issue.Summary = "Issue to link from" + _random.Next(int.MaxValue);
         issue.Type = "Bug";
-        issue.SaveChanges();
+        await issue.SaveChangesAsync();
 
         // Verify issue with no remote links.
-        Assert.Empty(await issue.GetRemoteLinksAsync());
+        Assert.Empty(await issue.GetRemoteLinksAsync().ToArrayAsync());
 
         var url1 = "https://google.com";
         var title1 = "Google";
@@ -219,7 +219,7 @@ public class IssueOperationsTest
         await issue.AddRemoteLinkAsync(url2, title2);
 
         // Verify remote links of issue.
-        var remoteLinks = await issue.GetRemoteLinksAsync();
+        var remoteLinks = await issue.GetRemoteLinksAsync().ToArrayAsync();
         Assert.Equal(2, remoteLinks.Count());
         Assert.Contains(remoteLinks, l => l.RemoteUrl == url1 && l.Title == title1 && l.Summary == summary1);
         Assert.Contains(remoteLinks, l => l.RemoteUrl == url2 && l.Title == title2 && l.Summary == null);
@@ -230,7 +230,7 @@ public class IssueOperationsTest
     public async Task GetActionsAsync(Jira jira)
     {
         var issue = await jira.Issues.GetIssueAsync("TST-1");
-        var transitions = await issue.GetAvailableActionsAsync();
+        var transitions = await issue.GetAvailableActionsAsync().ToArrayAsync();
         var resolveTransition = transitions.ElementAt(1);
         var resolveIssueStatus = resolveTransition.To;
 
@@ -255,7 +255,7 @@ public class IssueOperationsTest
     public async Task GetActionsWithFields(Jira jira)
     {
         var issue = await jira.Issues.GetIssueAsync("TST-1");
-        var transitions = await issue.GetAvailableActionsAsync(true);
+        var transitions = await issue.GetAvailableActionsAsync(true).ToArrayAsync();
         var resolveTransition = transitions.ElementAt(1);
         var fields = resolveTransition.Fields;
         var resolution = fields["resolution"];
@@ -284,7 +284,7 @@ public class IssueOperationsTest
         var issue = jira.CreateIssue("TST");
         issue.Summary = "Issue to resolve with async" + _random.Next(int.MaxValue);
         issue.Type = "Bug";
-        issue.SaveChanges();
+        await issue.SaveChangesAsync();
 
         Assert.Null(issue.ResolutionDate);
 
@@ -301,9 +301,9 @@ public class IssueOperationsTest
         var issue = jira.CreateIssue("TST");
         issue.Summary = "Issue to resolve with async" + _random.Next(int.MaxValue);
         issue.Type = "Bug";
-        issue.SaveChanges();
+        await issue.SaveChangesAsync();
 
-        var transitions = await issue.GetAvailableActionsAsync();
+        var transitions = await issue.GetAvailableActionsAsync().ToArrayAsync();
         var transition = transitions.Single(t => t.Name.Equals("Resolve Issue", StringComparison.OrdinalIgnoreCase));
 
         await issue.WorkflowTransitionAsync(transition.Id);
@@ -319,11 +319,11 @@ public class IssueOperationsTest
         var issue = jira.CreateIssue("TST");
         issue.Summary = "Issue to resolve with async" + _random.Next(int.MaxValue);
         issue.Type = "Bug";
-        issue.SaveChanges();
+        await issue.SaveChangesAsync();
 
         Assert.Null(issue.ResolutionDate);
         var updates = new WorkflowTransitionUpdates() { Comment = "Comment with transition" };
-        issue.FixVersions.Add("2.0");
+        await issue.FixVersions.AddAsync("2.0");
 
         await issue.WorkflowTransitionAsync(WorkflowActions.Resolve, updates, CancellationToken.None);
 
@@ -332,7 +332,7 @@ public class IssueOperationsTest
         Assert.Equal("Fixed", updatedIssue.Resolution.Name);
         Assert.Equal("2.0", updatedIssue.FixVersions.First().Name);
 
-        var comments = await updatedIssue.GetCommentsAsync();
+        var comments = await updatedIssue.GetCommentsAsync().ToArrayAsync();
         Assert.Single(comments);
         Assert.Equal("Comment with transition", comments.First().Body);
     }
@@ -344,7 +344,7 @@ public class IssueOperationsTest
         var issue = jira.CreateIssue("TST");
         issue.Summary = "Issue to resolve " + _random.Next(int.MaxValue);
         issue.Type = "Bug";
-        issue.SaveChanges();
+        await issue.SaveChangesAsync();
 
         Assert.Null(issue.ResolutionDate);
 
@@ -362,7 +362,7 @@ public class IssueOperationsTest
         var issue = jira.CreateIssue("TST");
         issue.Summary = "Issue to resolve " + _random.Next(int.MaxValue);
         issue.Type = "Bug";
-        issue.SaveChanges();
+        await issue.SaveChangesAsync();
 
         issue.Resolution = "Won't Fix";
         await issue.WorkflowTransitionAsync(WorkflowActions.Resolve);
@@ -378,7 +378,7 @@ public class IssueOperationsTest
         var issue = jira.CreateIssue("TST");
         issue.Summary = "Issue with timetracking " + _random.Next(int.MaxValue);
         issue.Type = "Bug";
-        issue.SaveChanges();
+        await issue.SaveChangesAsync();
 
         var timetracking = await issue.GetTimeTrackingDataAsync();
         Assert.Null(timetracking.TimeSpent);
@@ -403,7 +403,7 @@ public class IssueOperationsTest
         Assert.Null(issue.ResolutionDate);
 
         // Act, Assert: Returns null for saved unresolved issue.
-        issue.SaveChanges();
+        await issue.SaveChangesAsync();
         Assert.Null(issue.ResolutionDate);
 
         // Act, Assert: returns date for saved resolved issue.
@@ -425,16 +425,16 @@ public class IssueOperationsTest
         };
 
         // create an issue, verify no attachments
-        issue.SaveChanges();
-        Assert.Empty(await issue.GetAttachmentsAsync());
+        await issue.SaveChangesAsync();
+        Assert.Empty(await issue.GetAttachmentsAsync().ToArrayAsync());
 
         // upload multiple attachments
         File.WriteAllText("testfile1.txt", "Test File Content 1");
         File.WriteAllText("testfile2.txt", "Test File Content 2");
-        issue.AddAttachment("testfile1.txt", "testfile2.txt");
+        await issue.AddAttachmentAsync("testfile1.txt", "testfile2.txt");
 
         // verify all attachments can be retrieved.
-        var attachments = await issue.GetAttachmentsAsync();
+        var attachments = await issue.GetAttachmentsAsync().ToArrayAsync();
         Assert.Equal(2, attachments.Count());
         Assert.True(attachments.Any(a => a.FileName.Equals("testfile1.txt")), "'testfile1.txt' was not downloaded from server");
         Assert.True(attachments.Any(a => a.FileName.Equals("testfile2.txt")), "'testfile2.txt' was not downloaded from server");
@@ -454,7 +454,7 @@ public class IssueOperationsTest
 
         // remove an attachment
         await issue.DeleteAttachmentAsync(attachments.First());
-        Assert.Single(await issue.GetAttachmentsAsync());
+        Assert.Single(await issue.GetAttachmentsAsync().ToArrayAsync());
     }
 
     [Theory]
@@ -469,15 +469,15 @@ public class IssueOperationsTest
             Summary = summaryValue,
             Assignee = "admin"
         };
-        issue.SaveChanges();
+        await issue.SaveChangesAsync();
 
         // upload multiple attachments
         File.WriteAllText("testfile1.txt", "Test File Content 1");
         File.WriteAllText("testfile2.txt", "Test File Content 2");
-        issue.AddAttachment("testfile1.txt", "testfile2.txt");
+        await issue.AddAttachmentAsync("testfile1.txt", "testfile2.txt");
 
         // Get attachment metadata
-        var attachments = await issue.GetAttachmentsAsync(CancellationToken.None);
+        var attachments = await issue.GetAttachmentsAsync(CancellationToken.None).ToArrayAsync();
         Assert.Equal(2, attachments.Count());
         Assert.True(attachments.Any(a => a.FileName.Equals("testfile1.txt")), "'testfile1.txt' was not downloaded from server");
         Assert.True(attachments.Any(a => a.FileName.Equals("testfile2.txt")), "'testfile2.txt' was not downloaded from server");
@@ -502,14 +502,14 @@ public class IssueOperationsTest
             Summary = summaryValue,
             Assignee = "admin"
         };
-        issue.SaveChanges();
+        await issue.SaveChangesAsync();
 
         // upload attachment
         File.WriteAllText("testfile.txt", "Test File Content");
-        issue.AddAttachment("testfile.txt");
+        await issue.AddAttachmentAsync("testfile.txt");
 
         // Get attachment metadata
-        var attachments = await issue.GetAttachmentsAsync(CancellationToken.None);
+        var attachments = await issue.GetAttachmentsAsync(CancellationToken.None).ToArrayAsync();
         Assert.Equal("testfile.txt", attachments.Single().FileName);
 
         // download attachment as byte array
@@ -531,15 +531,15 @@ public class IssueOperationsTest
         };
 
         // create an issue, verify no comments
-        issue.SaveChanges();
-        Assert.Empty(await issue.GetCommentsAsync());
+        await issue.SaveChangesAsync();
+        Assert.Empty(await issue.GetCommentsAsync().ToArrayAsync());
 
         // Add a comment
         await issue.AddCommentAsync("new comment");
 
         var options = new CommentQueryOptions();
         options.Expand.Add("renderedBody");
-        var comments = await issue.GetCommentsAsync(options);
+        var comments = await issue.GetCommentsAsync(options).ToArrayAsync();
         Assert.Single(comments);
 
         var comment = comments.First();
@@ -561,7 +561,7 @@ public class IssueOperationsTest
             Assignee = "admin"
         };
 
-        issue.SaveChanges();
+        await issue.SaveChangesAsync();
 
         // Add a comment
         var comment = new Comment()
@@ -604,7 +604,7 @@ public class IssueOperationsTest
         };
 
         // create an issue, verify no comments
-        issue.SaveChanges();
+        await issue.SaveChangesAsync();
         var comments = await issue.GetPagedCommentsAsync();
         Assert.Empty(comments);
 
@@ -641,7 +641,7 @@ public class IssueOperationsTest
             Assignee = "admin"
         };
 
-        issue.SaveChanges();
+        await issue.SaveChangesAsync();
 
         // Add a comments
         await issue.AddCommentAsync("new comment1");
@@ -670,7 +670,7 @@ public class IssueOperationsTest
         var issue = jira.CreateIssue("TST");
         issue.Type = "1";
         issue.Summary = string.Format("Issue to delete ({0})", _random.Next(int.MaxValue));
-        issue.SaveChanges();
+        await issue.SaveChangesAsync();
         Assert.True(jira.Issues.Queryable.Where(i => i.Key == issue.Key).Any(), "Expected issue in server");
 
         // Delete issue and verify it is no longer found.
@@ -690,7 +690,7 @@ public class IssueOperationsTest
             Summary = summaryValue,
             Assignee = "admin"
         };
-        issue.SaveChanges();
+        await issue.SaveChangesAsync();
 
         await issue.AddWorklogAsync("1d");
         await issue.AddWorklogAsync("1h", WorklogStrategy.RetainRemainingEstimate);
@@ -698,7 +698,7 @@ public class IssueOperationsTest
 
         await issue.AddWorklogAsync(new Worklog("2d", new DateTime(2012, 1, 1), "comment"));
 
-        var logs = await issue.GetWorklogsAsync();
+        var logs = await issue.GetWorklogsAsync().ToArrayAsync();
         Assert.Equal(4, logs.Count());
         Assert.Equal("comment", logs.ElementAt(3).Comment);
         Assert.Equal(new DateTime(2012, 1, 1), logs.ElementAt(3).StartDate);
@@ -717,13 +717,13 @@ public class IssueOperationsTest
             Summary = summary,
             Assignee = "admin"
         };
-        issue.SaveChanges();
+        await issue.SaveChangesAsync();
 
         var worklog = await issue.AddWorklogAsync("1h");
-        Assert.Single(await issue.GetWorklogsAsync());
+        Assert.Single(await issue.GetWorklogsAsync().ToArrayAsync());
 
         await issue.DeleteWorklogAsync(worklog);
-        Assert.Empty(await issue.GetWorklogsAsync());
+        Assert.Empty(await issue.GetWorklogsAsync().ToArrayAsync());
     }
 
     [Theory]
@@ -737,10 +737,10 @@ public class IssueOperationsTest
             Assignee = "admin",
         };
 
-        issue.SaveChanges();
+        await issue.SaveChangesAsync();
 
         // Verify no properties exist
-        var propertyKeys = await jira.Issues.GetPropertyKeysAsync(issue.Key.Value);
+        var propertyKeys = await jira.Issues.GetPropertyKeysAsync(issue.Key.Value).ToArrayAsync();
         Assert.Empty(propertyKeys);
 
         // Set new property on issue
@@ -749,7 +749,7 @@ public class IssueOperationsTest
         await issue.SetPropertyAsync(keyString, keyValue);
 
         // Verify one property exists.
-        propertyKeys = await jira.Issues.GetPropertyKeysAsync(issue.Key.Value);
+        propertyKeys = await jira.Issues.GetPropertyKeysAsync(issue.Key.Value).ToArrayAsync();
         Assert.True(propertyKeys.SequenceEqual(new List<string>() { keyString }));
 
         // Verify the property key returns the exact value
@@ -782,7 +782,7 @@ public class IssueOperationsTest
             Assignee = "admin",
         };
 
-        issue.SaveChanges();
+        await issue.SaveChangesAsync();
 
         var keyString = "test-property-nonexist";
         await issue.DeletePropertyAsync(keyString);
@@ -803,7 +803,7 @@ public class IssueOperationsTest
             Assignee = "admin",
         };
 
-        issue.SaveChanges();
+        await issue.SaveChangesAsync();
 
         // Set new property on issue
         var keyString = "test-property-null";
@@ -835,7 +835,7 @@ public class IssueOperationsTest
             Assignee = "admin",
         };
 
-        issue.SaveChanges();
+        await issue.SaveChangesAsync();
 
         // Set new property on issue
         var keyString = "test-property-object";
@@ -870,7 +870,7 @@ public class IssueOperationsTest
             Assignee = "admin",
         };
 
-        issue.SaveChanges();
+        await issue.SaveChangesAsync();
 
         // Set new property on issue
         var keyString = "test-property-bool";
@@ -901,7 +901,7 @@ public class IssueOperationsTest
             Assignee = "admin",
         };
 
-        issue.SaveChanges();
+        await issue.SaveChangesAsync();
 
         // Set new property on issue
         var keyString = "test-property-list";

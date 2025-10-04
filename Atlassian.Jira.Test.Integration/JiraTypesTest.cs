@@ -13,7 +13,7 @@ public class JiraTypesTest
     [ClassData(typeof(JiraProvider))]
     public async Task GetFilters(Jira jira)
     {
-        var filters = await jira.Filters.GetFavouritesAsync();
+        var filters = await jira.Filters.GetFavouritesAsync().ToArrayAsync();
 
         Assert.True(filters.Count() >= 1);
         Assert.Contains(filters, f => f.Name == "One Issue Filter");
@@ -38,7 +38,7 @@ public class JiraTypesTest
     [ClassData(typeof(JiraProvider))]
     public async Task GetIssueTypes(Jira jira)
     {
-        var issueTypes = await jira.IssueTypes.GetIssueTypesAsync();
+        var issueTypes = await jira.IssueTypes.GetIssueTypesAsync().ToArrayAsync();
 
         // In addition, rest API contains "Sub-Task" as an issue type.
         Assert.True(issueTypes.Count() >= 5);
@@ -50,7 +50,7 @@ public class JiraTypesTest
     [ClassData(typeof(JiraProvider))]
     public async Task GetIssuePriorities(Jira jira)
     {
-        var priorities = await jira.Priorities.GetPrioritiesAsync();
+        var priorities = await jira.Priorities.GetPrioritiesAsync().ToArrayAsync();
 
         Assert.Contains(priorities, i => i.Name == "Blocker");
         Assert.NotNull(priorities.First().IconUrl);
@@ -60,7 +60,7 @@ public class JiraTypesTest
     [ClassData(typeof(JiraProvider))]
     public async Task GetIssueResolutions(Jira jira)
     {
-        var resolutions = await jira.Resolutions.GetResolutionsAsync();
+        var resolutions = await jira.Resolutions.GetResolutionsAsync().ToArrayAsync();
 
         Assert.Contains(resolutions, i => i.Name == "Fixed");
     }
@@ -69,7 +69,7 @@ public class JiraTypesTest
     [ClassData(typeof(JiraProvider))]
     public async Task GetIssueStatuses(Jira jira)
     {
-        var statuses = await jira.Statuses.GetStatusesAsync();
+        var statuses = await jira.Statuses.GetStatusesAsync().ToArrayAsync();
 
         var status = statuses.FirstOrDefault(i => i.Name == "Open");
         Assert.NotNull(status);
@@ -112,7 +112,7 @@ public class JiraTypesTest
     [ClassData(typeof(JiraProvider))]
     public async Task GetCustomFields(Jira jira)
     {
-        var fields = await jira.Fields.GetCustomFieldsAsync();
+        var fields = await jira.Fields.GetCustomFieldsAsync().ToArrayAsync();
         Assert.True(fields.Count() >= 19);
     }
 
@@ -120,7 +120,7 @@ public class JiraTypesTest
     [ClassData(typeof(JiraProvider))]
     public async Task GetProjects(Jira jira)
     {
-        var projects = await jira.Projects.GetProjectsAsync();
+        var projects = await jira.Projects.GetProjectsAsync().ToArrayAsync();
         Assert.True(projects.Count() > 0);
 
         var project = projects.First();
@@ -150,11 +150,11 @@ public class JiraTypesTest
         Predicate<IssueType> filter = x => x.Name == "Improvement" && x.Statuses.Any(s => s.Name == "Resolved");
 
         // Validate that issue types are returned with the valid statuses
-        var issueTypes = await jira.IssueTypes.GetIssueTypesForProjectAsync("TST");
+        var issueTypes = await jira.IssueTypes.GetIssueTypesForProjectAsync("TST").ToArrayAsync();
         Assert.Contains(issueTypes, filter);
 
         // Validate that different projects return different info
-        issueTypes = await jira.IssueTypes.GetIssueTypesForProjectAsync("SCRUM");
+        issueTypes = await jira.IssueTypes.GetIssueTypesForProjectAsync("SCRUM").ToArrayAsync();
         Assert.DoesNotContain(issueTypes, filter);
     }
 
@@ -162,7 +162,7 @@ public class JiraTypesTest
     [ClassData(typeof(JiraProvider))]
     public async Task GetIssueLinkTypes(Jira jira)
     {
-        var linkTypes = await jira.Links.GetLinkTypesAsync();
+        var linkTypes = await jira.Links.GetLinkTypesAsync().ToArrayAsync();
         Assert.Contains(linkTypes, l => l.Name.Equals("Duplicate"));
     }
 
@@ -171,11 +171,11 @@ public class JiraTypesTest
     public async Task GetIssueStatusesAsync(Jira jira)
     {
         // First request.
-        var result1 = await jira.Statuses.GetStatusesAsync();
+        var result1 = await jira.Statuses.GetStatusesAsync().ToArrayAsync();
         Assert.NotEmpty(result1);
 
         // Cached
-        var result2 = await jira.Statuses.GetStatusesAsync();
+        var result2 = await jira.Statuses.GetStatusesAsync().ToArrayAsync();
         Assert.Equal(result1.Count(), result2.Count());
     }
 
@@ -184,11 +184,11 @@ public class JiraTypesTest
     public async Task GetIssueTypesAsync(Jira jira)
     {
         // First request.
-        var result1 = await jira.IssueTypes.GetIssueTypesAsync(CancellationToken.None);
+        var result1 = await jira.IssueTypes.GetIssueTypesAsync(CancellationToken.None).ToArrayAsync();
         Assert.NotEmpty(result1);
 
         // Cached
-        var result2 = await jira.IssueTypes.GetIssueTypesAsync(CancellationToken.None);
+        var result2 = await jira.IssueTypes.GetIssueTypesAsync(CancellationToken.None).ToArrayAsync();
         Assert.Equal(result1.Count(), result2.Count());
     }
 
@@ -197,11 +197,11 @@ public class JiraTypesTest
     public async Task GetIssuePrioritiesAsync(Jira jira)
     {
         // First request.
-        var result1 = await jira.Priorities.GetPrioritiesAsync();
+        var result1 = await jira.Priorities.GetPrioritiesAsync().ToArrayAsync();
         Assert.NotEmpty(result1);
 
         // Cached
-        var result2 = await jira.Priorities.GetPrioritiesAsync();
+        var result2 = await jira.Priorities.GetPrioritiesAsync().ToArrayAsync();
         Assert.Equal(result1.Count(), result2.Count());
     }
 
@@ -210,11 +210,11 @@ public class JiraTypesTest
     public async Task GetIssueResolutionsAsync(Jira jira)
     {
         // First request.
-        var result1 = await jira.Resolutions.GetResolutionsAsync();
+        var result1 = await jira.Resolutions.GetResolutionsAsync().ToArrayAsync();
         Assert.NotEmpty(result1);
 
         // Cached
-        var result2 = await jira.Resolutions.GetResolutionsAsync();
+        var result2 = await jira.Resolutions.GetResolutionsAsync().ToArrayAsync();
         Assert.Equal(result1.Count(), result2.Count());
     }
 
@@ -222,7 +222,7 @@ public class JiraTypesTest
     [ClassData(typeof(JiraProvider))]
     public async Task GetFavouriteFiltersAsync(Jira jira)
     {
-        var result1 = await jira.Filters.GetFavouritesAsync();
+        var result1 = await jira.Filters.GetFavouritesAsync().ToArrayAsync();
         Assert.NotEmpty(result1);
     }
 }

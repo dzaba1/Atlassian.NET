@@ -41,12 +41,12 @@ public class JiraUserTest
         Assert.Equal(user.DisplayName, userInfo.DisplayName);
 
         // verify search for a user
-        var users = await jira.Users.SearchUsersAsync("test");
+        var users = await jira.Users.SearchUsersAsync("test").ToArrayAsync();
         Assert.Contains(users, u => u.Username == userInfo.Username);
 
         // verify delete a user
         await jira.Users.DeleteUserAsync(userInfo.Username);
-        users = await jira.Users.SearchUsersAsync(userInfo.Username);
+        users = await jira.Users.SearchUsersAsync(userInfo.Username).ToArrayAsync();
         Assert.Empty(users);
     }
 
@@ -71,7 +71,7 @@ public class JiraUserTest
         Assert.Equal(user.DisplayName, userInfo.DisplayName);
 
         // verify search for a user
-        var users = await jira.Users.SearchUsersAsync("test");
+        var users = await jira.Users.SearchUsersAsync("test").ToArrayAsync();
         Assert.Contains(users, u => u.Username == userInfo.Username);
 
         // verify equality override (see https://bitbucket.org/farmas/atlassian.net-sdk/issues/570)
@@ -79,7 +79,7 @@ public class JiraUserTest
 
         // verify delete a user
         await jira.Users.DeleteUserAsync(userInfo.Username);
-        users = await jira.Users.SearchUsersAsync(userInfo.Username);
+        users = await jira.Users.SearchUsersAsync(userInfo.Username).ToArrayAsync();
         Assert.Empty(users);
     }
 
@@ -107,16 +107,16 @@ public class JiraUserTest
         Assert.NotNull(user);
 
         // any user can be assigned to SCRUM issues.
-        var users = await jira.Users.SearchAssignableUsersForIssueAsync("test", "SCRUM-1");
+        var users = await jira.Users.SearchAssignableUsersForIssueAsync("test", "SCRUM-1").ToArrayAsync();
         Assert.NotNull(users.FirstOrDefault(u => u.Username == user.Username));
 
         // only developers can be assigned to TST issues.
-        users = await jira.Users.SearchAssignableUsersForIssueAsync("test", "TST-1");
+        users = await jira.Users.SearchAssignableUsersForIssueAsync("test", "TST-1").ToArrayAsync();
         Assert.Null(users.FirstOrDefault(u => u.Username == user.Username));
 
         // verify delete a user
         await jira.Users.DeleteUserAsync(userInfo.Username);
-        users = await jira.Users.SearchUsersAsync(userInfo.Username);
+        users = await jira.Users.SearchUsersAsync(userInfo.Username).ToArrayAsync();
         Assert.Empty(users);
     }
 
@@ -132,16 +132,16 @@ public class JiraUserTest
         Assert.NotNull(user);
 
         // any user can be assigned to SCRUM issues.
-        var users = await jira.Users.SearchAssignableUsersForProjectAsync("test", "SCRUM");
+        var users = await jira.Users.SearchAssignableUsersForProjectAsync("test", "SCRUM").ToArrayAsync();
         Assert.NotNull(users.FirstOrDefault(u => u.Username == user.Username));
 
         // only developers can be assigned to TST issues.
-        users = await jira.Users.SearchAssignableUsersForProjectAsync("test", "TST");
+        users = await jira.Users.SearchAssignableUsersForProjectAsync("test", "TST").ToArrayAsync();
         Assert.Null(users.FirstOrDefault(u => u.Username == user.Username));
 
         // verify delete a user
         await jira.Users.DeleteUserAsync(userInfo.Username);
-        users = await jira.Users.SearchUsersAsync(userInfo.Username);
+        users = await jira.Users.SearchUsersAsync(userInfo.Username).ToArrayAsync();
         Assert.Empty(users);
     }
 
@@ -157,20 +157,20 @@ public class JiraUserTest
         Assert.NotNull(user);
 
         // test user is assignable because any user can be assigned to SCRUM issues.
-        var users = await jira.Users.SearchAssignableUsersForProjectsAsync("test", new[] { "SCRUM" });
+        var users = await jira.Users.SearchAssignableUsersForProjectsAsync("test", new[] { "SCRUM" }).ToArrayAsync();
         Assert.NotNull(users.FirstOrDefault(u => u.Username == user.Username));
 
         // test user is not assignable because only developers can be assigned to TST issues.
-        users = await jira.Users.SearchAssignableUsersForProjectsAsync("test", new[] { "TST" });
+        users = await jira.Users.SearchAssignableUsersForProjectsAsync("test", new[] { "TST" }).ToArrayAsync();
         Assert.Null(users.FirstOrDefault(u => u.Username == user.Username));
 
         // test user is not assignable because only developers can be assigned to both SCRUM and TST issues.
-        users = await jira.Users.SearchAssignableUsersForProjectsAsync("test", new[] { "SCRUM", "TST" });
+        users = await jira.Users.SearchAssignableUsersForProjectsAsync("test", new[] { "SCRUM", "TST" }).ToArrayAsync();
         Assert.Null(users.FirstOrDefault(u => u.Username == user.Username));
 
         // verify delete a user
         await jira.Users.DeleteUserAsync(userInfo.Username);
-        users = await jira.Users.SearchUsersAsync(userInfo.Username);
+        users = await jira.Users.SearchUsersAsync(userInfo.Username).ToArrayAsync();
         Assert.Empty(users);
     }
 }

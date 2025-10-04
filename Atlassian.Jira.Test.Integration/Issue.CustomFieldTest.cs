@@ -16,7 +16,7 @@ public class IssueCustomFieldTest
     {
         var options = new CustomFieldFetchOptions();
         options.ProjectKeys.Add("FOO");
-        Exception ex = await Assert.ThrowsAsync<InvalidOperationException>(async () => await jira.Fields.GetCustomFieldsAsync(options));
+        Exception ex = await Assert.ThrowsAsync<InvalidOperationException>(async () => await jira.Fields.GetCustomFieldsAsync(options).ToArrayAsync());
 
         Assert.Contains("Project with key 'FOO' was not found on the Jira server.", ex.Message);
     }
@@ -27,7 +27,7 @@ public class IssueCustomFieldTest
     {
         var options = new CustomFieldFetchOptions();
         options.ProjectKeys.Add("TST");
-        var results = await jira.Fields.GetCustomFieldsAsync(options);
+        var results = await jira.Fields.GetCustomFieldsAsync(options).ToArrayAsync();
         Assert.Equal(21, results.Count());
     }
 
@@ -42,7 +42,7 @@ public class IssueCustomFieldTest
         options.ProjectKeys.Add("TST");
         options.IssueTypeNames.Add("Bug");
 
-        var results = await jira.Fields.GetCustomFieldsAsync(options);
+        var results = await jira.Fields.GetCustomFieldsAsync(options).ToArrayAsync();
         Assert.Equal(19, results.Count());
     }
 
@@ -91,7 +91,7 @@ public class IssueCustomFieldTest
         var issue = await jira.Issues.GetIssueAsync("GIT-103");
 
         issue.Summary = "Some change";
-        issue.SaveChanges();
+        await issue.SaveChangesAsync();
 
         Assert.NotNull(issue);
     }
@@ -109,7 +109,7 @@ public class IssueCustomFieldTest
         };
 
         issue.CustomFields.AddById("customfield_10000", "My Sample Text");
-        issue.SaveChanges();
+        await issue.SaveChangesAsync();
 
         var newIssue = await jira.Issues.GetIssueAsync(issue.Key.Value);
         Assert.Equal("My Sample Text", newIssue.CustomFields.First(f => f.Id.Equals("customfield_10000")).Values.First());
@@ -129,7 +129,7 @@ public class IssueCustomFieldTest
 
         // Add cascading select with only parent set.
         issue.CustomFields.AddCascadingSelectField("Custom Cascading Select Field", "Option3");
-        issue.SaveChanges();
+        await issue.SaveChangesAsync();
 
         var newIssue = await jira.Issues.GetIssueAsync(issue.Key.Value);
 
@@ -151,7 +151,7 @@ public class IssueCustomFieldTest
         };
 
         issue["Custom Number Field"] = "10000000000";
-        issue.SaveChanges();
+        await issue.SaveChangesAsync();
 
         var newIssue = await jira.Issues.GetIssueAsync(issue.Key.Value);
         Assert.Equal("10000000000", newIssue["Custom Number Field"]);
@@ -191,7 +191,7 @@ public class IssueCustomFieldTest
         issue.CustomFields.AddArray("Custom Multi Version Field", "2.0", "3.0");
         issue.CustomFields.AddCascadingSelectField("Custom Cascading Select Field", "Option2", "Option2.2");
 
-        issue.SaveChanges();
+        await issue.SaveChangesAsync();
 
         var newIssue = await jira.Issues.GetIssueAsync(issue.Key.Value);
 
@@ -240,7 +240,7 @@ public class IssueCustomFieldTest
         issue["Custom Text Field"] = "My new value";
         issue["Custom Date Field"] = "2015-10-03";
         issue["Custom Select Field"] = "Blue";
-        issue.SaveChanges();
+        await issue.SaveChangesAsync();
 
         var newIssue = await jira.Issues.GetIssueAsync(issue.Key.Value);
         Assert.Equal("My new value", newIssue["Custom Text Field"]);
@@ -248,7 +248,7 @@ public class IssueCustomFieldTest
         newIssue["Custom Text Field"] = null;
         newIssue["Custom Date Field"] = null;
         newIssue["Custom Select Field"] = null;
-        newIssue.SaveChanges();
+        await newIssue.SaveChangesAsync();
 
         var updatedIssue = await jira.Issues.GetIssueAsync(issue.Key.Value);
 
@@ -274,7 +274,7 @@ public class IssueCustomFieldTest
             Assignee = "admin"
         };
 
-        issue.SaveChanges();
+        await issue.SaveChangesAsync();
 
         // Retrieve the issue, set all custom fields and save the changes.
         var newIssue = await jira.Issues.GetIssueAsync(issue.Key.Value);
@@ -297,7 +297,7 @@ public class IssueCustomFieldTest
         newIssue.CustomFields.AddArray("Custom Multi Version Field", "2.0", "3.0");
         newIssue.CustomFields.AddCascadingSelectField("Custom Cascading Select Field", "Option2", "Option2.2");
 
-        newIssue.SaveChanges();
+        await newIssue.SaveChangesAsync();
 
         // Retrieve the issue again and verify fields
         var updatedIssue = await jira.Issues.GetIssueAsync(issue.Key.Value);
@@ -332,7 +332,7 @@ public class IssueCustomFieldTest
         updatedIssue["Custom Date Field"] = "2019-10-03";
         updatedIssue["Custom Number Field"] = "9999";
         updatedIssue.CustomFields["Custom Labels Field"].Values = new string[] { "label3" };
-        updatedIssue.SaveChanges();
+        await updatedIssue.SaveChangesAsync();
 
         // Retrieve the issue one last time and verify custom fields.
         var updatedIssue2 = await jira.Issues.GetIssueAsync(issue.Key.Value);
@@ -354,7 +354,7 @@ public class IssueCustomFieldTest
         };
         // Set the sprint by id
         issue["Sprint"] = "1";
-        issue.SaveChanges();
+        await issue.SaveChangesAsync();
 
         // Get the sprint by name
         var newIssue = await jira.Issues.GetIssueAsync(issue.Key.Value);
@@ -371,12 +371,12 @@ public class IssueCustomFieldTest
             Summary = "Test issue with sprint" + _random.Next(int.MaxValue),
             Assignee = "admin"
         };
-        issue.SaveChanges();
+        await issue.SaveChangesAsync();
         Assert.Null(issue["Sprint"]);
 
         // Set the sprint by id
         issue["Sprint"] = "1";
-        issue.SaveChanges();
+        await issue.SaveChangesAsync();
 
         // Get the sprint by name
         var newIssue = await jira.Issues.GetIssueAsync(issue.Key.Value);
@@ -385,7 +385,7 @@ public class IssueCustomFieldTest
 
     [Theory]
     [ClassData(typeof(JiraProvider))]
-    public void CanUpdateIssueWithoutModifyingCustomFields(Jira jira)
+    public async Task CanUpdateIssueWithoutModifyingCustomFields(Jira jira)
     {
         var issue = new Issue(jira, "SCRUM")
         {
@@ -394,17 +394,17 @@ public class IssueCustomFieldTest
             Assignee = "admin"
         };
         issue["Sprint"] = "1";
-        issue.SaveChanges();
+        await issue.SaveChangesAsync();
         Assert.Equal("Sprint 1", issue["Sprint"]);
 
         issue.Summary += " (Updated)";
-        issue.SaveChanges();
+        await issue.SaveChangesAsync();
         Assert.Equal("Sprint 1", issue["Sprint"]);
     }
 
     [Theory]
     [ClassData(typeof(JiraProvider))]
-    public void ThrowsErrorWhenSettingSprintByName(Jira jira)
+    public async Task ThrowsErrorWhenSettingSprintByName(Jira jira)
     {
         var issue = new Issue(jira, "SCRUM")
         {
@@ -418,7 +418,7 @@ public class IssueCustomFieldTest
 
         try
         {
-            issue.SaveChanges();
+            await issue.SaveChangesAsync();
             throw new Exception("Method did not throw exception");
         }
         catch (AggregateException ex)

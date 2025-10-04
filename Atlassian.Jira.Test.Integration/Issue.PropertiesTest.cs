@@ -75,7 +75,7 @@ public class IssuePropertiesTest
             Assignee = "admin"
         };
 
-        issue.SaveChanges();
+        await issue.SaveChangesAsync();
 
         // verify no votes
         Assert.Equal(0, issue.Votes.Value);
@@ -86,7 +86,7 @@ public class IssuePropertiesTest
         await jiraTester.RestClient.ExecuteRequestAsync(RestSharp.Method.POST, $"rest/api/2/issue/{issue.Key.Value}/votes");
 
         // verify votes for first user
-        issue.Refresh();
+        await issue.RefreshAsync();
         Assert.Equal(1, issue.Votes.Value);
         Assert.False(issue.HasUserVoted);
 
