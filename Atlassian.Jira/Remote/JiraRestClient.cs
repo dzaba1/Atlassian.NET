@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RestSharp;
@@ -161,21 +161,21 @@ public class JiraRestClient : IJiraRestClient
 
     private void LogRequest(IRestRequest request, object body = null)
     {
-        if (_clientSettings.EnableRequestTrace)
+        var logger = _clientSettings.GetLogger<JiraRestClient>();
+
+        if (logger != null)
         {
-            Trace.WriteLine(string.Format("[{0}] Request Url: {1}",
-                request.Method,
-                request.Resource));
+            logger.LogInformation("[{Method}] Request Url: {Url}", request.Method, request.Resource);
 
             if (body != null)
             {
-                Trace.WriteLine(string.Format("[{0}] Request Data: {1}",
-                    request.Method,
-                    JsonConvert.SerializeObject(body, new JsonSerializerSettings()
-                    {
-                        Formatting = Formatting.Indented,
-                        NullValueHandling = NullValueHandling.Ignore
-                    })));
+                var bodyJson = JsonConvert.SerializeObject(body, new JsonSerializerSettings()
+                {
+                    Formatting = Formatting.Indented,
+                    NullValueHandling = NullValueHandling.Ignore
+                });
+
+                logger.LogInformation("[{Method}] Request Data: {Body}", request.Method, bodyJson);
             }
         }
     }
@@ -183,13 +183,11 @@ public class JiraRestClient : IJiraRestClient
     private JToken GetValidJsonFromResponse(IRestRequest request, IRestResponse response)
     {
         var content = response.Content != null ? response.Content.Trim() : string.Empty;
+        var logger = _clientSettings.GetLogger<JiraRestClient>();
 
-        if (_clientSettings.EnableRequestTrace)
+        if (logger != null)
         {
-            Trace.WriteLine(string.Format("[{0}] Response for Url: {1}\n{2}",
-                request.Method,
-                request.Resource,
-                content));
+            logger.LogInformation("[{Method}] Response for Url: {Url}" + Environment.NewLine + "{Content}", request.Method, request.Resource, content);
         }
 
         if (!string.IsNullOrEmpty(response.ErrorMessage))

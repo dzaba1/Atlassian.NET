@@ -1,11 +1,11 @@
 using Atlassian.Jira.Linq;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Runtime.CompilerServices;
@@ -90,9 +90,10 @@ internal class IssueService : IIssueService
 
     public async Task<IPagedQueryResult<Issue>> GetIssuesFromJqlAsync(IssueSearchOptions options, CancellationToken token = default)
     {
-        if (_jira.Debug)
+        var logger = _restSettings.GetLogger<IssueService>();
+        if (logger != null)
         {
-            Trace.WriteLine("[GetFromJqlAsync] JQL: " + options.Jql);
+            logger.LogDebug("[GetFromJqlAsync] JQL: {Jql}", options.Jql);
         }
 
         var fields = new List<string>();

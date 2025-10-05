@@ -25,8 +25,6 @@ public class Jira
     {
         _services = services;
         _cache = cache ?? new JiraCache();
-
-        Debug = false;
     }
 
     /// <summary>
@@ -298,11 +296,6 @@ public class Jira
             return Services.Get<IJiraRestClient>();
         }
     }
-
-    /// <summary>
-    /// Whether to print the translated JQL to console
-    /// </summary>
-    public bool Debug { get; set; }
 
     /// <summary>
     /// Maximum number of issues per request

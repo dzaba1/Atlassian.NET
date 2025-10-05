@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Net;
 using Atlassian.Jira.Remote;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
 namespace Atlassian.Jira;
@@ -24,9 +24,9 @@ public class JiraRestClientSettings
     };
 
     /// <summary>
-    /// Whether to trace each request.
+    /// Setup this to trace each request.
     /// </summary>
-    public bool EnableRequestTrace { get; set; }
+    public ILoggerFactory LoggerFactory { get; set; }
 
     /// <summary>
     /// Dictionary of serializers for custom fields.
@@ -161,5 +161,15 @@ public class JiraRestClientSettings
     private static string GetGreenhopperType(string name)
     {
         return string.Format("com.pyxis.greenhopper.jira:{0}", name);
+    }
+
+    internal ILogger<T> GetLogger<T>()
+    {
+        if (LoggerFactory == null)
+        {
+            return null;
+        }
+
+        return LoggerFactory.CreateLogger<T>();
     }
 }
