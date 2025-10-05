@@ -1,0 +1,43 @@
+name: Build
+
+on:
+  workflow_dispatch:
+    inputs:
+      skipIntegrationTests:
+        description: Skip integration tests
+        type: boolean
+        default: true
+  workflow_call:
+    inputs:
+      skipIntegrationTests:
+        description: Skip integration tests
+        type: boolean
+        default: true
+  push:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    name: Build and tests
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Build
+      run: dotnet build --no-restore
+    - name: Unit tests
+      run: dotnet test Atlassian.Jira.Test --no-build --verbosity normal 
+    - name: Integration tests
+      if: ${{inputs.skipIntegrationTests == 'false'}}
+      run: dotnet test Dzaba.AtlassianSdk.Jira.IntegrationTests --no-build --verbosity normal
+      env:
+        TEST_JIRA_URL: ${{secrets.TEST_JIRA_URL}}
+        TEST_JIRA_USER: ${{secrets.TEST_JIRA_USER}}
+        TEST_JIRA_TOKEN: ${{secrets.TEST_JIRA_TOKEN}}
+        TEST_JIRA_PROJECT_KEY: ${{secrets.TEST_JIRA_PROJECT_KEY}}
