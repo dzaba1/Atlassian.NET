@@ -9,9 +9,11 @@ namespace Dzaba.AtlassianSdk.Jira.IntegrationTests;
 
 public class JiraTestFixture
 {
-    private static readonly string ClouldUrl = "";
-    private static readonly string ClouldUser = "";
-    private static readonly string ClouldToken = "";
+    private static readonly string CloudUrlEnvKey = "TEST_JIRA_URL";
+    private static readonly string CloudUserEnvKey = "TEST_JIRA_USER";
+    private static readonly string CloudTokenEnvKey = "TEST_JIRA_TOKEN";
+    private static readonly string CloudTestProjectEnvKey = "TEST_JIRA_PROJECT_KEY";
+
     protected static readonly Random Rand = new Random();
 
     private ILoggerFactory loggerFactory;
@@ -29,8 +31,22 @@ public class JiraTestFixture
             LoggerFactory = loggerFactory
         };
 
-        Jira = Atlassian.Jira.Jira.CreateRestClient(ClouldUrl, ClouldUser, ClouldToken, settings);
-        TestProjectKey = "";
+        Jira = Atlassian.Jira.Jira.CreateRestClient(GetValueFromEnv(CloudUrlEnvKey),
+            GetValueFromEnv(CloudUserEnvKey),
+            GetValueFromEnv(CloudTokenEnvKey),
+            settings);
+
+        TestProjectKey = GetValueFromEnv(CloudTestProjectEnvKey);
+    }
+
+    private string GetValueFromEnv(string envKey)
+    {
+        var value = Environment.GetEnvironmentVariable(envKey);
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            throw new ArgumentNullException(envKey, $"The environmental variable {envKey} is not set.");
+        }
+        return value;
     }
 
     [OneTimeTearDown]
