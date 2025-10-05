@@ -445,6 +445,7 @@ public class Issue : IRemoteIssueFieldProvider
     /// Sets the value of a custom field
     /// </summary>
     /// <param name="customFieldName">Custom field name</param>
+    /// <param name="value"></param>
     public async Task SetCustomFieldAsync(string customFieldName, ComparableString value)
     {
         var customField = await _customFields.GetCustomFieldAsync(customFieldName);
@@ -848,6 +849,7 @@ public class Issue : IRemoteIssueFieldProvider
     /// <param name="timespent">Specifies a time duration in JIRA duration format, representing the time spent working on the worklog</param>
     /// <param name="worklogStrategy">How to handle the remaining estimate, defaults to AutoAdjustRemainingEstimate</param>
     /// <param name="newEstimate">New estimate (only used if worklogStrategy set to NewRemainingEstimate)</param>
+    /// <param name="token"></param>
     /// <returns>Worklog as constructed by server</returns>
     public Task<Worklog> AddWorklogAsync(string timespent,
                              WorklogStrategy worklogStrategy = WorklogStrategy.AutoAdjustRemainingEstimate,
@@ -943,6 +945,7 @@ public class Issue : IRemoteIssueFieldProvider
     /// <summary>
     /// Gets the workflow actions that the issue can be transitioned to including the fields that are required per action.
     /// </summary>
+    /// <param name="expandTransitionFields"></param>
     /// <param name="token">Cancellation token for this operation.</param>
     public IAsyncEnumerable<IssueTransition> GetAvailableActionsAsync(bool expandTransitionFields, CancellationToken token = default)
     {

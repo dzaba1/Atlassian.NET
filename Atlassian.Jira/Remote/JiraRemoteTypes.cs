@@ -1658,8 +1658,8 @@ public partial class RemoteVersion : AbstractNamedRemoteEntity
         }
     }
 
-    [System.Xml.Serialization.SoapIgnore]
     /// <remarks/>
+    [System.Xml.Serialization.SoapIgnore]
     public string description
     {
         get

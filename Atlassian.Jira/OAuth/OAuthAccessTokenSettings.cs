@@ -41,12 +41,15 @@ public class OAuthAccessTokenSettings
         AccessTokenUrl = accessTokenUrl;
     }
 
+
+#pragma warning disable CS0419 // Ambiguous reference in cref attribute
     /// <summary>
     /// Initializes a new instance of the <see cref="OAuthAccessTokenSettings"/> class.
     /// </summary>
     /// <param name="oAuthRequestTokenSettings">The settings used to generate the request token.</param>
     /// <param name="oAuthRequestToken">The request token object returned by <see cref="OAuthTokenHelper.GenerateRequestTokenAsync" />.</param>
     /// <param name="oAuthVerifier">The verification code received from Jira.</param>
+#pragma warning restore CS0419 // Ambiguous reference in cref attribute
     public OAuthAccessTokenSettings(
         OAuthRequestTokenSettings oAuthRequestTokenSettings,
         OAuthRequestToken oAuthRequestToken,

@@ -84,6 +84,7 @@ public class CustomFieldValueCollection : ReadOnlyCollection<CustomFieldValue>, 
     /// </summary>
     /// <param name="fieldName">The name of the custom field as defined in JIRA</param>
     /// <param name="fieldValues">The values of the field</param>
+    /// <param name="serializer"></param>
     public async Task<CustomFieldValueCollection> AddAsync(string fieldName, string[] fieldValues, ICustomFieldValueSerializer serializer = null)
     {
         var fieldId = await GetCustomFieldIdAsync(fieldName);

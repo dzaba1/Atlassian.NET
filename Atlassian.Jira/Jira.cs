@@ -254,6 +254,7 @@ public class Jira
         }
     }
 
+    /// <summary>
     /// Gets an object to interact with the Jira screens.
     /// </summary>
     public IScreenService Screens
