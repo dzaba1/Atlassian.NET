@@ -1,5 +1,6 @@
 # Atlassian.NET SDK
 
+[![Build](https://github.com/dzaba1/Atlassian.NET/actions/workflows/build.yml/badge.svg)](https://github.com/dzaba1/Atlassian.NET/actions/workflows/build.yml)
 Contains utilities for interacting with  [Atlassian JIRA](http://www.atlassian.com/software/jira).
 
 ## Support Notice
