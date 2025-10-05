@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Dzaba.AtlassianSdk.Jira.IntegrationTests;
 
-public class JiraTestFixture
+public abstract class JiraTestFixture
 {
     private static readonly string CloudUrlEnvKey = "TEST_JIRA_URL";
     private static readonly string CloudUserEnvKey = "TEST_JIRA_USER";
