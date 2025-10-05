@@ -1,19 +1,12 @@
 # Atlassian.NET SDK
 
 [![Build](https://github.com/dzaba1/Atlassian.NET/actions/workflows/build.yml/badge.svg)](https://github.com/dzaba1/Atlassian.NET/actions/workflows/build.yml)
+
 Contains utilities for interacting with  [Atlassian JIRA](http://www.atlassian.com/software/jira).
-
-## Support Notice
-
-All features tested on JIRA v8.5.2
-
-Due to time constraints, this project is no longer mantained. Thank you for all the support during these past years.
 
 ## Download
 
-- [Get the latest via NuGet](http://nuget.org/List/Packages/Atlassian.SDK).
-- [Get the latest binaries from AppVeyor](https://ci.appveyor.com/project/farmas/atlassian-net-sdk/history).
-  [![Build Status](https://ci.appveyor.com/api/projects/status/bitbucket/farmas/atlassian.net-sdk?branch=release&amp;svg=true)](https://ci.appveyor.com/project/farmas/atlassian-net-sdk)
+- 
 
 ## License
 
@@ -38,21 +31,6 @@ This project is licensed under  [BSD](/LICENSE.md).
 - [VS Jira](https://bitbucket.org/farmas/vsjira) - A VisualStudio Extension that adds tools to interact with JIRA
 servers.
 - [Jira OAuth CLI](https://bitbucket.org/farmas/atlassian.net-jira-oauth-cli) - Command line tool to setup OAuth on a JIRA server so that it can be used with the Atlassian.NET SDK.
-
-## Signed Version
-
-### Atlassian.SDK.Signed (Deprecated)
-
-The [Atlassian.SDK.Signed](https://www.nuget.org/packages/Atlassian.SDK.Signed/) package contains a signed version of
-the assembly, however it is no longer being mantained. It has the following limitations:
-
-- It references the  [RestSharpSigned](https://www.nuget.org/packages/RestSharpSigned) package, which is not up-to-date
-  to the official  [RestSharp](https://www.nuget.org/packages/RestSharpSigned) package.
-- It only supports net452 framework (does not support .netcore).
-
-### Using StrongNameSigner
-
-An alternative to using the Atlassian.SDK.Signed package is to use the [StrongNameSigner](https://www.nuget.org/packages/Brutal.Dev.StrongNameSigner) which can automatically sign any un-signed packages in your project. For a sample of how to use it in a project see [VS Jira](https://bitbucket.org/farmas/vsjira).
 
 ## Documentation
 
