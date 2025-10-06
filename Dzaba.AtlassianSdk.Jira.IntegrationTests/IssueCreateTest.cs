@@ -115,14 +115,24 @@ public class IssueCreateTest : JiraTestFixture
             Assignee = "admin"
         };
 
-        await issue.SaveChangesAsync();
+        try
+        {
+            await issue.SaveChangesAsync();
 
-        var issues = (from i in Jira.Issues.Queryable
-                      where i.Key == issue.Key
-                      select i).ToArray();
+            // We must wait few seconds otherwise the issue won't be find by JQL
+            await Task.Delay(TimeSpan.FromSeconds(2));
 
-        issues.Should().HaveCount(1);
-        issues[0].Summary.Should().Be(summaryValue);
-        issues[0].Project.Should().Be(TestProject.Key);
+            var issues = (from i in Jira.Issues.Queryable
+                          where i.Key == issue.Key
+                          select i).ToArray();
+
+            issues.Should().HaveCount(1);
+            issues[0].Summary.Should().Be(summaryValue);
+            issues[0].Project.Should().Be(TestProject.Key);
+        }
+        finally
+        {
+            await DeleteIssueSafeAsync(issue.Key?.Value);
+        }
     }
 }

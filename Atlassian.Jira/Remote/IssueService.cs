@@ -1,4 +1,5 @@
 using Atlassian.Jira.Linq;
+using Atlassian.Jira.Swagger;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -106,25 +107,47 @@ internal class IssueService : IIssueService
             fields.AddRange(options.AdditionalFields.Select(field => field.Trim()));
         }
 
-        var parameters = new
+        var parameters = new SearchAndReconcileRequestBean
         {
-            jql = options.Jql,
-            fields = fields
+            Jql = options.Jql,
+            Fields = fields
         };
 
-        var result = await _jira.RestClient.ExecuteRequestAsync(Method.POST, "rest/api/3/search/jql", parameters, token).ConfigureAwait(false);
+        var resultJson = await _jira.RestClient.ExecuteRequestAsync(Method.POST, "rest/api/2/search/jql", parameters, token).ConfigureAwait(false);
+        var resultModel = JsonConvert.DeserializeObject<SearchAndReconcileResults>(resultJson.ToString(), _jira.RestClient.Settings.JsonSerializerSettings);
+        var exit = false;
         var serializerSettings = await GetIssueSerializerSettingsAsync(token).ConfigureAwait(false);
-        var issues = result["issues"]
-            .Cast<JObject>()
-            .Select(issueJson =>
-            {
-                var remoteIssue = JsonConvert.DeserializeObject<RemoteIssueWrapper>(issueJson.ToString(), serializerSettings).RemoteIssue;
-                return new Issue(_jira, remoteIssue);
-            });
 
-        yield break;
-        throw new NotImplementedException();
-        //return PagedQueryResult<Issue>.FromJson((JObject)result, issues);
+        while (!exit)
+        {
+            exit = resultModel.IsLast;
+
+            var issues = resultJson["issues"]
+                .Cast<JObject>()
+                .Select(issueJson =>
+                {
+                    var remoteIssue = JsonConvert.DeserializeObject<RemoteIssueWrapper>(issueJson.ToString(), serializerSettings).RemoteIssue;
+                    return new Issue(_jira, remoteIssue);
+                });
+
+            foreach (var issue in issues)
+            {
+                yield return issue;
+            }
+
+            if (!exit)
+            {
+                var nextParameters = new SearchAndReconcileRequestBean
+                {
+                    Jql = options.Jql,
+                    Fields = fields,
+                    NextPageToken = resultModel.NextPageToken,
+                };
+
+                resultJson = await _jira.RestClient.ExecuteRequestAsync(Method.POST, "rest/api/3/search/jql", nextParameters, token).ConfigureAwait(false);
+                resultModel = JsonConvert.DeserializeObject<SearchAndReconcileResults>(resultJson.ToString(), _jira.RestClient.Settings.JsonSerializerSettings);
+            }
+        }
     }
 
     public async Task UpdateIssueAsync(Issue issue, IssueUpdateOptions options, CancellationToken token = default)
