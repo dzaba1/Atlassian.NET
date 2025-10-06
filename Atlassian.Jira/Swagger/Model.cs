@@ -1793,33 +1793,6 @@ namespace Atlassian.Jira.Swagger
     }
 
     /// <summary>
-    /// Bulk Edit Get Fields Response.
-    /// </summary>
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.1.0 (NJsonSchema v11.5.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    internal partial class BulkEditGetFields
-    {
-
-        /// <summary>
-        /// The end cursor for use in pagination.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("endingBefore", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string EndingBefore { get; set; }
-
-        /// <summary>
-        /// List of all the fields
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("fields", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<IssueBulkEditField> Fields { get; set; }
-
-        /// <summary>
-        /// The start cursor for use in pagination.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("startingAfter", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string StartingAfter { get; set; }
-
-    }
-
-    /// <summary>
     /// Details of a request to bulk edit shareable entity.
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.1.0 (NJsonSchema v11.5.1.0 (Newtonsoft.Json v13.0.0.0))")]
@@ -1917,7 +1890,7 @@ namespace Atlassian.Jira.Swagger
         /// <br/>
         /// <br/>Multiple `fields` parameters can be included in a request.
         /// <br/>
-        /// <br/>Note: All navigable fields are returned by default. This differs from [GET issue](#api-rest-api-3-issue-issueIdOrKey-get) where the default is all fields.
+        /// <br/>Note: All navigable fields are returned by default. This differs from [GET issue](#api-rest-api-2-issue-issueIdOrKey-get) where the default is all fields.
         /// </summary>
         [Newtonsoft.Json.JsonProperty("fields", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public System.Collections.Generic.ICollection<string> Fields { get; set; }
@@ -2006,15 +1979,6 @@ namespace Atlassian.Jira.Swagger
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.1.0 (NJsonSchema v11.5.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    internal partial class BulkOperationErrorResponse
-    {
-
-        [Newtonsoft.Json.JsonProperty("errors", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<ErrorMessage> Errors { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.1.0 (NJsonSchema v11.5.1.0 (Newtonsoft.Json v13.0.0.0))")]
     internal partial class BulkOperationErrorResult
     {
 
@@ -2026,76 +1990,6 @@ namespace Atlassian.Jira.Swagger
 
         [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public int Status { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.1.0 (NJsonSchema v11.5.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    internal partial class BulkOperationProgress
-    {
-
-        /// <summary>
-        /// A timestamp of when the task was submitted.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("created", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.DateTimeOffset Created { get; set; }
-
-        /// <summary>
-        /// Map of issue IDs for which the operation failed and that the user has permission to view, to their one or more reasons for failure. These reasons are open-ended text descriptions of the error and are not selected from a predefined list of standard reasons.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("failedAccessibleIssues", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.IDictionary<string, System.Collections.Generic.ICollection<string>> FailedAccessibleIssues { get; set; }
-
-        /// <summary>
-        /// The number of issues that are either invalid or issues that the user doesn't have permission to view, regardless of the success or failure of the operation.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("invalidOrInaccessibleIssueCount", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int InvalidOrInaccessibleIssueCount { get; set; }
-
-        /// <summary>
-        /// List of issue IDs for which the operation was successful and that the user has permission to view.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("processedAccessibleIssues", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<long> ProcessedAccessibleIssues { get; set; }
-
-        /// <summary>
-        /// Progress of the task as a percentage.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("progressPercent", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public long ProgressPercent { get; set; }
-
-        /// <summary>
-        /// A timestamp of when the task was started.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("started", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.DateTimeOffset Started { get; set; }
-
-        /// <summary>
-        /// The status of the task.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public BulkOperationProgressStatus Status { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("submittedBy", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public User SubmittedBy { get; set; }
-
-        /// <summary>
-        /// The ID of the task.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("taskId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string TaskId { get; set; }
-
-        /// <summary>
-        /// The number of issues that the bulk operation was attempted on.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("totalIssueCount", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int TotalIssueCount { get; set; }
-
-        /// <summary>
-        /// A timestamp of when the task progress was last updated.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("updated", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.DateTimeOffset Updated { get; set; }
 
     }
 
@@ -2219,51 +2113,6 @@ namespace Atlassian.Jira.Swagger
         /// </summary>
         [Newtonsoft.Json.JsonProperty("results", Required = Newtonsoft.Json.Required.Always)]
         public System.Collections.Generic.ICollection<SingleRedactionResponse> Results { get; set; } = new System.Collections.ObjectModel.Collection<SingleRedactionResponse>();
-
-    }
-
-    /// <summary>
-    /// Bulk Transition Get Available Transitions Response.
-    /// </summary>
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.1.0 (NJsonSchema v11.5.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    internal partial class BulkTransitionGetAvailableTransitions
-    {
-
-        /// <summary>
-        /// List of available transitions for bulk transition operation for requested issues grouped by workflow
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("availableTransitions", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<IssueBulkTransitionForWorkflow> AvailableTransitions { get; set; }
-
-        /// <summary>
-        /// The end cursor for use in pagination.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("endingBefore", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string EndingBefore { get; set; }
-
-        /// <summary>
-        /// The start cursor for use in pagination.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("startingAfter", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string StartingAfter { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.1.0 (NJsonSchema v11.5.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    internal partial class BulkTransitionSubmitInput
-    {
-
-        /// <summary>
-        /// List of all the issue IDs or keys that are to be bulk transitioned.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("selectedIssueIdsOrKeys", Required = Newtonsoft.Json.Required.Always)]
-        public System.Collections.Generic.ICollection<string> SelectedIssueIdsOrKeys { get; set; } = new System.Collections.ObjectModel.Collection<string>();
-
-        /// <summary>
-        /// The ID of the transition that is to be performed on the issues.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("transitionId", Required = Newtonsoft.Json.Required.Always)]
-        public string TransitionId { get; set; }
 
     }
 
@@ -2549,10 +2398,10 @@ namespace Atlassian.Jira.Swagger
         public UserDetails Author { get; set; }
 
         /// <summary>
-        /// The comment text in [Atlassian Document Format](https://developer.atlassian.com/cloud/jira/platform/apis/document/structure/).
+        /// The comment text.
         /// </summary>
         [Newtonsoft.Json.JsonProperty("body", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public object Body { get; set; }
+        public string Body { get; set; }
 
         /// <summary>
         /// The date and time at which the comment was created.
@@ -3818,7 +3667,7 @@ namespace Atlassian.Jira.Swagger
         public long AvatarId { get; set; }
 
         /// <summary>
-        /// The ID of the project's category. A complete list of category IDs is found using the [Get all project categories](#api-rest-api-3-projectCategory-get) operation.
+        /// The ID of the project's category. A complete list of category IDs is found using the [Get all project categories](#api-rest-api-2-projectCategory-get) operation.
         /// </summary>
         [Newtonsoft.Json.JsonProperty("categoryId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public long CategoryId { get; set; }
@@ -3830,25 +3679,25 @@ namespace Atlassian.Jira.Swagger
         public string Description { get; set; }
 
         /// <summary>
-        /// The ID of the field configuration scheme for the project. Use the [Get all field configuration schemes](#api-rest-api-3-fieldconfigurationscheme-get) operation to get a list of field configuration scheme IDs. If you specify the field configuration scheme you cannot specify the project template key.
+        /// The ID of the field configuration scheme for the project. Use the [Get all field configuration schemes](#api-rest-api-2-fieldconfigurationscheme-get) operation to get a list of field configuration scheme IDs. If you specify the field configuration scheme you cannot specify the project template key.
         /// </summary>
         [Newtonsoft.Json.JsonProperty("fieldConfigurationScheme", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public long FieldConfigurationScheme { get; set; }
 
         /// <summary>
-        /// The ID of the issue security scheme for the project, which enables you to control who can and cannot view issues. Use the [Get issue security schemes](#api-rest-api-3-issuesecurityschemes-get) resource to get all issue security scheme IDs.
+        /// The ID of the issue security scheme for the project, which enables you to control who can and cannot view issues. Use the [Get issue security schemes](#api-rest-api-2-issuesecurityschemes-get) resource to get all issue security scheme IDs.
         /// </summary>
         [Newtonsoft.Json.JsonProperty("issueSecurityScheme", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public long IssueSecurityScheme { get; set; }
 
         /// <summary>
-        /// The ID of the issue type scheme for the project. Use the [Get all issue type schemes](#api-rest-api-3-issuetypescheme-get) operation to get a list of issue type scheme IDs. If you specify the issue type scheme you cannot specify the project template key.
+        /// The ID of the issue type scheme for the project. Use the [Get all issue type schemes](#api-rest-api-2-issuetypescheme-get) operation to get a list of issue type scheme IDs. If you specify the issue type scheme you cannot specify the project template key.
         /// </summary>
         [Newtonsoft.Json.JsonProperty("issueTypeScheme", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public long IssueTypeScheme { get; set; }
 
         /// <summary>
-        /// The ID of the issue type screen scheme for the project. Use the [Get all issue type screen schemes](#api-rest-api-3-issuetypescreenscheme-get) operation to get a list of issue type screen scheme IDs. If you specify the issue type screen scheme you cannot specify the project template key.
+        /// The ID of the issue type screen scheme for the project. Use the [Get all issue type screen schemes](#api-rest-api-2-issuetypescreenscheme-get) operation to get a list of issue type screen scheme IDs. If you specify the issue type screen scheme you cannot specify the project template key.
         /// </summary>
         [Newtonsoft.Json.JsonProperty("issueTypeScreenScheme", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public long IssueTypeScreenScheme { get; set; }
@@ -3878,13 +3727,13 @@ namespace Atlassian.Jira.Swagger
         public string Name { get; set; }
 
         /// <summary>
-        /// The ID of the notification scheme for the project. Use the [Get notification schemes](#api-rest-api-3-notificationscheme-get) resource to get a list of notification scheme IDs.
+        /// The ID of the notification scheme for the project. Use the [Get notification schemes](#api-rest-api-2-notificationscheme-get) resource to get a list of notification scheme IDs.
         /// </summary>
         [Newtonsoft.Json.JsonProperty("notificationScheme", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public long NotificationScheme { get; set; }
 
         /// <summary>
-        /// The ID of the permission scheme for the project. Use the [Get all permission schemes](#api-rest-api-3-permissionscheme-get) resource to see a list of all permission scheme IDs.
+        /// The ID of the permission scheme for the project. Use the [Get all permission schemes](#api-rest-api-2-permissionscheme-get) resource to see a list of all permission scheme IDs.
         /// </summary>
         [Newtonsoft.Json.JsonProperty("permissionScheme", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public long PermissionScheme { get; set; }
@@ -3910,7 +3759,7 @@ namespace Atlassian.Jira.Swagger
         public string Url { get; set; }
 
         /// <summary>
-        /// The ID of the workflow scheme for the project. Use the [Get all workflow schemes](#api-rest-api-3-workflowscheme-get) operation to get a list of workflow scheme IDs. If you specify the workflow scheme you cannot specify the project template key.
+        /// The ID of the workflow scheme for the project. Use the [Get all workflow schemes](#api-rest-api-2-workflowscheme-get) operation to get a list of workflow scheme IDs. If you specify the workflow scheme you cannot specify the project template key.
         /// </summary>
         [Newtonsoft.Json.JsonProperty("workflowScheme", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public long WorkflowScheme { get; set; }
@@ -5781,7 +5630,7 @@ namespace Atlassian.Jira.Swagger
         public long AvatarId { get; set; }
 
         /// <summary>
-        /// The ID of the project's category. A complete list of category IDs is found using the [Get all project categories](#api-rest-api-3-projectCategory-get) operation.
+        /// The ID of the project's category. A complete list of category IDs is found using the [Get all project categories](#api-rest-api-2-projectCategory-get) operation.
         /// </summary>
         [Newtonsoft.Json.JsonProperty("categoryId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public long CategoryId { get; set; }
@@ -6537,7 +6386,10 @@ namespace Atlassian.Jira.Swagger
     internal partial class ErrorMessage
     {
 
-        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        /// <summary>
+        /// The error message.
+        /// </summary>
+        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.Always)]
         public string Message { get; set; }
 
     }
@@ -7847,7 +7699,7 @@ namespace Atlassian.Jira.Swagger
         public User Owner { get; set; }
 
         /// <summary>
-        /// A URL to view the filter results in Jira, using the [Search for issues using JQL](#api-rest-api-3-filter-search-get) operation with the filter's JQL string to return the filter results. For example, *https://your-domain.atlassian.net/rest/api/3/search?jql=project+%3D+SSP+AND+issuetype+%3D+Bug*.
+        /// A URL to view the filter results in Jira, using the [Search for issues using JQL](#api-rest-api-2-filter-search-get) operation with the filter's JQL string to return the filter results. For example, *https://your-domain.atlassian.net/rest/api/2/search?jql=project+%3D+SSP+AND+issuetype+%3D+Bug*.
         /// </summary>
         [Newtonsoft.Json.JsonProperty("searchUrl", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public System.Uri SearchUrl { get; set; }
@@ -7952,7 +7804,7 @@ namespace Atlassian.Jira.Swagger
         public User Owner { get; set; }
 
         /// <summary>
-        /// A URL to view the filter results in Jira, using the [Search for issues using JQL](#api-rest-api-3-filter-search-get) operation with the filter's JQL string to return the filter results. For example, *https://your-domain.atlassian.net/rest/api/3/search?jql=project+%3D+SSP+AND+issuetype+%3D+Bug*.
+        /// A URL to view the filter results in Jira, using the [Search for issues using JQL](#api-rest-api-2-filter-search-get) operation with the filter's JQL string to return the filter results. For example, *https://your-domain.atlassian.net/rest/api/2/search?jql=project+%3D+SSP+AND+issuetype+%3D+Bug*.
         /// </summary>
         [Newtonsoft.Json.JsonProperty("searchUrl", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public System.Uri SearchUrl { get; set; }
@@ -9068,7 +8920,7 @@ namespace Atlassian.Jira.Swagger
     {
 
         /// <summary>
-        /// The ID of the permission scheme to associate with the project. Use the [Get all permission schemes](#api-rest-api-3-permissionscheme-get) resource to get a list of permission scheme IDs.
+        /// The ID of the permission scheme to associate with the project. Use the [Get all permission schemes](#api-rest-api-2-permissionscheme-get) resource to get a list of permission scheme IDs.
         /// </summary>
         [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Always)]
         public long Id { get; set; }
@@ -9234,226 +9086,6 @@ namespace Atlassian.Jira.Swagger
         /// </summary>
         [Newtonsoft.Json.JsonProperty("versionedRepresentations", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public System.Collections.Generic.IDictionary<string, System.Collections.Generic.IDictionary<string, object>> VersionedRepresentations { get; set; }
-
-    }
-
-    /// <summary>
-    /// Issue Bulk Delete Payload
-    /// </summary>
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.1.0 (NJsonSchema v11.5.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    internal partial class IssueBulkDeletePayload
-    {
-
-        /// <summary>
-        /// List of issue IDs or keys which are to be bulk deleted. These IDs or keys can be from different projects and issue types.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("selectedIssueIdsOrKeys", Required = Newtonsoft.Json.Required.Always)]
-        public System.Collections.Generic.ICollection<string> SelectedIssueIdsOrKeys { get; set; } = new System.Collections.ObjectModel.Collection<string>();
-
-        /// <summary>
-        /// A boolean value that indicates whether to send a bulk change notification when the issues are being deleted.
-        /// <br/>
-        /// <br/>If `true`, dispatches a bulk notification email to users about the updates.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("sendBulkNotification", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public bool? SendBulkNotification { get; set; } = true;
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.1.0 (NJsonSchema v11.5.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    internal partial class IssueBulkEditField
-    {
-
-        /// <summary>
-        /// Description of the field.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("description", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Description { get; set; }
-
-        /// <summary>
-        /// A list of options related to the field, applicable in contexts where multiple selections are allowed.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("fieldOptions", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<IssueBulkOperationsFieldOption> FieldOptions { get; set; }
-
-        /// <summary>
-        /// The unique ID of the field.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Id { get; set; }
-
-        /// <summary>
-        /// Indicates whether the field is mandatory for the operation.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("isRequired", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public bool IsRequired { get; set; }
-
-        /// <summary>
-        /// Specifies supported actions (like add, replace, remove) on multi-select fields via an enum.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("multiSelectFieldOptions", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore, ItemConverterType = typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public System.Collections.Generic.ICollection<MultiSelectFieldOptions> MultiSelectFieldOptions { get; set; }
-
-        /// <summary>
-        /// The display name of the field.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("name", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Name { get; set; }
-
-        /// <summary>
-        /// A URL to fetch additional data for the field
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("searchUrl", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string SearchUrl { get; set; }
-
-        /// <summary>
-        /// The type of the field.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Type { get; set; }
-
-        /// <summary>
-        /// A message indicating why the field is unavailable for editing.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("unavailableMessage", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string UnavailableMessage { get; set; }
-
-    }
-
-    /// <summary>
-    /// Issue Bulk Edit Payload
-    /// </summary>
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.1.0 (NJsonSchema v11.5.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    internal partial class IssueBulkEditPayload
-    {
-
-        /// <summary>
-        /// An object that defines the values to be updated in specified fields of an issue. The structure and content of this parameter vary depending on the type of field being edited. Although the order is not significant, ensure that field IDs align with those in selectedActions.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("editedFieldsInput", Required = Newtonsoft.Json.Required.Always)]
-        public JiraIssueFields EditedFieldsInput { get; set; } = new JiraIssueFields();
-
-        /// <summary>
-        /// List of all the field IDs that are to be bulk edited. Each field ID in this list corresponds to a specific attribute of an issue that is set to be modified in the bulk edit operation. The relevant field ID can be obtained by calling the Bulk Edit Get Fields REST API (documentation available on this page itself).
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("selectedActions", Required = Newtonsoft.Json.Required.Always)]
-        public System.Collections.Generic.ICollection<string> SelectedActions { get; set; } = new System.Collections.ObjectModel.Collection<string>();
-
-        /// <summary>
-        /// List of issue IDs or keys which are to be bulk edited. These IDs or keys can be from different projects and issue types.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("selectedIssueIdsOrKeys", Required = Newtonsoft.Json.Required.Always)]
-        public System.Collections.Generic.ICollection<string> SelectedIssueIdsOrKeys { get; set; } = new System.Collections.ObjectModel.Collection<string>();
-
-        /// <summary>
-        /// A boolean value that indicates whether to send a bulk change notification when the issues are being edited.
-        /// <br/>
-        /// <br/>If `true`, dispatches a bulk notification email to users about the updates.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("sendBulkNotification", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public bool? SendBulkNotification { get; set; } = true;
-
-    }
-
-    /// <summary>
-    /// Issue Bulk Move Payload
-    /// </summary>
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.1.0 (NJsonSchema v11.5.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    internal partial class IssueBulkMovePayload
-    {
-
-        /// <summary>
-        /// A boolean value that indicates whether to send a bulk change notification when the issues are being moved.
-        /// <br/>
-        /// <br/>If `true`, dispatches a bulk notification email to users about the updates.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("sendBulkNotification", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public bool? SendBulkNotification { get; set; } = true;
-
-        /// <summary>
-        /// An object representing the mapping of issues and data related to destination entities, like fields and statuses, that are required during a bulk move.
-        /// <br/>
-        /// <br/>The key is a string that is created by concatenating the following three entities in order, separated by commas. The format is `&lt;project ID or key&gt;,&lt;issueType ID&gt;,&lt;parent ID or key&gt;`. It should be unique across mappings provided in the payload. If you provide multiple mappings for the same key, only one will be processed. However, the operation won't fail, so the error may be hard to track down.
-        /// <br/>
-        /// <br/> *  ***Destination project*** (Required): ID or key of the project to which the issues are being moved.
-        /// <br/> *  ***Destination issueType*** (Required): ID of the issueType to which the issues are being moved.
-        /// <br/> *  ***Destination parent ID or key*** (Optional): ID or key of the issue which will become the parent of the issues being moved. Only required when the destination issueType is a subtask.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("targetToSourcesMapping", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.IDictionary<string, TargetToSourcesMapping> TargetToSourcesMapping { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.1.0 (NJsonSchema v11.5.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    internal partial class IssueBulkOperationsFieldOption
-    {
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.1.0 (NJsonSchema v11.5.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    internal partial class IssueBulkTransitionForWorkflow
-    {
-
-        /// <summary>
-        /// Indicates whether all the transitions of this workflow are available in the transitions list or not.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("isTransitionsFiltered", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public bool IsTransitionsFiltered { get; set; }
-
-        /// <summary>
-        /// List of issue keys from the request which are associated with this workflow.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("issues", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<string> Issues { get; set; }
-
-        /// <summary>
-        /// List of transitions available for issues from the request which are associated with this workflow.
-        /// <br/>
-        /// <br/> **This list includes only those transitions that are common across the issues in this workflow and do not involve any additional field updates.** 
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("transitions", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<SimplifiedIssueTransition> Transitions { get; set; }
-
-    }
-
-    /// <summary>
-    /// Issue Bulk Transition Payload
-    /// </summary>
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.1.0 (NJsonSchema v11.5.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    internal partial class IssueBulkTransitionPayload
-    {
-
-        /// <summary>
-        /// List of objects and each object has two properties:
-        /// <br/>
-        /// <br/> *  Issues that will be bulk transitioned.
-        /// <br/> *  TransitionId that corresponds to a specific transition of issues that share the same workflow.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("bulkTransitionInputs", Required = Newtonsoft.Json.Required.Always)]
-        public System.Collections.Generic.ICollection<BulkTransitionSubmitInput> BulkTransitionInputs { get; set; } = new System.Collections.ObjectModel.Collection<BulkTransitionSubmitInput>();
-
-        /// <summary>
-        /// A boolean value that indicates whether to send a bulk change notification when the issues are being transitioned.
-        /// <br/>
-        /// <br/>If `true`, dispatches a bulk notification email to users about the updates.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("sendBulkNotification", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public bool? SendBulkNotification { get; set; } = true;
-
-    }
-
-    /// <summary>
-    /// Issue Bulk Watch Or Unwatch Payload
-    /// </summary>
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.1.0 (NJsonSchema v11.5.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    internal partial class IssueBulkWatchOrUnwatchPayload
-    {
-
-        /// <summary>
-        /// List of issue IDs or keys which are to be bulk watched or unwatched. These IDs or keys can be from different projects and issue types.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("selectedIssueIdsOrKeys", Required = Newtonsoft.Json.Required.Always)]
-        public System.Collections.Generic.ICollection<string> SelectedIssueIdsOrKeys { get; set; } = new System.Collections.ObjectModel.Collection<string>();
 
     }
 
@@ -9919,8 +9551,8 @@ namespace Atlassian.Jira.Swagger
     /// <summary>
     /// This object is used as follows:
     /// <br/>
-    /// <br/> *  In the [ issueLink](#api-rest-api-3-issueLink-post) resource it defines and reports on the type of link between the issues. Find a list of issue link types with [Get issue link types](#api-rest-api-3-issueLinkType-get).
-    /// <br/> *  In the [ issueLinkType](#api-rest-api-3-issueLinkType-post) resource it defines and reports on issue link types.
+    /// <br/> *  In the [ issueLink](#api-rest-api-2-issueLink-post) resource it defines and reports on the type of link between the issues. Find a list of issue link types with [Get issue link types](#api-rest-api-2-issueLinkType-get).
+    /// <br/> *  In the [ issueLinkType](#api-rest-api-2-issueLinkType-post) resource it defines and reports on issue link types.
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.1.0 (NJsonSchema v11.5.1.0 (Newtonsoft.Json v13.0.0.0))")]
     internal partial class IssueLinkType
@@ -9929,8 +9561,8 @@ namespace Atlassian.Jira.Swagger
         /// <summary>
         /// The ID of the issue link type and is used as follows:
         /// <br/>
-        /// <br/> *  In the [ issueLink](#api-rest-api-3-issueLink-post) resource it is the type of issue link. Required on create when `name` isn't provided. Otherwise, read only.
-        /// <br/> *  In the [ issueLinkType](#api-rest-api-3-issueLinkType-post) resource it is read only.
+        /// <br/> *  In the [ issueLink](#api-rest-api-2-issueLink-post) resource it is the type of issue link. Required on create when `name` isn't provided. Otherwise, read only.
+        /// <br/> *  In the [ issueLinkType](#api-rest-api-2-issueLinkType-post) resource it is read only.
         /// </summary>
         [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Id { get; set; }
@@ -9938,8 +9570,8 @@ namespace Atlassian.Jira.Swagger
         /// <summary>
         /// The description of the issue link type inward link and is used as follows:
         /// <br/>
-        /// <br/> *  In the [ issueLink](#api-rest-api-3-issueLink-post) resource it is read only.
-        /// <br/> *  In the [ issueLinkType](#api-rest-api-3-issueLinkType-post) resource it is required on create and optional on update. Otherwise, read only.
+        /// <br/> *  In the [ issueLink](#api-rest-api-2-issueLink-post) resource it is read only.
+        /// <br/> *  In the [ issueLinkType](#api-rest-api-2-issueLinkType-post) resource it is required on create and optional on update. Otherwise, read only.
         /// </summary>
         [Newtonsoft.Json.JsonProperty("inward", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Inward { get; set; }
@@ -9947,8 +9579,8 @@ namespace Atlassian.Jira.Swagger
         /// <summary>
         /// The name of the issue link type and is used as follows:
         /// <br/>
-        /// <br/> *  In the [ issueLink](#api-rest-api-3-issueLink-post) resource it is the type of issue link. Required on create when `id` isn't provided. Otherwise, read only.
-        /// <br/> *  In the [ issueLinkType](#api-rest-api-3-issueLinkType-post) resource it is required on create and optional on update. Otherwise, read only.
+        /// <br/> *  In the [ issueLink](#api-rest-api-2-issueLink-post) resource it is the type of issue link. Required on create when `id` isn't provided. Otherwise, read only.
+        /// <br/> *  In the [ issueLinkType](#api-rest-api-2-issueLinkType-post) resource it is required on create and optional on update. Otherwise, read only.
         /// </summary>
         [Newtonsoft.Json.JsonProperty("name", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Name { get; set; }
@@ -9956,8 +9588,8 @@ namespace Atlassian.Jira.Swagger
         /// <summary>
         /// The description of the issue link type outward link and is used as follows:
         /// <br/>
-        /// <br/> *  In the [ issueLink](#api-rest-api-3-issueLink-post) resource it is read only.
-        /// <br/> *  In the [ issueLinkType](#api-rest-api-3-issueLinkType-post) resource it is required on create and optional on update. Otherwise, read only.
+        /// <br/> *  In the [ issueLink](#api-rest-api-2-issueLink-post) resource it is read only.
+        /// <br/> *  In the [ issueLinkType](#api-rest-api-2-issueLinkType-post) resource it is required on create and optional on update. Otherwise, read only.
         /// </summary>
         [Newtonsoft.Json.JsonProperty("outward", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Outward { get; set; }
@@ -10216,24 +9848,6 @@ namespace Atlassian.Jira.Swagger
             get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
             set { _additionalProperties = value; }
         }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.1.0 (NJsonSchema v11.5.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    internal partial class IssueTransitionStatus
-    {
-
-        /// <summary>
-        /// The unique ID of the status.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("statusId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int StatusId { get; set; }
-
-        /// <summary>
-        /// The name of the status.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("statusName", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string StatusName { get; set; }
 
     }
 
@@ -11583,102 +11197,6 @@ namespace Atlassian.Jira.Swagger
 
     }
 
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.1.0 (NJsonSchema v11.5.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    internal partial class JiraCascadingSelectField
-    {
-
-        [Newtonsoft.Json.JsonProperty("childOptionValue", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public JiraSelectedOptionField ChildOptionValue { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("fieldId", Required = Newtonsoft.Json.Required.Always)]
-        public string FieldId { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("parentOptionValue", Required = Newtonsoft.Json.Required.Always)]
-        public JiraSelectedOptionField ParentOptionValue { get; set; } = new JiraSelectedOptionField();
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.1.0 (NJsonSchema v11.5.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    internal partial class JiraColorField
-    {
-
-        [Newtonsoft.Json.JsonProperty("color", Required = Newtonsoft.Json.Required.Always)]
-        public JiraColorInput Color { get; set; } = new JiraColorInput();
-
-        [Newtonsoft.Json.JsonProperty("fieldId", Required = Newtonsoft.Json.Required.Always)]
-        public string FieldId { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.1.0 (NJsonSchema v11.5.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    internal partial class JiraColorInput
-    {
-
-        [Newtonsoft.Json.JsonProperty("name", Required = Newtonsoft.Json.Required.Always)]
-        public string Name { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.1.0 (NJsonSchema v11.5.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    internal partial class JiraComponentField
-    {
-
-        [Newtonsoft.Json.JsonProperty("componentId", Required = Newtonsoft.Json.Required.Always)]
-        public long ComponentId { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.1.0 (NJsonSchema v11.5.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    internal partial class JiraDateField
-    {
-
-        [Newtonsoft.Json.JsonProperty("date", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public JiraDateInput Date { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("fieldId", Required = Newtonsoft.Json.Required.Always)]
-        public string FieldId { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.1.0 (NJsonSchema v11.5.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    internal partial class JiraDateInput
-    {
-
-        [Newtonsoft.Json.JsonProperty("formattedDate", Required = Newtonsoft.Json.Required.Always)]
-        public string FormattedDate { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.1.0 (NJsonSchema v11.5.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    internal partial class JiraDateTimeField
-    {
-
-        [Newtonsoft.Json.JsonProperty("dateTime", Required = Newtonsoft.Json.Required.Always)]
-        public JiraDateTimeInput DateTime { get; set; } = new JiraDateTimeInput();
-
-        [Newtonsoft.Json.JsonProperty("fieldId", Required = Newtonsoft.Json.Required.Always)]
-        public string FieldId { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.1.0 (NJsonSchema v11.5.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    internal partial class JiraDateTimeInput
-    {
-
-        [Newtonsoft.Json.JsonProperty("formattedDateTime", Required = Newtonsoft.Json.Required.Always)]
-        public string FormattedDateTime { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.1.0 (NJsonSchema v11.5.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    internal partial class JiraDurationField
-    {
-
-        [Newtonsoft.Json.JsonProperty("originalEstimateField", Required = Newtonsoft.Json.Required.Always)]
-        public string OriginalEstimateField { get; set; }
-
-    }
-
     /// <summary>
     /// Details about the analysed Jira expression.
     /// </summary>
@@ -12062,449 +11580,6 @@ namespace Atlassian.Jira.Swagger
 
     }
 
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.1.0 (NJsonSchema v11.5.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    internal partial class JiraGroupInput
-    {
-
-        [Newtonsoft.Json.JsonProperty("groupName", Required = Newtonsoft.Json.Required.Always)]
-        public string GroupName { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.1.0 (NJsonSchema v11.5.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    internal partial class JiraIssueFields
-    {
-
-        /// <summary>
-        /// Add or clear a cascading select field:
-        /// <br/>
-        /// <br/> *  To add, specify `optionId` for both parent and child.
-        /// <br/> *  To clear the child, set its `optionId` to null.
-        /// <br/> *  To clear both, set the parent's `optionId` to null.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("cascadingSelectFields", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<JiraCascadingSelectField> CascadingSelectFields { get; set; }
-
-        /// <summary>
-        /// Add or clear a number field:
-        /// <br/>
-        /// <br/> *  To add, specify a numeric `value`.
-        /// <br/> *  To clear, set `value` to `null`.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("clearableNumberFields", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<JiraNumberField> ClearableNumberFields { get; set; }
-
-        /// <summary>
-        /// Add or clear a color field:
-        /// <br/>
-        /// <br/> *  To add, specify the color `name`. Available colors are: `purple`, `blue`, `green`, `teal`, `yellow`, `orange`, `grey`, `dark purple`, `dark blue`, `dark green`, `dark teal`, `dark yellow`, `dark orange`, `dark grey`.
-        /// <br/> *  To clear, set the color `name` to an empty string.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("colorFields", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<JiraColorField> ColorFields { get; set; }
-
-        /// <summary>
-        /// Add or clear a date picker field:
-        /// <br/>
-        /// <br/> *  To add, specify the date in `d/mmm/yy` format or ISO format `dd-mm-yyyy`.
-        /// <br/> *  To clear, set `formattedDate` to an empty string.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("datePickerFields", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<JiraDateField> DatePickerFields { get; set; }
-
-        /// <summary>
-        /// Add or clear the planned start date and time:
-        /// <br/>
-        /// <br/> *  To add, specify the date and time in ISO format for `formattedDateTime`.
-        /// <br/> *  To clear, provide an empty string for `formattedDateTime`.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("dateTimePickerFields", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<JiraDateTimeField> DateTimePickerFields { get; set; }
-
-        /// <summary>
-        /// Set the issue type field by providing an `issueTypeId`.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("issueType", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public JiraIssueTypeField IssueType { get; set; }
-
-        /// <summary>
-        /// Edit a labels field:
-        /// <br/>
-        /// <br/> *  Options include `ADD`, `REPLACE`, `REMOVE`, or `REMOVE_ALL` for bulk edits.
-        /// <br/> *  To clear labels, use the `REMOVE_ALL` option with an empty `labels` array.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("labelsFields", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<JiraLabelsField> LabelsFields { get; set; }
-
-        /// <summary>
-        /// Add or clear a multi-group picker field:
-        /// <br/>
-        /// <br/> *  To add groups, provide an array of groups with `groupName`s.
-        /// <br/> *  To clear all groups, use an empty `groups` array.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("multipleGroupPickerFields", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<JiraMultipleGroupPickerField> MultipleGroupPickerFields { get; set; }
-
-        /// <summary>
-        /// Assign or unassign multiple users to/from a field:
-        /// <br/>
-        /// <br/> *  To assign, provide an array of user `accountId`s.
-        /// <br/> *  To clear, set `users` to `null`.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("multipleSelectClearableUserPickerFields", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<JiraMultipleSelectUserPickerField> MultipleSelectClearableUserPickerFields { get; set; }
-
-        /// <summary>
-        /// Add or clear a multi-select field:
-        /// <br/>
-        /// <br/> *  To add, provide an array of options with `optionId`s.
-        /// <br/> *  To clear, use an empty `options` array.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("multipleSelectFields", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<JiraMultipleSelectField> MultipleSelectFields { get; set; }
-
-        /// <summary>
-        /// Edit a multi-version picker field like Fix Versions/Affects Versions:
-        /// <br/>
-        /// <br/> *  Options include `ADD`, `REPLACE`, `REMOVE`, or `REMOVE_ALL` for bulk edits.
-        /// <br/> *  To clear the field, use the `REMOVE_ALL` option with an empty `versions` array.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("multipleVersionPickerFields", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<JiraMultipleVersionPickerField> MultipleVersionPickerFields { get; set; }
-
-        /// <summary>
-        /// Edit a multi select components field:
-        /// <br/>
-        /// <br/> *  Options include `ADD`, `REPLACE`, `REMOVE`, or `REMOVE_ALL` for bulk edits.
-        /// <br/> *  To clear, use the `REMOVE_ALL` option with an empty `components` array.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("multiselectComponents", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public JiraMultiSelectComponentField MultiselectComponents { get; set; }
-
-        /// <summary>
-        /// Edit the original estimate field.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("originalEstimateField", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public JiraDurationField OriginalEstimateField { get; set; }
-
-        /// <summary>
-        /// Set the priority of an issue by specifying a `priorityId`.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("priority", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public JiraPriorityField Priority { get; set; }
-
-        /// <summary>
-        /// Add or clear a rich text field:
-        /// <br/>
-        /// <br/> *  To add, provide `adfValue`. Note that rich text fields only support ADF values.
-        /// <br/> *  To clear, use an empty `richText` object.
-        /// <br/>
-        /// <br/>For ADF format details, refer to: [Atlassian Document Format](https://developer.atlassian.com/cloud/jira/platform/apis/document/structure).
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("richTextFields", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<JiraRichTextField> RichTextFields { get; set; }
-
-        /// <summary>
-        /// Add or clear a single group picker field:
-        /// <br/>
-        /// <br/> *  To add, specify the group with `groupName`.
-        /// <br/> *  To clear, set `groupName` to an empty string.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("singleGroupPickerFields", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<JiraSingleGroupPickerField> SingleGroupPickerFields { get; set; }
-
-        /// <summary>
-        /// Add or clear a single line text field:
-        /// <br/>
-        /// <br/> *  To add, provide the `text` value.
-        /// <br/> *  To clear, set `text` to an empty string.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("singleLineTextFields", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<JiraSingleLineTextField> SingleLineTextFields { get; set; }
-
-        /// <summary>
-        /// Edit assignment for single select user picker fields like Assignee/Reporter:
-        /// <br/>
-        /// <br/> *  To assign an issue, specify the user's `accountId`.
-        /// <br/> *  To unassign an issue, set `user` to `null`.
-        /// <br/> *  For automatic assignment, set `accountId` to `-1`.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("singleSelectClearableUserPickerFields", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<JiraSingleSelectUserPickerField> SingleSelectClearableUserPickerFields { get; set; }
-
-        /// <summary>
-        /// Add or clear a single select field:
-        /// <br/>
-        /// <br/> *  To add, specify the option with an `optionId`.
-        /// <br/> *  To clear, pass an option with `optionId` as `-1`.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("singleSelectFields", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<JiraSingleSelectField> SingleSelectFields { get; set; }
-
-        /// <summary>
-        /// Add or clear a single version picker field:
-        /// <br/>
-        /// <br/> *  To add, specify the version with a `versionId`.
-        /// <br/> *  To clear, set `versionId` to `-1`.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("singleVersionPickerFields", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<JiraSingleVersionPickerField> SingleVersionPickerFields { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public JiraStatusInput Status { get; set; }
-
-        /// <summary>
-        /// Edit the time tracking field.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("timeTrackingField", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public JiraTimeTrackingField TimeTrackingField { get; set; }
-
-        /// <summary>
-        /// Add or clear a URL field:
-        /// <br/>
-        /// <br/> *  To add, provide the `url` with the desired URL value.
-        /// <br/> *  To clear, set `url` to an empty string.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("urlFields", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<JiraUrlField> UrlFields { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.1.0 (NJsonSchema v11.5.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    internal partial class JiraIssueTypeField
-    {
-
-        [Newtonsoft.Json.JsonProperty("issueTypeId", Required = Newtonsoft.Json.Required.Always)]
-        public string IssueTypeId { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.1.0 (NJsonSchema v11.5.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    internal partial class JiraLabelPropertiesInputJackson1
-    {
-
-        [Newtonsoft.Json.JsonProperty("color", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public JiraLabelPropertiesInputJackson1Color Color { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("name", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Name { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.1.0 (NJsonSchema v11.5.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    internal partial class JiraLabelsField
-    {
-
-        [Newtonsoft.Json.JsonProperty("bulkEditMultiSelectFieldOption", Required = Newtonsoft.Json.Required.Always)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public JiraLabelsFieldBulkEditMultiSelectFieldOption BulkEditMultiSelectFieldOption { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("fieldId", Required = Newtonsoft.Json.Required.Always)]
-        public string FieldId { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("labelProperties", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<JiraLabelPropertiesInputJackson1> LabelProperties { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("labels", Required = Newtonsoft.Json.Required.Always)]
-        public System.Collections.Generic.ICollection<JiraLabelsInput> Labels { get; set; } = new System.Collections.ObjectModel.Collection<JiraLabelsInput>();
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.1.0 (NJsonSchema v11.5.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    internal partial class JiraLabelsInput
-    {
-
-        [Newtonsoft.Json.JsonProperty("name", Required = Newtonsoft.Json.Required.Always)]
-        public string Name { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.1.0 (NJsonSchema v11.5.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    internal partial class JiraMultiSelectComponentField
-    {
-
-        [Newtonsoft.Json.JsonProperty("bulkEditMultiSelectFieldOption", Required = Newtonsoft.Json.Required.Always)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public JiraMultiSelectComponentFieldBulkEditMultiSelectFieldOption BulkEditMultiSelectFieldOption { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("components", Required = Newtonsoft.Json.Required.Always)]
-        public System.Collections.Generic.ICollection<JiraComponentField> Components { get; set; } = new System.Collections.ObjectModel.Collection<JiraComponentField>();
-
-        [Newtonsoft.Json.JsonProperty("fieldId", Required = Newtonsoft.Json.Required.Always)]
-        public string FieldId { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.1.0 (NJsonSchema v11.5.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    internal partial class JiraMultipleGroupPickerField
-    {
-
-        [Newtonsoft.Json.JsonProperty("fieldId", Required = Newtonsoft.Json.Required.Always)]
-        public string FieldId { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("groups", Required = Newtonsoft.Json.Required.Always)]
-        public System.Collections.Generic.ICollection<JiraGroupInput> Groups { get; set; } = new System.Collections.ObjectModel.Collection<JiraGroupInput>();
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.1.0 (NJsonSchema v11.5.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    internal partial class JiraMultipleSelectField
-    {
-
-        [Newtonsoft.Json.JsonProperty("fieldId", Required = Newtonsoft.Json.Required.Always)]
-        public string FieldId { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("options", Required = Newtonsoft.Json.Required.Always)]
-        public System.Collections.Generic.ICollection<JiraSelectedOptionField> Options { get; set; } = new System.Collections.ObjectModel.Collection<JiraSelectedOptionField>();
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.1.0 (NJsonSchema v11.5.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    internal partial class JiraMultipleSelectUserPickerField
-    {
-
-        [Newtonsoft.Json.JsonProperty("fieldId", Required = Newtonsoft.Json.Required.Always)]
-        public string FieldId { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("users", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<JiraUserField> Users { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.1.0 (NJsonSchema v11.5.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    internal partial class JiraMultipleVersionPickerField
-    {
-
-        [Newtonsoft.Json.JsonProperty("bulkEditMultiSelectFieldOption", Required = Newtonsoft.Json.Required.Always)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public JiraMultipleVersionPickerFieldBulkEditMultiSelectFieldOption BulkEditMultiSelectFieldOption { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("fieldId", Required = Newtonsoft.Json.Required.Always)]
-        public string FieldId { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("versions", Required = Newtonsoft.Json.Required.Always)]
-        public System.Collections.Generic.ICollection<JiraVersionField> Versions { get; set; } = new System.Collections.ObjectModel.Collection<JiraVersionField>();
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.1.0 (NJsonSchema v11.5.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    internal partial class JiraNumberField
-    {
-
-        [Newtonsoft.Json.JsonProperty("fieldId", Required = Newtonsoft.Json.Required.Always)]
-        public string FieldId { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("value", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public double Value { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.1.0 (NJsonSchema v11.5.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    internal partial class JiraPriorityField
-    {
-
-        [Newtonsoft.Json.JsonProperty("priorityId", Required = Newtonsoft.Json.Required.Always)]
-        public string PriorityId { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.1.0 (NJsonSchema v11.5.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    internal partial class JiraRichTextField
-    {
-
-        [Newtonsoft.Json.JsonProperty("fieldId", Required = Newtonsoft.Json.Required.Always)]
-        public string FieldId { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("richText", Required = Newtonsoft.Json.Required.Always)]
-        public JiraRichTextInput RichText { get; set; } = new JiraRichTextInput();
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.1.0 (NJsonSchema v11.5.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    internal partial class JiraRichTextInput
-    {
-
-        [Newtonsoft.Json.JsonProperty("adfValue", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.IDictionary<string, object> AdfValue { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.1.0 (NJsonSchema v11.5.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    internal partial class JiraSelectedOptionField
-    {
-
-        [Newtonsoft.Json.JsonProperty("optionId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public long OptionId { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.1.0 (NJsonSchema v11.5.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    internal partial class JiraSingleGroupPickerField
-    {
-
-        [Newtonsoft.Json.JsonProperty("fieldId", Required = Newtonsoft.Json.Required.Always)]
-        public string FieldId { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("group", Required = Newtonsoft.Json.Required.Always)]
-        public JiraGroupInput Group { get; set; } = new JiraGroupInput();
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.1.0 (NJsonSchema v11.5.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    internal partial class JiraSingleLineTextField
-    {
-
-        [Newtonsoft.Json.JsonProperty("fieldId", Required = Newtonsoft.Json.Required.Always)]
-        public string FieldId { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("text", Required = Newtonsoft.Json.Required.Always)]
-        public string Text { get; set; }
-
-    }
-
-    /// <summary>
-    /// Add or clear a single select field:
-    /// <br/>
-    /// <br/> *  To add, specify the option with an `optionId`.
-    /// <br/> *  To clear, pass an option with `optionId` as `-1`.
-    /// </summary>
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.1.0 (NJsonSchema v11.5.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    internal partial class JiraSingleSelectField
-    {
-
-        [Newtonsoft.Json.JsonProperty("fieldId", Required = Newtonsoft.Json.Required.Always)]
-        public string FieldId { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("option", Required = Newtonsoft.Json.Required.Always)]
-        public JiraSelectedOptionField Option { get; set; } = new JiraSelectedOptionField();
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.1.0 (NJsonSchema v11.5.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    internal partial class JiraSingleSelectUserPickerField
-    {
-
-        [Newtonsoft.Json.JsonProperty("fieldId", Required = Newtonsoft.Json.Required.Always)]
-        public string FieldId { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("user", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public JiraUserField User { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.1.0 (NJsonSchema v11.5.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    internal partial class JiraSingleVersionPickerField
-    {
-
-        [Newtonsoft.Json.JsonProperty("fieldId", Required = Newtonsoft.Json.Required.Always)]
-        public string FieldId { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("version", Required = Newtonsoft.Json.Required.Always)]
-        public JiraVersionField Version { get; set; } = new JiraVersionField();
-
-    }
-
     /// <summary>
     /// Details of a status.
     /// </summary>
@@ -12539,54 +11614,6 @@ namespace Atlassian.Jira.Swagger
         [Newtonsoft.Json.JsonProperty("statusCategory", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public JiraStatusStatusCategory StatusCategory { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.1.0 (NJsonSchema v11.5.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    internal partial class JiraStatusInput
-    {
-
-        [Newtonsoft.Json.JsonProperty("statusId", Required = Newtonsoft.Json.Required.Always)]
-        public string StatusId { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.1.0 (NJsonSchema v11.5.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    internal partial class JiraTimeTrackingField
-    {
-
-        [Newtonsoft.Json.JsonProperty("timeRemaining", Required = Newtonsoft.Json.Required.Always)]
-        public string TimeRemaining { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.1.0 (NJsonSchema v11.5.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    internal partial class JiraUrlField
-    {
-
-        [Newtonsoft.Json.JsonProperty("fieldId", Required = Newtonsoft.Json.Required.Always)]
-        public string FieldId { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("url", Required = Newtonsoft.Json.Required.Always)]
-        public string Url { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.1.0 (NJsonSchema v11.5.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    internal partial class JiraUserField
-    {
-
-        [Newtonsoft.Json.JsonProperty("accountId", Required = Newtonsoft.Json.Required.Always)]
-        public string AccountId { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.1.0 (NJsonSchema v11.5.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    internal partial class JiraVersionField
-    {
-
-        [Newtonsoft.Json.JsonProperty("versionId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string VersionId { get; set; }
 
     }
 
@@ -13654,80 +12681,6 @@ namespace Atlassian.Jira.Swagger
         /// </summary>
         [Newtonsoft.Json.JsonProperty("locale", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Locale1 { get; set; }
-
-    }
-
-    /// <summary>
-    /// List of string of inputs
-    /// </summary>
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.1.0 (NJsonSchema v11.5.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    internal partial class MandatoryFieldValue
-    {
-
-        /// <summary>
-        /// If `true`, will try to retain original non-null issue field values on move.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("retain", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public bool? Retain { get; set; } = true;
-
-        /// <summary>
-        /// Will treat as `MandatoryFieldValue` if type is `raw` or `empty`
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public MandatoryFieldValueType? Type { get; set; } = Atlassian.Jira.Swagger.MandatoryFieldValueType.Raw;
-
-        /// <summary>
-        /// Value for each field. Provide a `list of strings` for non-ADF fields.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("value", Required = Newtonsoft.Json.Required.Always)]
-        public System.Collections.Generic.ICollection<string> Value { get; set; } = new System.Collections.ObjectModel.Collection<string>();
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-    }
-
-    /// <summary>
-    /// An object notation input
-    /// </summary>
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.1.0 (NJsonSchema v11.5.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    internal partial class MandatoryFieldValueForADF
-    {
-
-        /// <summary>
-        /// If `true`, will try to retain original non-null issue field values on move.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("retain", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public bool? Retain { get; set; } = true;
-
-        /// <summary>
-        /// Will treat as `MandatoryFieldValueForADF` if type is `adf`
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Always)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public MandatoryFieldValueForADFType Type { get; set; } = Atlassian.Jira.Swagger.MandatoryFieldValueForADFType.Raw;
-
-        /// <summary>
-        /// Value for each field. Accepts Atlassian Document Format (ADF) for rich text fields like `description`, `environments`. For ADF format details, refer to: [Atlassian Document Format](https://developer.atlassian.com/cloud/jira/platform/apis/document/structure)
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("value", Required = Newtonsoft.Json.Required.Always)]
-        public object Value { get; set; } = new object();
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
 
     }
 
@@ -18727,7 +17680,7 @@ namespace Atlassian.Jira.Swagger
         public System.DateTimeOffset RetentionTillDate { get; set; }
 
         /// <summary>
-        /// The name and self URL for each role defined in the project. For more information, see [Create project role](#api-rest-api-3-role-post).
+        /// The name and self URL for each role defined in the project. For more information, see [Create project role](#api-rest-api-2-role-post).
         /// </summary>
         [Newtonsoft.Json.JsonProperty("roles", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public System.Collections.Generic.IDictionary<string, System.Uri> Roles { get; set; }
@@ -18764,7 +17717,7 @@ namespace Atlassian.Jira.Swagger
         public System.Guid Uuid { get; set; }
 
         /// <summary>
-        /// The versions defined in the project. For more information, see [Create version](#api-rest-api-3-version-post).
+        /// The versions defined in the project. For more information, see [Create version](#api-rest-api-2-version-post).
         /// </summary>
         [Newtonsoft.Json.JsonProperty("versions", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public System.Collections.Generic.ICollection<Version> Versions { get; set; }
@@ -19693,7 +18646,7 @@ namespace Atlassian.Jira.Swagger
         public System.Collections.Generic.IDictionary<string, System.Collections.Generic.ICollection<string>> CategorisedActors { get; set; }
 
         /// <summary>
-        /// The ID of the project role. Use [Get all project roles](#api-rest-api-3-role-get) to get a list of project role IDs.
+        /// The ID of the project role. Use [Get all project roles](#api-rest-api-2-role-get) to get a list of project role IDs.
         /// </summary>
         [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public long Id { get; set; }
@@ -20536,13 +19489,13 @@ namespace Atlassian.Jira.Swagger
     {
 
         /// <summary>
-        /// The ID of the permission. Either `id` or `key` must be specified. Use [Get all permissions](#api-rest-api-3-permissions-get) to get the list of permissions.
+        /// The ID of the permission. Either `id` or `key` must be specified. Use [Get all permissions](#api-rest-api-2-permissions-get) to get the list of permissions.
         /// </summary>
         [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Id { get; set; }
 
         /// <summary>
-        /// The key of the permission. Either `id` or `key` must be specified. Use [Get all permissions](#api-rest-api-3-permissions-get) to get the list of permissions.
+        /// The key of the permission. Either `id` or `key` must be specified. Use [Get all permissions](#api-rest-api-2-permissions-get) to get the list of permissions.
         /// </summary>
         [Newtonsoft.Json.JsonProperty("key", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Key { get; set; }
@@ -21244,7 +20197,7 @@ namespace Atlassian.Jira.Swagger
         /// <br/>
         /// <br/>Multiple `fields` parameters can be included in a request.
         /// <br/>
-        /// <br/>Note: By default, this resource returns IDs only. This differs from [GET issue](#api-rest-api-3-issue-issueIdOrKey-get) where the default is all fields.
+        /// <br/>Note: By default, this resource returns IDs only. This differs from [GET issue](#api-rest-api-2-issue-issueIdOrKey-get) where the default is all fields.
         /// </summary>
         [Newtonsoft.Json.JsonProperty("fields", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public System.Collections.Generic.ICollection<string> Fields { get; set; }
@@ -21388,7 +20341,7 @@ namespace Atlassian.Jira.Swagger
         /// <br/>
         /// <br/>Multiple `fields` parameters can be included in a request.
         /// <br/>
-        /// <br/>Note: All navigable fields are returned by default. This differs from [GET issue](#api-rest-api-3-issue-issueIdOrKey-get) where the default is all fields.
+        /// <br/>Note: All navigable fields are returned by default. This differs from [GET issue](#api-rest-api-2-issue-issueIdOrKey-get) where the default is all fields.
         /// </summary>
         [Newtonsoft.Json.JsonProperty("fields", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public System.Collections.Generic.ICollection<string> Fields { get; set; }
@@ -22156,7 +21109,7 @@ namespace Atlassian.Jira.Swagger
         public long Id { get; set; }
 
         /// <summary>
-        /// The project that the filter is shared with. This is similar to the project object returned by [Get project](#api-rest-api-3-project-projectIdOrKey-get) but it contains a subset of the properties, which are: `self`, `id`, `key`, `assigneeType`, `name`, `roles`, `avatarUrls`, `projectType`, `simplified`.  
+        /// The project that the filter is shared with. This is similar to the project object returned by [Get project](#api-rest-api-2-project-projectIdOrKey-get) but it contains a subset of the properties, which are: `self`, `id`, `key`, `assigneeType`, `name`, `roles`, `avatarUrls`, `projectType`, `simplified`.  
         /// <br/>For a request, specify the `id` for the project.
         /// </summary>
         [Newtonsoft.Json.JsonProperty("project", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -22413,30 +21366,6 @@ namespace Atlassian.Jira.Swagger
         /// </summary>
         [Newtonsoft.Json.JsonProperty("projectConfigurationId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public long ProjectConfigurationId { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.1.0 (NJsonSchema v11.5.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    internal partial class SimplifiedIssueTransition
-    {
-
-        /// <summary>
-        /// The issue status change of the transition.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("to", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public IssueTransitionStatus To { get; set; }
-
-        /// <summary>
-        /// The unique ID of the transition.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("transitionId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int TransitionId { get; set; }
-
-        /// <summary>
-        /// The name of the transition.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("transitionName", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string TransitionName { get; set; }
 
     }
 
@@ -23172,15 +22101,6 @@ namespace Atlassian.Jira.Swagger
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.1.0 (NJsonSchema v11.5.1.0 (Newtonsoft.Json v13.0.0.0))")]
     internal partial class StringList
     {
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.1.0 (NJsonSchema v11.5.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    internal partial class SubmittedBulkOperation
-    {
-
-        [Newtonsoft.Json.JsonProperty("taskId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string TaskId { get; set; }
 
     }
 
@@ -24658,7 +23578,7 @@ namespace Atlassian.Jira.Swagger
         public long AvatarId { get; set; }
 
         /// <summary>
-        /// The ID of the project's category. A complete list of category IDs is found using the [Get all project categories](#api-rest-api-3-projectCategory-get) operation. To remove the project category from the project, set the value to `-1.`
+        /// The ID of the project's category. A complete list of category IDs is found using the [Get all project categories](#api-rest-api-2-projectCategory-get) operation. To remove the project category from the project, set the value to `-1.`
         /// </summary>
         [Newtonsoft.Json.JsonProperty("categoryId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public long CategoryId { get; set; }
@@ -24670,7 +23590,7 @@ namespace Atlassian.Jira.Swagger
         public string Description { get; set; }
 
         /// <summary>
-        /// The ID of the issue security scheme for the project, which enables you to control who can and cannot view issues. Use the [Get issue security schemes](#api-rest-api-3-issuesecurityschemes-get) resource to get all issue security scheme IDs.
+        /// The ID of the issue security scheme for the project, which enables you to control who can and cannot view issues. Use the [Get issue security schemes](#api-rest-api-2-issuesecurityschemes-get) resource to get all issue security scheme IDs.
         /// </summary>
         [Newtonsoft.Json.JsonProperty("issueSecurityScheme", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public long IssueSecurityScheme { get; set; }
@@ -24700,13 +23620,13 @@ namespace Atlassian.Jira.Swagger
         public string Name { get; set; }
 
         /// <summary>
-        /// The ID of the notification scheme for the project. Use the [Get notification schemes](#api-rest-api-3-notificationscheme-get) resource to get a list of notification scheme IDs.
+        /// The ID of the notification scheme for the project. Use the [Get notification schemes](#api-rest-api-2-notificationscheme-get) resource to get a list of notification scheme IDs.
         /// </summary>
         [Newtonsoft.Json.JsonProperty("notificationScheme", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public long NotificationScheme { get; set; }
 
         /// <summary>
-        /// The ID of the permission scheme for the project. Use the [Get all permission schemes](#api-rest-api-3-permissionscheme-get) resource to see a list of all permission scheme IDs.
+        /// The ID of the permission scheme for the project. Use the [Get all permission schemes](#api-rest-api-2-permissionscheme-get) resource to see a list of all permission scheme IDs.
         /// </summary>
         [Newtonsoft.Json.JsonProperty("permissionScheme", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public long PermissionScheme { get; set; }
@@ -25372,13 +24292,13 @@ namespace Atlassian.Jira.Swagger
         public bool HavePermission { get; set; }
 
         /// <summary>
-        /// The ID of the permission. Either `id` or `key` must be specified. Use [Get all permissions](#api-rest-api-3-permissions-get) to get the list of permissions.
+        /// The ID of the permission. Either `id` or `key` must be specified. Use [Get all permissions](#api-rest-api-2-permissions-get) to get the list of permissions.
         /// </summary>
         [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Id { get; set; }
 
         /// <summary>
-        /// The key of the permission. Either `id` or `key` must be specified. Use [Get all permissions](#api-rest-api-3-permissions-get) to get the list of permissions.
+        /// The key of the permission. Either `id` or `key` must be specified. Use [Get all permissions](#api-rest-api-2-permissions-get) to get the list of permissions.
         /// </summary>
         [Newtonsoft.Json.JsonProperty("key", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Key { get; set; }
@@ -28386,10 +27306,10 @@ namespace Atlassian.Jira.Swagger
         public UserDetails Author { get; set; }
 
         /// <summary>
-        /// A comment about the worklog in [Atlassian Document Format](https://developer.atlassian.com/cloud/jira/platform/apis/document/structure/). Optional when creating or updating a worklog.
+        /// A comment about the worklog. Optional when creating or updating a worklog.
         /// </summary>
         [Newtonsoft.Json.JsonProperty("comment", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public object Comment { get; set; }
+        public string Comment { get; set; }
 
         /// <summary>
         /// The datetime on which the worklog was created.
@@ -28510,174 +27430,6 @@ namespace Atlassian.Jira.Swagger
         /// </summary>
         [Newtonsoft.Json.JsonProperty("anyContentBlocked", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public bool AnyContentBlocked { get; set; }
-
-    }
-
-    /// <summary>
-    /// Can contain multiple field values of following types depending on `type` key
-    /// </summary>
-    [Newtonsoft.Json.JsonConverter(typeof(JsonInheritanceConverter), "type")]
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.1.0 (NJsonSchema v11.5.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    internal partial class Fields2
-    {
-
-        /// <summary>
-        /// If `true`, will try to retain original non-null issue field values on move.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("retain", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public bool? Retain { get; set; } = true;
-
-        [Newtonsoft.Json.JsonProperty("value", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public object Value { get; set; }
-
-    }
-
-    /// <summary>
-    /// Classification mapping for classifications in source issues to respective target classification.
-    /// </summary>
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.1.0 (NJsonSchema v11.5.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    internal partial class TargetClassification
-    {
-
-        /// <summary>
-        /// An object with the key as the ID of the target classification and value with the list of the IDs of the current source classifications.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("classifications", Required = Newtonsoft.Json.Required.Always)]
-        public System.Collections.Generic.IDictionary<string, System.Collections.Generic.ICollection<string>> Classifications { get; set; } = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.ICollection<string>>();
-
-        /// <summary>
-        /// ID of the source issueType to which issues present in `issueIdOrKeys` belongs.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("issueType", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string IssueType { get; set; }
-
-        /// <summary>
-        /// ID or key of the source project to which issues present in `issueIdOrKeys` belongs.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("projectKeyOrId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string ProjectKeyOrId { get; set; }
-
-    }
-
-    /// <summary>
-    /// Field mapping for mandatory fields in target
-    /// </summary>
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.1.0 (NJsonSchema v11.5.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    internal partial class TargetMandatoryFields
-    {
-
-        /// <summary>
-        /// Contains the value of mandatory fields
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("fields", Required = Newtonsoft.Json.Required.Always)]
-        public System.Collections.Generic.IDictionary<string, Fields2> Fields { get; set; } = new System.Collections.Generic.Dictionary<string, Fields2>();
-
-    }
-
-    /// <summary>
-    /// Status mapping for statuses in source workflow to respective target status in target workflow.
-    /// </summary>
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.1.0 (NJsonSchema v11.5.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    internal partial class TargetStatus
-    {
-
-        /// <summary>
-        /// An object with the key as the ID of the target status and value with the list of the IDs of the current source statuses.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("statuses", Required = Newtonsoft.Json.Required.Always)]
-        public System.Collections.Generic.IDictionary<string, System.Collections.Generic.ICollection<string>> Statuses { get; set; } = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.ICollection<string>>();
-
-    }
-
-    /// <summary>
-    /// An object representing the mapping of issues and data related to destination entities, like fields and statuses, that are required during a bulk move.
-    /// </summary>
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.1.0 (NJsonSchema v11.5.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    internal partial class TargetToSourcesMapping
-    {
-
-        /// <summary>
-        /// If `true`, when issues are moved into this target group, they will adopt the target project's default classification, if they don't have a classification already. If they do have a classification, it will be kept the same even after the move. Leave `targetClassification` empty when using this.
-        /// <br/>
-        /// <br/>If `false`, you must provide a `targetClassification` mapping for each classification associated with the selected issues.
-        /// <br/>
-        /// <br/>[Benefit from data classification](https://support.atlassian.com/security-and-access-policies/docs/what-is-data-classification/)
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("inferClassificationDefaults", Required = Newtonsoft.Json.Required.Always)]
-        public bool InferClassificationDefaults { get; set; }
-
-        /// <summary>
-        /// If `true`, values from the source issues will be retained for the mandatory fields in the field configuration of the destination project. The `targetMandatoryFields` property shouldn't be defined.
-        /// <br/>
-        /// <br/>If `false`, the user is required to set values for mandatory fields present in the field configuration of the destination project. Provide input by defining the `targetMandatoryFields` property
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("inferFieldDefaults", Required = Newtonsoft.Json.Required.Always)]
-        public bool InferFieldDefaults { get; set; }
-
-        /// <summary>
-        /// If `true`, the statuses of issues being moved in this target group that are not present in the target workflow will be changed to the default status of the target workflow (see below). Leave `targetStatus` empty when using this.
-        /// <br/>
-        /// <br/>If `false`, you must provide a `targetStatus` for each status not present in the target workflow.
-        /// <br/>
-        /// <br/>The default status in a workflow is referred to as the "initial status". Each workflow has its own unique initial status. When an issue is created, it is automatically assigned to this initial status. Read more about configuring initial statuses: [Configure the initial status | Atlassian Support.](https://support.atlassian.com/jira-cloud-administration/docs/configure-the-initial-status/)
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("inferStatusDefaults", Required = Newtonsoft.Json.Required.Always)]
-        public bool InferStatusDefaults { get; set; }
-
-        /// <summary>
-        /// When an issue is moved, its subtasks (if there are any) need to be moved with it. `inferSubtaskTypeDefault` helps with moving the subtasks by picking a random subtask type in the target project.
-        /// <br/>
-        /// <br/>If `true`, subtasks will automatically move to the same project as their parent.
-        /// <br/>
-        /// <br/>When they move:
-        /// <br/>
-        /// <br/> *  Their `issueType` will be set to the default for subtasks in the target project.
-        /// <br/> *  Values for mandatory fields will be retained from the source issues
-        /// <br/> *  Specifying separate mapping for implicit subtasks won’t be allowed.
-        /// <br/>
-        /// <br/>If `false`, you must manually move the subtasks. They will retain the parent which they had in the current project after being moved.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("inferSubtaskTypeDefault", Required = Newtonsoft.Json.Required.Always)]
-        public bool InferSubtaskTypeDefault { get; set; }
-
-        /// <summary>
-        /// List of issue IDs or keys to be moved.
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("issueIdsOrKeys", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<string> IssueIdsOrKeys { get; set; }
-
-        /// <summary>
-        /// List of the objects containing classifications in the source issues and their new values which need to be set during the bulk move operation.
-        /// <br/>
-        /// <br/>It is mandatory to provide source classification to target classification mapping when the source classification is invalid for the target project and issue type.
-        /// <br/>
-        /// <br/> *  **You should only define this property when `inferClassificationDefaults` is `false`.**
-        /// <br/> *  **In order to provide mapping for issues which don't have a classification, use `"-1"`.**
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("targetClassification", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<TargetClassification> TargetClassification { get; set; }
-
-        /// <summary>
-        /// List of objects containing mandatory fields in the target field configuration and new values that need to be set during the bulk move operation.
-        /// <br/>
-        /// <br/>The new values will only be applied if the field is mandatory in the target project and at least one issue from the source has that field empty, or if the field context is different in the target project (e.g. project-scoped version fields).
-        /// <br/>
-        /// <br/>**You should only define this property when `inferFieldDefaults` is `false`.**
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("targetMandatoryFields", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<TargetMandatoryFields> TargetMandatoryFields { get; set; }
-
-        /// <summary>
-        /// List of the objects containing statuses in the source workflow and their new values which need to be set during the bulk move operation.
-        /// <br/>
-        /// <br/>The new values will only be applied if the source status is invalid for the target project and issue type.
-        /// <br/>
-        /// <br/>It is mandatory to provide source status to target status mapping when the source status is invalid for the target project and issue type.
-        /// <br/>
-        /// <br/>**You should only define this property when `inferStatusDefaults` is `false`.**
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("targetStatus", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<TargetStatus> TargetStatus { get; set; }
 
     }
 
@@ -30206,33 +28958,6 @@ namespace Atlassian.Jira.Swagger
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.1.0 (NJsonSchema v11.5.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    internal enum BulkOperationProgressStatus
-    {
-
-        [System.Runtime.Serialization.EnumMember(Value = @"ENQUEUED")]
-        ENQUEUED = 0,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"RUNNING")]
-        RUNNING = 1,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"COMPLETE")]
-        COMPLETE = 2,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"FAILED")]
-        FAILED = 3,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"CANCEL_REQUESTED")]
-        CANCEL_REQUESTED = 4,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"CANCELLED")]
-        CANCELLED = 5,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"DEAD")]
-        DEAD = 6,
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.1.0 (NJsonSchema v11.5.1.0 (Newtonsoft.Json v13.0.0.0))")]
     internal enum CardLayoutFieldMode
     {
 
@@ -31340,24 +30065,6 @@ namespace Atlassian.Jira.Swagger
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.1.0 (NJsonSchema v11.5.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    internal enum MultiSelectFieldOptions
-    {
-
-        [System.Runtime.Serialization.EnumMember(Value = @"ADD")]
-        ADD = 0,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"REMOVE")]
-        REMOVE = 1,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"REPLACE")]
-        REPLACE = 2,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"REMOVE_ALL")]
-        REMOVE_ALL = 3,
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.1.0 (NJsonSchema v11.5.1.0 (Newtonsoft.Json v13.0.0.0))")]
     internal enum Attributes2
     {
 
@@ -31477,216 +30184,6 @@ namespace Atlassian.Jira.Swagger
 
         [System.Runtime.Serialization.EnumMember(Value = @"other")]
         Other = 2,
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.1.0 (NJsonSchema v11.5.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    internal enum JiraLabelPropertiesInputJackson1Color
-    {
-
-        [System.Runtime.Serialization.EnumMember(Value = @"GREY_LIGHTEST")]
-        GREY_LIGHTEST = 0,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"GREY_LIGHTER")]
-        GREY_LIGHTER = 1,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"GREY")]
-        GREY = 2,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"GREY_DARKER")]
-        GREY_DARKER = 3,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"GREY_DARKEST")]
-        GREY_DARKEST = 4,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"PURPLE_LIGHTEST")]
-        PURPLE_LIGHTEST = 5,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"PURPLE_LIGHTER")]
-        PURPLE_LIGHTER = 6,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"PURPLE")]
-        PURPLE = 7,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"PURPLE_DARKER")]
-        PURPLE_DARKER = 8,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"PURPLE_DARKEST")]
-        PURPLE_DARKEST = 9,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"BLUE_LIGHTEST")]
-        BLUE_LIGHTEST = 10,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"BLUE_LIGHTER")]
-        BLUE_LIGHTER = 11,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"BLUE")]
-        BLUE = 12,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"BLUE_DARKER")]
-        BLUE_DARKER = 13,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"BLUE_DARKEST")]
-        BLUE_DARKEST = 14,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"TEAL_LIGHTEST")]
-        TEAL_LIGHTEST = 15,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"TEAL_LIGHTER")]
-        TEAL_LIGHTER = 16,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"TEAL")]
-        TEAL = 17,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"TEAL_DARKER")]
-        TEAL_DARKER = 18,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"TEAL_DARKEST")]
-        TEAL_DARKEST = 19,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"GREEN_LIGHTEST")]
-        GREEN_LIGHTEST = 20,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"GREEN_LIGHTER")]
-        GREEN_LIGHTER = 21,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"GREEN")]
-        GREEN = 22,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"GREEN_DARKER")]
-        GREEN_DARKER = 23,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"GREEN_DARKEST")]
-        GREEN_DARKEST = 24,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"LIME_LIGHTEST")]
-        LIME_LIGHTEST = 25,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"LIME_LIGHTER")]
-        LIME_LIGHTER = 26,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"LIME")]
-        LIME = 27,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"LIME_DARKER")]
-        LIME_DARKER = 28,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"LIME_DARKEST")]
-        LIME_DARKEST = 29,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"YELLOW_LIGHTEST")]
-        YELLOW_LIGHTEST = 30,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"YELLOW_LIGHTER")]
-        YELLOW_LIGHTER = 31,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"YELLOW")]
-        YELLOW = 32,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"YELLOW_DARKER")]
-        YELLOW_DARKER = 33,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"YELLOW_DARKEST")]
-        YELLOW_DARKEST = 34,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"ORANGE_LIGHTEST")]
-        ORANGE_LIGHTEST = 35,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"ORANGE_LIGHTER")]
-        ORANGE_LIGHTER = 36,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"ORANGE")]
-        ORANGE = 37,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"ORANGE_DARKER")]
-        ORANGE_DARKER = 38,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"ORANGE_DARKEST")]
-        ORANGE_DARKEST = 39,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"RED_LIGHTEST")]
-        RED_LIGHTEST = 40,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"RED_LIGHTER")]
-        RED_LIGHTER = 41,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"RED")]
-        RED = 42,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"RED_DARKER")]
-        RED_DARKER = 43,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"RED_DARKEST")]
-        RED_DARKEST = 44,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"MAGENTA_LIGHTEST")]
-        MAGENTA_LIGHTEST = 45,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"MAGENTA_LIGHTER")]
-        MAGENTA_LIGHTER = 46,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"MAGENTA")]
-        MAGENTA = 47,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"MAGENTA_DARKER")]
-        MAGENTA_DARKER = 48,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"MAGENTA_DARKEST")]
-        MAGENTA_DARKEST = 49,
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.1.0 (NJsonSchema v11.5.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    internal enum JiraLabelsFieldBulkEditMultiSelectFieldOption
-    {
-
-        [System.Runtime.Serialization.EnumMember(Value = @"ADD")]
-        ADD = 0,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"REMOVE")]
-        REMOVE = 1,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"REPLACE")]
-        REPLACE = 2,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"REMOVE_ALL")]
-        REMOVE_ALL = 3,
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.1.0 (NJsonSchema v11.5.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    internal enum JiraMultiSelectComponentFieldBulkEditMultiSelectFieldOption
-    {
-
-        [System.Runtime.Serialization.EnumMember(Value = @"ADD")]
-        ADD = 0,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"REMOVE")]
-        REMOVE = 1,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"REPLACE")]
-        REPLACE = 2,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"REMOVE_ALL")]
-        REMOVE_ALL = 3,
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.1.0 (NJsonSchema v11.5.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    internal enum JiraMultipleVersionPickerFieldBulkEditMultiSelectFieldOption
-    {
-
-        [System.Runtime.Serialization.EnumMember(Value = @"ADD")]
-        ADD = 0,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"REMOVE")]
-        REMOVE = 1,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"REPLACE")]
-        REPLACE = 2,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"REMOVE_ALL")]
-        REMOVE_ALL = 3,
 
     }
 
@@ -31840,30 +30337,6 @@ namespace Atlassian.Jira.Swagger
 
         [System.Runtime.Serialization.EnumMember(Value = @"PAID")]
         PAID = 2,
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.1.0 (NJsonSchema v11.5.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    internal enum MandatoryFieldValueType
-    {
-
-        [System.Runtime.Serialization.EnumMember(Value = @"adf")]
-        Adf = 0,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"raw")]
-        Raw = 1,
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.1.0 (NJsonSchema v11.5.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    internal enum MandatoryFieldValueForADFType
-    {
-
-        [System.Runtime.Serialization.EnumMember(Value = @"adf")]
-        Adf = 0,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"raw")]
-        Raw = 1,
 
     }
 
