@@ -11,7 +11,7 @@ public class IssueCreateTest : JiraTestFixture
     [Test]
     public async Task CreateIssueWithIssueTypesPerProject()
     {
-        var issue = new Issue(Jira, TestProjectKey)
+        var issue = new Issue(Jira, TestProject.Key)
         {
             Type = "Bug",
             Summary = "Test Summary " + Rand.Next(int.MaxValue),
@@ -23,7 +23,7 @@ public class IssueCreateTest : JiraTestFixture
             issue.Type.SearchByProjectOnly = true;
             var newIssue = await issue.SaveChangesAsync();
 
-            newIssue.Project.Should().Be(TestProjectKey);
+            newIssue.Project.Should().Be(TestProject.Key);
         }
         finally
         {

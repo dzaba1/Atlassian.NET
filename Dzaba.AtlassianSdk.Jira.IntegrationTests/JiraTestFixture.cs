@@ -19,10 +19,10 @@ public abstract class JiraTestFixture
     private ILoggerFactory loggerFactory;
 
     protected Atlassian.Jira.Jira Jira { get; private set; }
-    protected string TestProjectKey { get; private set; }
+    protected Project TestProject { get; private set; }
 
     [OneTimeSetUp]
-    public void OneTimeSetupBase()
+    public async Task OneTimeSetupBase()
     {
         loggerFactory = GetLoggerFactory();
 
@@ -36,7 +36,8 @@ public abstract class JiraTestFixture
             GetValueFromEnv(CloudTokenEnvKey),
             settings);
 
-        TestProjectKey = GetValueFromEnv(CloudTestProjectEnvKey);
+        var testProjectKey = GetValueFromEnv(CloudTestProjectEnvKey);
+        TestProject = await Jira.Projects.GetProjectAsync(testProjectKey);
     }
 
     private string GetValueFromEnv(string envKey)

@@ -13,7 +13,7 @@ public class IssueQueryTest : JiraTestFixture
     [Test]
     public async Task GetIssueThatIncludesOnlyOneBasicField()
     {
-        var options = new IssueSearchOptions($"key = {TestProjectKey}-1")
+        var options = new IssueSearchOptions($"key = {TestProject.Key}-1")
         {
             FetchBasicFields = false,
             AdditionalFields = new List<string>() { "summary" }
