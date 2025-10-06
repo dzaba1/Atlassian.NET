@@ -76,7 +76,7 @@ public class IssueCreateTest : JiraTestFixture
             Assignee = "admin"
         };
 
-        var subTaskType = await Jira.IssueTypes.GetIssueTypesAsync()
+        var subTaskType = await Jira.IssueTypes.GetIssueTypesForProjectAsync(TestProject.Key)
             .FirstAsync(i => i.IsSubTask);
 
         try
