@@ -38,4 +38,10 @@ internal class ProjectService : IProjectService
         var remoteProject = await _jira.RestClient.ExecuteRequestAsync<RemoteProject>(Method.GET, resource, null, token).ConfigureAwait(false);
         return new Project(_jira, remoteProject);
     }
+
+    public Task DeleteIssueAsync(string projectKey, CancellationToken token = default)
+    {
+        var resource = string.Format("rest/api/2/project/{0}", projectKey);
+        return _jira.RestClient.ExecuteRequestAsync(Method.DELETE, resource, null, token);
+    }
 }

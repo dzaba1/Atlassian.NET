@@ -21,4 +21,11 @@ public interface IProjectService
     /// <param name="projectKey">Project key for the single project to load</param>
     /// <param name="token">Cancellation token for this operation.</param>
     Task<Project> GetProjectAsync(string projectKey, CancellationToken token = default);
+
+    /// <summary>
+    /// Deletes the specified project.
+    /// </summary>
+    /// <param name="projectKey">Key of project to delete.</param>
+    /// <param name="token">Cancellation token for this operation.</param>
+    Task DeleteIssueAsync(string projectKey, CancellationToken token = default);
 }
