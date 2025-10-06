@@ -19,11 +19,6 @@ public interface IIssueService
     JiraQueryable<Issue> Queryable { get; }
 
     /// <summary>
-    /// Whether to validate a JQL query
-    /// </summary>
-    bool ValidateQuery { get; set; }
-
-    /// <summary>
     /// Maximum number of issues to retrieve per request.
     /// </summary>
     int MaxIssuesPerRequest { get; set; }

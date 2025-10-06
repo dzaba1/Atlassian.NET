@@ -22,11 +22,6 @@ public class IssueSearchOptions
     public string Jql { get; private set; }
 
     /// <summary>
-    /// Whether to validate a JQL query.
-    /// </summary>
-    public bool ValidateQuery { get; set; } = true;
-
-    /// <summary>
     /// Whether to automatically include all fields exposed by the Issue class in the response.
     /// </summary>
     public bool FetchBasicFields { get; set; } = true;

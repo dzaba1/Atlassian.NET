@@ -41,8 +41,6 @@ internal class IssueService : IIssueService
         }
     }
 
-    public bool ValidateQuery { get; set; } = true;
-
     public int MaxIssuesPerRequest { get; set; } = DEFAULT_MAX_ISSUES_PER_REQUEST;
 
     private async Task<JsonSerializerSettings> GetIssueSerializerSettingsAsync(CancellationToken token)
@@ -78,10 +76,7 @@ internal class IssueService : IIssueService
 
     public IAsyncEnumerable<Issue> GetIssuesFromJqlAsync(string jql, CancellationToken token = default)
     {
-        var options = new IssueSearchOptions(jql)
-        {
-            ValidateQuery = ValidateQuery
-        };
+        var options = new IssueSearchOptions(jql);
 
         return GetIssuesFromJqlAsync(options, token);
     }
@@ -114,7 +109,6 @@ internal class IssueService : IIssueService
         var parameters = new
         {
             jql = options.Jql,
-            validateQuery = options.ValidateQuery,
             fields = fields
         };
 
@@ -496,10 +490,7 @@ internal class IssueService : IIssueService
         {
             var distinctKeys = issueKeys.Distinct();
             var jql = string.Format("key in ({0})", string.Join(",", distinctKeys));
-            var options = new IssueSearchOptions(jql)
-            {
-                ValidateQuery = false
-            };
+            var options = new IssueSearchOptions(jql);
 
             return await GetIssuesFromJqlAsync(options, token)
                 .ToDictionaryAsync<Issue, string>(i => i.Key.Value)
