@@ -31,46 +31,56 @@ internal class IssueFilterService : IIssueFilterService
         return _jira.RestClient.ExecuteRequestAsync<JiraFilter>(Method.GET, $"rest/api/2/filter/{filterId}", null, token);
     }
 
-    public async Task<IPagedQueryResult<Issue>> GetIssuesFromFavoriteAsync(string filterName, int? maxIssues = null, int startAt = 0, CancellationToken token = default)
+    public async IAsyncEnumerable<Issue> GetIssuesFromFavoriteAsync(string filterName, [EnumeratorCancellation] CancellationToken token = default)
     {
         var jql = await GetFilterJqlByNameAsync(filterName, token).ConfigureAwait(false);
 
-        return await _jira.Issues.GetIssuesFromJqlAsync(jql, maxIssues, startAt, token).ConfigureAwait(false);
+        await foreach (var item in _jira.Issues.GetIssuesFromJqlAsync(jql, token).ConfigureAwait(false))
+        {
+            yield return item;
+        }
     }
 
-    public async Task<IPagedQueryResult<Issue>> GetIssuesFromFavoriteWithFieldsAsync(string filterName, int? maxIssues = default, int startAt = 0, IList<string> fields = default, CancellationToken token = default)
+    public async IAsyncEnumerable<Issue> GetIssuesFromFavoriteWithFieldsAsync(string filterName, IList<string> fields = default, [EnumeratorCancellation] CancellationToken token = default)
     {
         var jql = await GetFilterJqlByNameAsync(filterName, token).ConfigureAwait(false);
 
         var searchOptions = new IssueSearchOptions(jql)
         {
-            MaxIssuesPerRequest = maxIssues,
-            StartAt = startAt,
             AdditionalFields = fields,
             FetchBasicFields = false
         };
-        return await _jira.Issues.GetIssuesFromJqlAsync(searchOptions, token).ConfigureAwait(false);
+
+        await foreach (var item in _jira.Issues.GetIssuesFromJqlAsync(searchOptions, token).ConfigureAwait(false))
+        {
+            yield return item;
+        }
     }
 
-    public async Task<IPagedQueryResult<Issue>> GetIssuesFromFilterAsync(string filterId, int? maxIssues = null, int startAt = 0, CancellationToken token = default)
+    public async IAsyncEnumerable<Issue> GetIssuesFromFilterAsync(string filterId, [EnumeratorCancellation] CancellationToken token = default)
     {
         var jql = await GetFilterJqlByIdAsync(filterId, token).ConfigureAwait(false);
 
-        return await _jira.Issues.GetIssuesFromJqlAsync(jql, maxIssues, startAt, token).ConfigureAwait(false);
+        await foreach (var item in _jira.Issues.GetIssuesFromJqlAsync(jql, token).ConfigureAwait(false))
+        {
+            yield return item;
+        }
     }
 
-    public async Task<IPagedQueryResult<Issue>> GetIssuesFromFilterWithFieldsAsync(string filterId, int? maxIssues = default, int startAt = 0, IList<string> fields = default, CancellationToken token = default)
+    public async IAsyncEnumerable<Issue> GetIssuesFromFilterWithFieldsAsync(string filterId, IList<string> fields = default, [EnumeratorCancellation] CancellationToken token = default)
     {
         var jql = await GetFilterJqlByIdAsync(filterId, token).ConfigureAwait(false);
 
         var searchOptions = new IssueSearchOptions(jql)
         {
-            MaxIssuesPerRequest = maxIssues,
-            StartAt = startAt,
             AdditionalFields = fields,
             FetchBasicFields = false
         };
-        return await _jira.Issues.GetIssuesFromJqlAsync(searchOptions, token).ConfigureAwait(false);
+
+        await foreach (var item in _jira.Issues.GetIssuesFromJqlAsync(searchOptions, token).ConfigureAwait(false))
+        {
+            yield return item;
+        }
     }
 
     private async Task<string> GetFilterJqlByNameAsync(string filterName, CancellationToken token = default)

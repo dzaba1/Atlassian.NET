@@ -82,17 +82,15 @@ public interface IIssueService
     /// Execute a specific JQL query and return the resulting issues.
     /// </summary>
     /// <param name="jql">JQL search query</param>
-    /// <param name="maxIssues">Maximum number of issues to return (defaults to 20). The maximum allowable value is dictated by the JIRA property 'jira.search.views.default.max'. If you specify a value that is higher than this number, your search results will be truncated.</param>
-    /// <param name="startAt">Index of the first issue to return (0-based)</param>
     /// <param name="token">Cancellation token for this operation.</param>
-    Task<IPagedQueryResult<Issue>> GetIssuesFromJqlAsync(string jql, int? maxIssues = null, int startAt = 0, CancellationToken token = default);
+    IAsyncEnumerable<Issue> GetIssuesFromJqlAsync(string jql, CancellationToken token = default);
 
     /// <summary>
     /// Execute a specific JQL query and return the resulting issues.
     /// </summary>
     /// <param name="options">Options to use when executing the search.</param>
     /// <param name="token">Cancellatin token for this operation.</param>
-    Task<IPagedQueryResult<Issue>> GetIssuesFromJqlAsync(IssueSearchOptions options, CancellationToken token = default);
+    IAsyncEnumerable<Issue> GetIssuesFromJqlAsync(IssueSearchOptions options, CancellationToken token = default);
 
     /// <summary>
     /// Transition an issue through a workflow action.
@@ -238,10 +236,8 @@ public interface IIssueService
     /// Returns the issues that are marked as sub tasks of this issue.
     /// </summary>
     /// <param name="issueKey">The issue key to get sub tasks from.</param>
-    /// <param name="maxIssues">Maximum number of issues to retrieve.</param>
-    /// <param name="startAt">Index of the first issue to return (0-based).</param>
     /// <param name="token">Cancellation token for this operation.</param>
-    Task<IPagedQueryResult<Issue>> GetSubTasksAsync(string issueKey, int? maxIssues = null, int startAt = 0, CancellationToken token = default);
+    IAsyncEnumerable<Issue> GetSubTasksAsync(string issueKey, CancellationToken token = default);
 
     /// <summary>
     /// Add one or more attachments to an issue.

@@ -60,7 +60,7 @@ public class IssuePropertiesTest
 
         await newIssue.AddWorklogAsync("1d");
 
-        var issuesFromQuery = await jira.Issues.GetIssuesFromJqlAsync($"id = {newIssue.Key.Value}");
+        var issuesFromQuery = await jira.Issues.GetIssuesFromJqlAsync($"id = {newIssue.Key.Value}").ToArrayAsync();
         Assert.Equal("1d", issuesFromQuery.Single().TimeTrackingData.TimeSpent);
     }
 

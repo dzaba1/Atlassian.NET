@@ -78,7 +78,7 @@ public class IssueCustomFieldTest
     public async Task CanHandleCustomFieldWithoutSerializerThatIsArrayOfObjects()
     {
         var jira = Jira.CreateRestClient(new TraceReplayer("Trace_CustomFieldArrayOfObjects.txt"));
-        var issue = (await jira.Issues.GetIssuesFromJqlAsync("foo")).Single();
+        var issue = await jira.Issues.GetIssuesFromJqlAsync("foo").SingleAsync();
 
         Assert.True((await issue.GetCustomFieldAsync("Watchers")).Value.Length > 0);
     }

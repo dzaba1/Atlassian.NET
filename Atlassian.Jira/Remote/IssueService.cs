@@ -76,19 +76,17 @@ internal class IssueService : IIssueService
         return new Issue(_jira, issue.RemoteIssue);
     }
 
-    public Task<IPagedQueryResult<Issue>> GetIssuesFromJqlAsync(string jql, int? maxIssues = default, int startAt = 0, CancellationToken token = default)
+    public IAsyncEnumerable<Issue> GetIssuesFromJqlAsync(string jql, CancellationToken token = default)
     {
         var options = new IssueSearchOptions(jql)
         {
-            MaxIssuesPerRequest = maxIssues,
-            StartAt = startAt,
             ValidateQuery = ValidateQuery
         };
 
         return GetIssuesFromJqlAsync(options, token);
     }
 
-    public async Task<IPagedQueryResult<Issue>> GetIssuesFromJqlAsync(IssueSearchOptions options, CancellationToken token = default)
+    public async IAsyncEnumerable<Issue> GetIssuesFromJqlAsync(IssueSearchOptions options, [EnumeratorCancellation] CancellationToken token = default)
     {
         var logger = _restSettings.GetLogger<IssueService>();
         if (logger != null)
@@ -116,13 +114,11 @@ internal class IssueService : IIssueService
         var parameters = new
         {
             jql = options.Jql,
-            startAt = options.StartAt,
-            maxResults = options.MaxIssuesPerRequest ?? MaxIssuesPerRequest,
             validateQuery = options.ValidateQuery,
             fields = fields
         };
 
-        var result = await _jira.RestClient.ExecuteRequestAsync(Method.POST, "rest/api/2/search", parameters, token).ConfigureAwait(false);
+        var result = await _jira.RestClient.ExecuteRequestAsync(Method.POST, "rest/api/3/search/jql", parameters, token).ConfigureAwait(false);
         var serializerSettings = await GetIssueSerializerSettingsAsync(token).ConfigureAwait(false);
         var issues = result["issues"]
             .Cast<JObject>()
@@ -132,7 +128,9 @@ internal class IssueService : IIssueService
                 return new Issue(_jira, remoteIssue);
             });
 
-        return PagedQueryResult<Issue>.FromJson((JObject)result, issues);
+        yield break;
+        throw new NotImplementedException();
+        //return PagedQueryResult<Issue>.FromJson((JObject)result, issues);
     }
 
     public async Task UpdateIssueAsync(Issue issue, IssueUpdateOptions options, CancellationToken token = default)
@@ -462,10 +460,10 @@ internal class IssueService : IIssueService
         return _jira.RestClient.ExecuteRequestAsync(Method.POST, resourceUrl, requestBody, token);
     }
 
-    public Task<IPagedQueryResult<Issue>> GetSubTasksAsync(string issueKey, int? maxIssues = default, int startAt = 0, CancellationToken token = default)
+    public IAsyncEnumerable<Issue> GetSubTasksAsync(string issueKey, CancellationToken token = default)
     {
         var jql = string.Format("parent = {0}", issueKey);
-        return GetIssuesFromJqlAsync(jql, maxIssues, startAt, token);
+        return GetIssuesFromJqlAsync(jql, token);
     }
 
     public Task AddAttachmentsAsync(string issueKey, UploadAttachmentInfo[] attachments, CancellationToken token = default)
@@ -500,12 +498,12 @@ internal class IssueService : IIssueService
             var jql = string.Format("key in ({0})", string.Join(",", distinctKeys));
             var options = new IssueSearchOptions(jql)
             {
-                MaxIssuesPerRequest = distinctKeys.Count(),
                 ValidateQuery = false
             };
 
-            var result = await GetIssuesFromJqlAsync(options, token).ConfigureAwait(false);
-            return result.ToDictionary<Issue, string>(i => i.Key.Value);
+            return await GetIssuesFromJqlAsync(options, token)
+                .ToDictionaryAsync<Issue, string>(i => i.Key.Value)
+                .ConfigureAwait(false);
         }
         else
         {

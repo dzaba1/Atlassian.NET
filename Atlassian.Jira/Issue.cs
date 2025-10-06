@@ -580,17 +580,15 @@ public class Issue : IRemoteIssueFieldProvider
     /// <summary>
     /// Returns the issues that are marked as sub tasks of this issue.
     /// </summary>
-    /// <param name="maxIssues">Maximum number of issues to retrieve.</param>
-    /// <param name="startAt">Index of the first issue to return (0-based).</param>
     /// <param name="token">Cancellation token for this operation.</param>
-    public Task<IPagedQueryResult<Issue>> GetSubTasksAsync(int? maxIssues = null, int startAt = 0, CancellationToken token = default)
+    public IAsyncEnumerable<Issue> GetSubTasksAsync(CancellationToken token = default)
     {
         if (string.IsNullOrEmpty(_originalIssue.key))
         {
             throw new InvalidOperationException("Unable to retrieve subtasks from server, issue has not been created.");
         }
 
-        return _jira.Issues.GetSubTasksAsync(_originalIssue.key, maxIssues, startAt, token);
+        return _jira.Issues.GetSubTasksAsync(_originalIssue.key, token);
     }
 
     /// <summary>

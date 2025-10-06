@@ -42,8 +42,20 @@ public class JiraQueryProvider : IQueryProvider
     {
         var jql = _translator.Process(expression);
 
-        var temp = await _issues.GetIssuesFromJqlAsync(jql.Expression, jql.NumberOfResults, jql.SkipResults ?? 0);
-        IQueryable<Issue> issues = temp.AsQueryable();
+        var temp = _issues.GetIssuesFromJqlAsync(jql.Expression/*, jql.NumberOfResults, jql.SkipResults ?? 0*/);
+
+        if (jql.SkipResults != null)
+        {
+            temp = temp.Skip(jql.SkipResults.Value);
+        }
+
+        if (jql.NumberOfResults != null)
+        {
+            temp = temp.Take(jql.NumberOfResults.Value);
+        }
+
+        var array = await temp.ToArrayAsync();
+        IQueryable<Issue> issues = array.AsQueryable();
 
         if (isEnumerable)
         {

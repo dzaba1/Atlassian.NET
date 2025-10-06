@@ -22,16 +22,6 @@ public class IssueSearchOptions
     public string Jql { get; private set; }
 
     /// <summary>
-    /// Maximum number of issues to return (defaults to the value of Jira.Issues.MaxIssuesPerRequest).
-    /// </summary>
-    public int? MaxIssuesPerRequest { get; set; }
-
-    /// <summary>
-    /// Index of the first issue to return (0-based).
-    /// </summary>
-    public int StartAt { get; set; } = 0;
-
-    /// <summary>
     /// Whether to validate a JQL query.
     /// </summary>
     public bool ValidateQuery { get; set; } = true;

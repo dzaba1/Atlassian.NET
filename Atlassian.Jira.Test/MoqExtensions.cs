@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using Atlassian.Jira.Remote;
 using Moq;
 using Moq.Language.Flow;
@@ -14,11 +13,10 @@ public static class MoqExtensions
 {
     public static void SetupIssues(this Mock<IIssueService> mock, Jira jira, params RemoteIssue[] remoteIssues)
     {
-        var pagedResult = new Mock<IPagedQueryResult<Issue>>();
         var issues = remoteIssues.Select(i => i.ToLocal(jira));
-        pagedResult.Setup(p => p.GetEnumerator()).Returns(issues.GetEnumerator());
-        mock.Setup(s => s.GetIssuesFromJqlAsync(It.IsAny<string>(), It.IsAny<int?>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
-            .Returns(Task.FromResult(pagedResult.Object));
+
+        mock.Setup(s => s.GetIssuesFromJqlAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .Returns(issues.ToAsyncEnumerable());
     }
 
     public static void ReturnsInOrder<T, TResult>(this ISetup<T, TResult> setup,

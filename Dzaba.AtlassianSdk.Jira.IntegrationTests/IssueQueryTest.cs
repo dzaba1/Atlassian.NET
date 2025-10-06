@@ -19,7 +19,7 @@ public class IssueQueryTest : JiraTestFixture
             AdditionalFields = new List<string>() { "summary" }
         };
 
-        var issues = await Jira.Issues.GetIssuesFromJqlAsync(options);
+        var issues = await Jira.Issues.GetIssuesFromJqlAsync(options).ToArrayAsync();
 
         issues.First().Summary.Should().NotBeNullOrEmpty();
         issues.First().Assignee.Should().BeNull();

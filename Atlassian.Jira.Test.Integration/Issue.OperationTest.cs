@@ -122,7 +122,7 @@ public class IssueOperationsTest
         subTask.Summary = "Test SubTask" + _random.Next(int.MaxValue);
         await subTask.SaveChangesAsync();
 
-        var results = await parentTask.GetSubTasksAsync();
+        var results = await parentTask.GetSubTasksAsync().ToArrayAsync();
         Assert.Single(results);
         Assert.Equal(results.First().Summary, subTask.Summary);
     }
