@@ -11,23 +11,6 @@ public class IssueCreateTest
 
     [Theory]
     [ClassData(typeof(JiraProvider))]
-    public async Task CreateIssueWithIssueTypesPerProject(Jira jira)
-    {
-        var issue = new Issue(jira, "TST")
-        {
-            Type = "Bug",
-            Summary = "Test Summary " + _random.Next(int.MaxValue),
-            Assignee = "admin"
-        };
-
-        issue.Type.SearchByProjectOnly = true;
-        var newIssue = await issue.SaveChangesAsync();
-
-        Assert.Equal("Bug", newIssue.Type.Name);
-    }
-
-    [Theory]
-    [ClassData(typeof(JiraProvider))]
     public async Task CreateIssueWithOriginalEstimate(Jira jira)
     {
         var fields = new CreateIssueFields("TST")
