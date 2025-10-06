@@ -4,6 +4,8 @@
 
 Contains utilities for interacting with  [Atlassian JIRA](http://www.atlassian.com/software/jira).
 
+This is a fork of https://bitbucket.org/farmas/atlassian.net-sdk
+
 ## Download
 
 - 
@@ -11,12 +13,6 @@ Contains utilities for interacting with  [Atlassian JIRA](http://www.atlassian.c
 ## License
 
 This project is licensed under  [BSD](/LICENSE.md).
-
-## Dependencies & Requirements
-
-- [RestSharp](https://www.nuget.org/packages/RestSharp)
-- [Newtonsoft.Json](https://www.nuget.org/packages/Newtonsoft.Json)
-- Tested with JIRA v8.5.2
 
 ## History
 
