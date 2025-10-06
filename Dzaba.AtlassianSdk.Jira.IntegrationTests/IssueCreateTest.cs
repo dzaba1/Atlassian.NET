@@ -27,7 +27,7 @@ public class IssueCreateTest : JiraTestFixture
         }
         finally
         {
-            await DeleteIssueSafeAsync(issue.Key.Value);
+            await DeleteIssueSafeAsync(issue.Key?.Value);
         }
     }
 }

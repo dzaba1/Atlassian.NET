@@ -67,6 +67,11 @@ public abstract class JiraTestFixture
 
     protected async Task DeleteIssueSafeAsync(string issueKey)
     {
+        if (string.IsNullOrWhiteSpace(issueKey))
+        {
+            return;
+        }
+
         try
         {
             await Jira.Issues.DeleteIssueAsync(issueKey);
