@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Atlassian.Jira.Remote;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -27,5 +28,12 @@ public interface IProjectService
     /// </summary>
     /// <param name="projectKey">Key of project to delete.</param>
     /// <param name="token">Cancellation token for this operation.</param>
-    Task DeleteIssueAsync(string projectKey, CancellationToken token = default);
+    Task DeleteProjectAsync(string projectKey, CancellationToken token = default);
+
+    /// <summary>
+    /// Creates a project.
+    /// </summary>
+    /// <param name="project">Project to create.</param>
+    /// <param name="token">Cancellation token for this operation.</param>
+    Task<Project> CreateProjectAsync(NewProject project, CancellationToken token = default);
 }

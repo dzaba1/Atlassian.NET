@@ -1,4 +1,5 @@
-﻿using RestSharp;
+﻿using Newtonsoft.Json;
+using RestSharp;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -39,9 +40,17 @@ internal class ProjectService : IProjectService
         return new Project(_jira, remoteProject);
     }
 
-    public Task DeleteIssueAsync(string projectKey, CancellationToken token = default)
+    public Task DeleteProjectAsync(string projectKey, CancellationToken token = default)
     {
         var resource = string.Format("rest/api/2/project/{0}", projectKey);
         return _jira.RestClient.ExecuteRequestAsync(Method.DELETE, resource, null, token);
+    }
+
+    public async Task<Project> CreateProjectAsync(NewProject project, CancellationToken token = default)
+    {
+        var requestBody = JsonConvert.SerializeObject(project, _jira.RestClient.Settings.JsonSerializerSettings);
+
+        await _jira.RestClient.ExecuteRequestAsync(Method.POST, "rest/api/3/project", requestBody, token).ConfigureAwait(false);
+        return await GetProjectAsync(project.Key);
     }
 }
