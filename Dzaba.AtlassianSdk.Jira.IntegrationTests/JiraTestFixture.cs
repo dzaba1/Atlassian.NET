@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using NUnit.Framework;
 using Serilog;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -97,6 +98,29 @@ public abstract class JiraTestFixture
         for (var i = 0; i < 10; i++)
         {
             var array = queryable.ToArray();
+            if (array.Length > 0)
+            {
+                return array;
+            }
+
+            Thread.Sleep(500);
+        }
+
+        throw new InvalidOperationException("Couldn't get the array with elements.");
+    }
+
+    /// <summary>
+    /// We must wait few seconds sometimes otherwise JQL won't find anything
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="queryable"></param>
+    /// <returns></returns>
+    /// <exception cref="InvalidOperationException"></exception>
+    protected async Task<T[]> ToArrayWithResultsWithWait<T>(IAsyncEnumerable<T> asyncEnumerable)
+    {
+        for (var i = 0; i < 10; i++)
+        {
+            var array = await asyncEnumerable.ToArrayAsync();
             if (array.Length > 0)
             {
                 return array;
