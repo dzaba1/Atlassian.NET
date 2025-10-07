@@ -84,6 +84,16 @@ internal class IssueService : IIssueService
 
     public async IAsyncEnumerable<Issue> GetIssuesFromJqlAsync(IssueSearchOptions options, [EnumeratorCancellation] CancellationToken token = default)
     {
+        if (options == null)
+        {
+            throw new ArgumentNullException(nameof(options));
+        }
+
+        if (string.IsNullOrWhiteSpace(options.Jql))
+        {
+            throw new ArgumentNullException(nameof(options.Jql));
+        }
+
         var logger = _restSettings.GetLogger<IssueService>();
         if (logger != null)
         {
@@ -144,7 +154,7 @@ internal class IssueService : IIssueService
                     NextPageToken = resultModel.NextPageToken,
                 };
 
-                resultJson = await _jira.RestClient.ExecuteRequestAsync(Method.POST, "rest/api/3/search/jql", nextParameters, token).ConfigureAwait(false);
+                resultJson = await _jira.RestClient.ExecuteRequestAsync(Method.POST, "rest/api/2/search/jql", nextParameters, token).ConfigureAwait(false);
                 resultModel = JsonConvert.DeserializeObject<SearchAndReconcileResults>(resultJson.ToString(), _jira.RestClient.Settings.JsonSerializerSettings);
             }
         }

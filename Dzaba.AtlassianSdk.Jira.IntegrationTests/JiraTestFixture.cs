@@ -116,7 +116,7 @@ public abstract class JiraTestFixture
     /// <param name="queryable"></param>
     /// <returns></returns>
     /// <exception cref="InvalidOperationException"></exception>
-    protected async Task<T[]> ToArrayWithResultsWithWait<T>(IAsyncEnumerable<T> asyncEnumerable)
+    protected async Task<T[]> ToArrayWithResultsWithWaitAsync<T>(IAsyncEnumerable<T> asyncEnumerable)
     {
         for (var i = 0; i < 10; i++)
         {

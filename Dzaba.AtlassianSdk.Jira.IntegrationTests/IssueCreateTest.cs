@@ -313,7 +313,7 @@ public class IssueCreateTest : JiraTestFixture
             };
             await issue.SaveChangesAsync();
 
-            var subtasks = await ToArrayWithResultsWithWait(Jira.Issues.GetIssuesFromJqlAsync($"project = {TestProject.Key} and parent = {parentIssue.Key.Value}"));
+            var subtasks = await ToArrayWithResultsWithWaitAsync(Jira.Issues.GetIssuesFromJqlAsync($"project = {TestProject.Key} and parent = {parentIssue.Key.Value}"));
 
             subtasks.Any(s => s.Summary.Equals(summaryValue)).Should().BeTrue("'{0}' was not found as a sub-task of TST-1", summaryValue);
         }

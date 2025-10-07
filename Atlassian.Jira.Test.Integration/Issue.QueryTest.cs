@@ -12,31 +12,6 @@ public class IssueQueryTest
 
     [Theory]
     [ClassData(typeof(JiraProvider))]
-    public async Task GetIssuesWithPagingMetadata(Jira jira)
-    {
-        // Arrange: Create 3 issues to query.
-        var summaryValue = "Test-Summary-" + Guid.NewGuid().ToString();
-        for (int i = 0; i < 3; i++)
-        {
-            var issue = new Issue(jira, "TST")
-            {
-                Type = "1",
-                Summary = summaryValue,
-                Assignee = "admin"
-            };
-            await issue.SaveChangesAsync();
-        }
-
-        // Act: Query for paged issues.
-        var jql = string.Format("summary ~ \"{0}\"", summaryValue);
-        var result = await jira.Issues.GetIssuesFromJqlAsync(jql).ToArrayAsync();
-
-        // Assert
-        Assert.Equal(2, result.Count());
-    }
-
-    [Theory]
-    [ClassData(typeof(JiraProvider))]
     public async Task GetIssuesFromFilterWithByName(Jira jira)
     {
         var issues = await jira.Filters.GetIssuesFromFavoriteAsync("One Issue Filter").ToArrayAsync();

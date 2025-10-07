@@ -1,6 +1,7 @@
 ﻿using Atlassian.Jira;
 using FluentAssertions;
 using NUnit.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,21 +9,37 @@ using System.Threading.Tasks;
 namespace Dzaba.AtlassianSdk.Jira.IntegrationTests;
 
 [TestFixture]
-public class IssueQueryTest : TestFixtureWithIssue
+public class IssueQueryTest : JiraTestFixture
 {
     [Test]
     public async Task GetIssueThatIncludesOnlyOneBasicField()
     {
-        var options = new IssueSearchOptions($"key = {TestIssue.Key.Value}")
+        var issue = new Issue(Jira, TestProject.Key)
         {
-            FetchBasicFields = false,
-            AdditionalFields = new List<string>() { "summary" }
+            Type = "Bug",
+            Summary = "Test issue",
+            Assignee = "admin"
         };
 
-        var issues = await ToArrayWithResultsWithWait(Jira.Issues.GetIssuesFromJqlAsync(options));
+        try
+        {
+            await issue.SaveChangesAsync();
 
-        issues.First().Summary.Should().NotBeNullOrEmpty();
-        issues.First().Assignee.Should().BeNull();
+            var options = new IssueSearchOptions($"key = {issue.Key.Value}")
+            {
+                FetchBasicFields = false,
+                AdditionalFields = new List<string>() { "summary" }
+            };
+
+            var issues = await ToArrayWithResultsWithWaitAsync(Jira.Issues.GetIssuesFromJqlAsync(options));
+
+            issues.First().Summary.Should().NotBeNullOrEmpty();
+            issues.First().Assignee.Should().BeNull();
+        }
+        finally
+        {
+            await DeleteIssueSafeAsync(issue.Key?.Value);
+        }
     }
 
     [Test]
@@ -50,7 +67,7 @@ public class IssueQueryTest : TestFixtureWithIssue
                 AdditionalFields = new List<string>() { "comment", "watches", "worklog" }
             };
 
-            var issues = await ToArrayWithResultsWithWait(Jira.Issues.GetIssuesFromJqlAsync(options));
+            var issues = await ToArrayWithResultsWithWaitAsync(Jira.Issues.GetIssuesFromJqlAsync(options));
             var serverIssue = issues.First();
 
             // Assert
@@ -81,5 +98,47 @@ public class IssueQueryTest : TestFixtureWithIssue
         var dict = await Jira.Issues.GetIssuesAsync("NAN-9999");
 
         dict.Should().NotContainKey("NAN-9999");
+    }
+
+    [Test]
+    public async Task GetIssuesWithPagingMetadata()
+    {
+        // Arrange: Create 3 issues to query.
+        var issues = new List<Issue>();
+        var summaryValue = "Test-Summary-" + Guid.NewGuid().ToString();
+        for (int i = 0; i < 3; i++)
+        {
+            var issue = new Issue(Jira, TestProject.Key)
+            {
+                Type = "Bug",
+                Summary = summaryValue,
+                Assignee = "admin"
+            };
+            issues.Add(issue);
+        }
+
+        try
+        {
+            foreach (var issue in issues)
+            {
+                await issue.SaveChangesAsync();
+            }
+
+            await Task.Delay(TimeSpan.FromSeconds(2));
+
+            // Act: Query for paged issues.
+            var jql = string.Format("summary ~ \"{0}\"", summaryValue);
+            var result = await Jira.Issues.GetIssuesFromJqlAsync(jql).ToArrayAsync();
+
+            // Assert
+            result.Should().HaveCount(3);
+        }
+        finally
+        {
+            foreach (var issue in issues)
+            {
+                await DeleteIssueSafeAsync(issue.Key?.Value);
+            }
+        }
     }
 }
