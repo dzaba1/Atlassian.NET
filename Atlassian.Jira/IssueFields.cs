@@ -1,5 +1,6 @@
 ﻿using Atlassian.Jira.Remote;
 using Newtonsoft.Json.Linq;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -8,7 +9,7 @@ namespace Atlassian.Jira;
 /// <summary>
 /// Represents the fields of an issue that are not represented by properties of the Issue class.
 /// </summary>
-public class IssueFields
+public class IssueFields : IReadOnlyDictionary<string, JToken>
 {
     private readonly IDictionary<string, JToken> _map;
 
@@ -56,6 +57,12 @@ public class IssueFields
     /// </summary>
     public IPagedQueryResult<Worklog> Worklogs { get; private set; }
 
+    public IEnumerable<string> Keys => _map.Keys;
+
+    public IEnumerable<JToken> Values => _map.Values;
+
+    public int Count => _map.Count;
+
     /// <summary>
     ///  Gets the field with the specified key.
     /// </summary>
@@ -75,5 +82,15 @@ public class IssueFields
     public bool TryGetValue(string key, out JToken value)
     {
         return _map.TryGetValue(key, out value);
+    }
+
+    public IEnumerator<KeyValuePair<string, JToken>> GetEnumerator()
+    {
+        return _map.GetEnumerator();
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
     }
 }
