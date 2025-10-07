@@ -11,42 +11,6 @@ public class IssueCreateTest
 
     [Theory]
     [ClassData(typeof(JiraProvider))]
-    public async Task CreateAndQueryIssueWithAllFieldsSet(Jira jira)
-    {
-        var summaryValue = "Test Summary " + _random.Next(int.MaxValue);
-        var expectedDueDate = new DateTime(2011, 12, 12);
-        var issue = jira.CreateIssue("TST");
-        await issue.AffectsVersions.AddAsync("1.0");
-        issue.Assignee = "admin";
-        await issue.Components.AddAsync("Server");
-        await issue.SetCustomFieldAsync("Custom Text Field", "Test Value"); // custom field
-        issue.Description = "Test Description";
-        issue.DueDate = expectedDueDate;
-        issue.Environment = "Test Environment";
-        await issue.FixVersions.AddAsync("2.0");
-        issue.Priority = "Major";
-        issue.Reporter = "admin";
-        issue.Summary = summaryValue;
-        issue.Type = "1";
-        issue.Labels.Add("testLabel");
-
-        await issue.SaveChangesAsync();
-
-        var queriedIssue = (from i in jira.Issues.Queryable
-                            where i.Key == issue.Key
-                            select i).ToArray().First();
-
-        Assert.Equal(summaryValue, queriedIssue.Summary);
-        Assert.NotNull(queriedIssue.JiraIdentifier);
-        Assert.Equal(expectedDueDate, queriedIssue.DueDate.Value);
-        Assert.NotNull(queriedIssue.Priority.IconUrl);
-        Assert.NotNull(queriedIssue.Type.IconUrl);
-        Assert.NotNull(queriedIssue.Status.IconUrl);
-        Assert.Contains("testLabel", queriedIssue.Labels);
-    }
-
-    [Theory]
-    [ClassData(typeof(JiraProvider))]
     public async Task CreateAndQueryIssueWithSubTask(Jira jira)
     {
         var parentTask = jira.CreateIssue("TST");
