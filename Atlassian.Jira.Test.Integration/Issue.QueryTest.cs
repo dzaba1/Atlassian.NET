@@ -12,19 +12,6 @@ public class IssueQueryTest
 
     [Theory]
     [ClassData(typeof(JiraProvider))]
-    public async Task GetIssuesFromFilterWithByName(Jira jira)
-    {
-        var issues = await jira.Filters.GetIssuesFromFavoriteAsync("One Issue Filter").ToArrayAsync();
-
-        Assert.Single(issues);
-        var issue = issues.First();
-        Assert.Equal("TST-1", issue.Key.Value);
-        Assert.NotNull(issue.Summary);
-        Assert.False(issue.AdditionalFields.ContainsKey("watches"), "Watches should be excluded by default.");
-    }
-
-    [Theory]
-    [ClassData(typeof(JiraProvider))]
     public async Task GetIssuesFromFilterWithByNameWithFields(Jira jira)
     {
         var issues = await jira.Filters.GetIssuesFromFavoriteWithFieldsAsync("One Issue Filter", fields: new List<string> { "watches" }).ToArrayAsync();

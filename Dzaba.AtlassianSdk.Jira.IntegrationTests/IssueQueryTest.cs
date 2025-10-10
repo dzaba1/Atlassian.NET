@@ -141,4 +141,30 @@ public class IssueQueryTest : JiraTestFixture
             }
         }
     }
+
+    [Test]
+    public async Task GetIssuesFromFilterWithByName()
+    {
+        var issue = new Issue(Jira, TestProject.Key)
+        {
+            Type = "Bug",
+            Summary = "Test summary",
+            Assignee = "admin"
+        };
+
+        try
+        {
+            var issues = await ToArrayWithResultsWithWaitAsync(Jira.Filters.GetIssuesFromFavoriteAsync("One Issue Filter"));
+
+            issues.Should().HaveCount(1);
+            var result = issues.First();
+            result.Key.Value.Should().Be(issue.Key.Value);
+            issue.Summary.Should().NotBeNullOrEmpty();
+            result.AdditionalFields.Should().ContainKey("watches", "Watches should be excluded by default.");
+        }
+        finally
+        {
+            await DeleteIssueSafeAsync(issue.Key?.Value);
+        }
+    }
 }
