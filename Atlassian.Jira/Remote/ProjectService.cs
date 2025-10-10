@@ -22,7 +22,7 @@ internal class ProjectService : IProjectService
         var cache = _jira.Cache;
         if (!cache.Projects.Any())
         {
-            var remoteProjects = await _jira.RestClient.ExecuteRequestAsync<RemoteProject[]>(Method.GET, "rest/api/2/project?expand=lead,url", null, token).ConfigureAwait(false);
+            var remoteProjects = await _jira.RestClient.ExecuteRequestAsync<RemoteProject[]>(Method.Get, "rest/api/2/project?expand=lead,url", null, token).ConfigureAwait(false);
             cache.Projects.TryAdd(remoteProjects.Select(p => new Project(_jira, p)));
         }
 
@@ -36,21 +36,21 @@ internal class ProjectService : IProjectService
     public async Task<Project> GetProjectAsync(string projectKey, CancellationToken token = new CancellationToken())
     {
         var resource = string.Format("rest/api/2/project/{0}?expand=lead,url", projectKey);
-        var remoteProject = await _jira.RestClient.ExecuteRequestAsync<RemoteProject>(Method.GET, resource, null, token).ConfigureAwait(false);
+        var remoteProject = await _jira.RestClient.ExecuteRequestAsync<RemoteProject>(Method.Get, resource, null, token).ConfigureAwait(false);
         return new Project(_jira, remoteProject);
     }
 
     public Task DeleteProjectAsync(string projectKey, CancellationToken token = default)
     {
         var resource = string.Format("rest/api/2/project/{0}", projectKey);
-        return _jira.RestClient.ExecuteRequestAsync(Method.DELETE, resource, null, token);
+        return _jira.RestClient.ExecuteRequestAsync(Method.Delete, resource, null, token);
     }
 
     public async Task<Project> CreateProjectAsync(NewProject project, CancellationToken token = default)
     {
         var requestBody = JsonConvert.SerializeObject(project, _jira.RestClient.Settings.JsonSerializerSettings);
 
-        await _jira.RestClient.ExecuteRequestAsync(Method.POST, "rest/api/3/project", requestBody, token).ConfigureAwait(false);
+        await _jira.RestClient.ExecuteRequestAsync(Method.Post, "rest/api/3/project", requestBody, token).ConfigureAwait(false);
         return await GetProjectAsync(project.Key);
     }
 }

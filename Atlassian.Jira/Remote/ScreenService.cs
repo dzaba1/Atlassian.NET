@@ -19,7 +19,7 @@ internal class ScreenService : IScreenService
     {
         var resource = $"rest/api/2/screens/{screenId}/availableFields";
 
-        var remoteScreenFields = await _jira.RestClient.ExecuteRequestAsync<IEnumerable<RemoteScreenField>>(Method.GET, resource, null, token).ConfigureAwait(false);
+        var remoteScreenFields = await _jira.RestClient.ExecuteRequestAsync<IEnumerable<RemoteScreenField>>(Method.Get, resource, null, token).ConfigureAwait(false);
 
         var screenFields = remoteScreenFields.Select(x => new ScreenField(x));
         foreach (var value in screenFields)
@@ -36,7 +36,7 @@ internal class ScreenService : IScreenService
             resource += $"?projectKey={projectKey}";
         }
 
-        var remoteScreenTabs = await _jira.RestClient.ExecuteRequestAsync<IEnumerable<RemoteScreenTab>>(Method.GET, resource, null, token).ConfigureAwait(false);
+        var remoteScreenTabs = await _jira.RestClient.ExecuteRequestAsync<IEnumerable<RemoteScreenTab>>(Method.Get, resource, null, token).ConfigureAwait(false);
 
         var screenTabs = remoteScreenTabs.Select(x => new ScreenTab(x));
         foreach (var value in screenTabs)
@@ -53,7 +53,7 @@ internal class ScreenService : IScreenService
             resource += $"?projectKey={projectKey}";
         }
 
-        var remoteScreenFields = await _jira.RestClient.ExecuteRequestAsync<IEnumerable<RemoteScreenField>>(Method.GET, resource, null, token).ConfigureAwait(false);
+        var remoteScreenFields = await _jira.RestClient.ExecuteRequestAsync<IEnumerable<RemoteScreenField>>(Method.Get, resource, null, token).ConfigureAwait(false);
 
         var screenFields = remoteScreenFields.Select(x => new ScreenField(x));
         foreach (var value in screenFields)

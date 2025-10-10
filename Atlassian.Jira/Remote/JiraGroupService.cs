@@ -27,7 +27,7 @@ internal class JiraGroupService : IJiraGroupService
         }
 
         var requestBody = JToken.FromObject(body);
-        return _jira.RestClient.ExecuteRequestAsync(Method.POST, resource, requestBody, token);
+        return _jira.RestClient.ExecuteRequestAsync(Method.Post, resource, requestBody, token);
     }
 
     public Task CreateGroupAsync(string groupName, CancellationToken token = default)
@@ -35,7 +35,7 @@ internal class JiraGroupService : IJiraGroupService
         var resource = "rest/api/2/group";
         var requestBody = JToken.FromObject(new { name = groupName });
 
-        return _jira.RestClient.ExecuteRequestAsync(Method.POST, resource, requestBody, token);
+        return _jira.RestClient.ExecuteRequestAsync(Method.Post, resource, requestBody, token);
     }
 
     public Task DeleteGroupAsync(string groupName, string swapGroupName = null, CancellationToken token = default)
@@ -47,7 +47,7 @@ internal class JiraGroupService : IJiraGroupService
             resource += string.Format("&swapGroup={0}", Uri.EscapeDataString(swapGroupName));
         }
 
-        return _jira.RestClient.ExecuteRequestAsync(Method.DELETE, resource, null, token);
+        return _jira.RestClient.ExecuteRequestAsync(Method.Delete, resource, null, token);
     }
 
     public async Task<IPagedQueryResult<JiraUser>> GetUsersAsync(string groupname, bool includeInactiveUsers = false, int maxResults = 50, int startAt = 0, CancellationToken token = default)
@@ -59,7 +59,7 @@ internal class JiraGroupService : IJiraGroupService
             startAt,
             maxResults);
 
-        var response = await _jira.RestClient.ExecuteRequestAsync(Method.GET, resource, null, token).ConfigureAwait(false);
+        var response = await _jira.RestClient.ExecuteRequestAsync(Method.Get, resource, null, token).ConfigureAwait(false);
         var serializerSetting = _jira.RestClient.Settings.JsonSerializerSettings;
         var users = response["values"]
             .Cast<JObject>()
@@ -75,7 +75,7 @@ internal class JiraGroupService : IJiraGroupService
             _jira.RestClient.Settings.EnableUserPrivacyMode ? "accountId" : "username",
             Uri.EscapeDataString(username));
 
-        return _jira.RestClient.ExecuteRequestAsync(Method.DELETE, resource, null, token);
+        return _jira.RestClient.ExecuteRequestAsync(Method.Delete, resource, null, token);
 
     }
 }

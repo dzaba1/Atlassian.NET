@@ -42,14 +42,14 @@ internal class IssueRemoteLinkService : IIssueRemoteLinkService
             bodyObjectContent.Add("summary", summary);
         }
 
-        return _jira.RestClient.ExecuteRequestAsync(Method.POST, string.Format("rest/api/2/issue/{0}/remotelink", issueKey), bodyObject, token);
+        return _jira.RestClient.ExecuteRequestAsync(Method.Post, string.Format("rest/api/2/issue/{0}/remotelink", issueKey), bodyObject, token);
     }
 
     public async IAsyncEnumerable<IssueRemoteLink> GetRemoteLinksForIssueAsync(string issueKey, [EnumeratorCancellation] CancellationToken token = default)
     {
         var serializerSettings = _jira.RestClient.Settings.JsonSerializerSettings;
         var resource = string.Format("rest/api/2/issue/{0}/remotelink", issueKey);
-        var remoteLinksJson = await _jira.RestClient.ExecuteRequestAsync(Method.GET, resource, null, token).ConfigureAwait(false);
+        var remoteLinksJson = await _jira.RestClient.ExecuteRequestAsync(Method.Get, resource, null, token).ConfigureAwait(false);
 
         var links = remoteLinksJson.Cast<JObject>();
         var result = links.Select(json =>

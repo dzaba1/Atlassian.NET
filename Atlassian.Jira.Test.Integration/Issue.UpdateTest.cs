@@ -364,7 +364,7 @@ public class IssueUpdateTest
                 }
             }
         };
-        await jira.RestClient.ExecuteRequestAsync(Method.PUT, resource, body);
+        await jira.RestClient.ExecuteRequestAsync(Method.Put, resource, body);
 
         await issue.RefreshAsync();
         Assert.Equal("Test Issue Security Level", issue.SecurityLevel.Name);

@@ -41,12 +41,16 @@ public class JiraRestClient : IJiraRestClient
     {
         url = url.EndsWith("/") ? url : url += "/";
         _clientSettings = settings ?? new JiraRestClientSettings();
-        _restClient = new RestClient(url)
+        var options = new RestClientOptions(url)
         {
-            Proxy = _clientSettings.Proxy
+            Authenticator = authenticator,
+            Proxy = _clientSettings.Proxy,
         };
 
-        _restClient.Authenticator = authenticator;
+        _restClient = new RestClient(options, configureSerialization: s =>
+        {
+            s.UseSerializer(() => new RestSharpJsonSerializer(JsonSerializer.Create(Settings.JsonSerializerSettings)));
+        });
     }
 
     /// <summary>
@@ -67,7 +71,7 @@ public class JiraRestClient : IJiraRestClient
     {
         get
         {
-            return _restClient.BaseUrl.ToString();
+            return _restClient.Options.BaseUrl.ToString();
         }
     }
 
@@ -96,7 +100,7 @@ public class JiraRestClient : IJiraRestClient
     /// </summary>
     public async Task<JToken> ExecuteRequestAsync(Method method, string resource, object requestBody = null, CancellationToken token = default)
     {
-        if (method == Method.GET && requestBody != null)
+        if (method == Method.Get && requestBody != null)
         {
             throw new InvalidOperationException($"GET requests are not allowed to have a request body. Resource: {resource}. Body: {requestBody}");
         }
@@ -112,7 +116,6 @@ public class JiraRestClient : IJiraRestClient
         }
         else if (requestBody != null)
         {
-            request.JsonSerializer = new RestSharpJsonSerializer(JsonSerializer.Create(Settings.JsonSerializerSettings));
             request.AddJsonBody(requestBody);
         }
 
@@ -124,7 +127,7 @@ public class JiraRestClient : IJiraRestClient
     /// <summary>
     /// Executes a request with logging and validation.
     /// </summary>
-    public async Task<IRestResponse> ExecuteRequestAsync(IRestRequest request, CancellationToken token = default)
+    public async Task<RestResponse> ExecuteRequestAsync(RestRequest request, CancellationToken token = default)
     {
         LogRequest(request);
         var response = await ExecuteRawResquestAsync(request, token).ConfigureAwait(false);
@@ -135,7 +138,7 @@ public class JiraRestClient : IJiraRestClient
     /// <summary>
     /// Executes a raw request.
     /// </summary>
-    protected virtual Task<IRestResponse> ExecuteRawResquestAsync(IRestRequest request, CancellationToken token)
+    protected virtual Task<RestResponse> ExecuteRawResquestAsync(RestRequest request, CancellationToken token)
     {
         return _restClient.ExecuteAsync(request, token);
     }
@@ -146,7 +149,7 @@ public class JiraRestClient : IJiraRestClient
     /// <param name="url">Url to the file location.</param>
     public byte[] DownloadData(string url)
     {
-        return _restClient.DownloadData(new RestRequest(url, Method.GET));
+        return _restClient.DownloadData(new RestRequest(url, Method.Get));
     }
 
     /// <summary>
@@ -156,10 +159,10 @@ public class JiraRestClient : IJiraRestClient
     /// <param name="fullFileName">Full file name where the file will be downloaded.</param>
     public void Download(string url, string fullFileName)
     {
-        File.WriteAllBytes(fullFileName, _restClient.DownloadData(new RestRequest(url, Method.GET)));
+        File.WriteAllBytes(fullFileName, _restClient.DownloadData(new RestRequest(url, Method.Get)));
     }
 
-    private void LogRequest(IRestRequest request, object body = null)
+    private void LogRequest(RestRequest request, object body = null)
     {
         var logger = _clientSettings.GetLogger<JiraRestClient>();
 
@@ -180,7 +183,7 @@ public class JiraRestClient : IJiraRestClient
         }
     }
 
-    private JToken GetValidJsonFromResponse(IRestRequest request, IRestResponse response)
+    private JToken GetValidJsonFromResponse(RestRequest request, RestResponse response)
     {
         var content = response.Content != null ? response.Content.Trim() : string.Empty;
         var logger = _clientSettings.GetLogger<JiraRestClient>();

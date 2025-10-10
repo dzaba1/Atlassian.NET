@@ -23,7 +23,7 @@ internal class IssueStatusService : IIssueStatusService
 
         if (!cache.Statuses.Any())
         {
-            var results = await _jira.RestClient.ExecuteRequestAsync<RemoteStatus[]>(Method.GET, "rest/api/2/status", null, token).ConfigureAwait(false);
+            var results = await _jira.RestClient.ExecuteRequestAsync<RemoteStatus[]>(Method.Get, "rest/api/2/status", null, token).ConfigureAwait(false);
             cache.Statuses.TryAdd(results.Select(s => new IssueStatus(s)));
         }
 
@@ -45,7 +45,7 @@ internal class IssueStatusService : IIssueStatusService
         if (status == null)
         {
             var resource = $"rest/api/2/status/{idOrName}";
-            var result = await _jira.RestClient.ExecuteRequestAsync<RemoteStatus>(Method.GET, resource, null, token).ConfigureAwait(false);
+            var result = await _jira.RestClient.ExecuteRequestAsync<RemoteStatus>(Method.Get, resource, null, token).ConfigureAwait(false);
             status = new IssueStatus(result);
         }
 

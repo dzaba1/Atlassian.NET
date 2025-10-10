@@ -23,21 +23,21 @@ internal class JiraUserService : IJiraUserService
         var resource = "rest/api/2/user";
         var requestBody = JToken.FromObject(user);
 
-        return await _jira.RestClient.ExecuteRequestAsync<JiraUser>(Method.POST, resource, requestBody, token).ConfigureAwait(false);
+        return await _jira.RestClient.ExecuteRequestAsync<JiraUser>(Method.Post, resource, requestBody, token).ConfigureAwait(false);
     }
 
     public Task DeleteUserAsync(string usernameOrAccountId, CancellationToken token = default)
     {
         var queryString = _jira.RestClient.Settings.EnableUserPrivacyMode ? "accountId" : "username";
         var resource = string.Format($"rest/api/2/user?{queryString}={Uri.EscapeDataString(usernameOrAccountId)}");
-        return _jira.RestClient.ExecuteRequestAsync(Method.DELETE, resource, null, token);
+        return _jira.RestClient.ExecuteRequestAsync(Method.Delete, resource, null, token);
     }
 
     public Task<JiraUser> GetUserAsync(string usernameOrAccountId, CancellationToken token = default)
     {
         var queryString = _jira.RestClient.Settings.EnableUserPrivacyMode ? "accountId" : "username";
         var resource = string.Format($"rest/api/2/user?{queryString}={Uri.EscapeDataString(usernameOrAccountId)}");
-        return _jira.RestClient.ExecuteRequestAsync<JiraUser>(Method.GET, resource, null, token);
+        return _jira.RestClient.ExecuteRequestAsync<JiraUser>(Method.Get, resource, null, token);
     }
 
     public async IAsyncEnumerable<JiraUser> SearchUsersAsync(string query, JiraUserStatus userStatus = JiraUserStatus.Active, int maxResults = 50, int startAt = 0,
@@ -52,7 +52,7 @@ internal class JiraUserService : IJiraUserService
             startAt,
             maxResults);
 
-        var values = await _jira.RestClient.ExecuteRequestAsync<JiraUser[]>(Method.GET, resource, null, token);
+        var values = await _jira.RestClient.ExecuteRequestAsync<JiraUser[]>(Method.Get, resource, null, token);
         foreach (var value in values)
         {
             yield return value;
@@ -70,7 +70,7 @@ internal class JiraUserService : IJiraUserService
         resourceSb.Append($"?username={Uri.EscapeDataString(username)}&issueKey={Uri.EscapeDataString(issueKey)}");
         resourceSb.Append($"&startAt={startAt}&maxResults={maxResults}");
 
-        var values = await _jira.RestClient.ExecuteRequestAsync<JiraUser[]>(Method.GET, resourceSb.ToString(), null, token);
+        var values = await _jira.RestClient.ExecuteRequestAsync<JiraUser[]>(Method.Get, resourceSb.ToString(), null, token);
         foreach (var value in values)
         {
             yield return value;
@@ -88,7 +88,7 @@ internal class JiraUserService : IJiraUserService
         resourceSb.Append($"?username={Uri.EscapeDataString(username)}&project={Uri.EscapeDataString(projectKey)}");
         resourceSb.Append($"&startAt={startAt}&maxResults={maxResults}");
 
-        var values = await _jira.RestClient.ExecuteRequestAsync<IEnumerable<JiraUser>>(Method.GET, resourceSb.ToString(), null, token);
+        var values = await _jira.RestClient.ExecuteRequestAsync<IEnumerable<JiraUser>>(Method.Get, resourceSb.ToString(), null, token);
         foreach (var value in values)
         {
             yield return value;
@@ -105,7 +105,7 @@ internal class JiraUserService : IJiraUserService
         var resourceSb = new StringBuilder("rest/api/2/user/assignable/multiProjectSearch", 200);
         resourceSb.Append($"?username={username}&projectKeys={string.Join(",", projectKeys)}&startAt={startAt}&maxResults={maxResults}");
 
-        var values = await _jira.RestClient.ExecuteRequestAsync<IEnumerable<JiraUser>>(Method.GET, resourceSb.ToString(), null, token);
+        var values = await _jira.RestClient.ExecuteRequestAsync<IEnumerable<JiraUser>>(Method.Get, resourceSb.ToString(), null, token);
         foreach (var value in values)
         {
             yield return value;
@@ -119,7 +119,7 @@ internal class JiraUserService : IJiraUserService
         if (cache.CurrentUser == null)
         {
             var resource = "rest/api/2/myself";
-            var jiraUser = await _jira.RestClient.ExecuteRequestAsync<JiraUser>(Method.GET, resource, null, token);
+            var jiraUser = await _jira.RestClient.ExecuteRequestAsync<JiraUser>(Method.Get, resource, null, token);
             cache.CurrentUser = jiraUser;
         }
 

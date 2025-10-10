@@ -27,7 +27,7 @@ internal class ProjectVersionService : IProjectVersionService
         if (!cache.Versions.Values.Any(v => string.Equals(v.ProjectKey, projectKey)))
         {
             var resource = string.Format("rest/api/2/project/{0}/versions", projectKey);
-            var remoteVersions = await _jira.RestClient.ExecuteRequestAsync<RemoteVersion[]>(Method.GET, resource, null, token).ConfigureAwait(false);
+            var remoteVersions = await _jira.RestClient.ExecuteRequestAsync<RemoteVersion[]>(Method.Get, resource, null, token).ConfigureAwait(false);
             var versions = remoteVersions.Select(remoteVersion =>
             {
                 remoteVersion.ProjectKey = projectKey;
@@ -55,7 +55,7 @@ internal class ProjectVersionService : IProjectVersionService
             startAt,
             maxResults);
 
-        var result = await _jira.RestClient.ExecuteRequestAsync(Method.GET, resource, null, token).ConfigureAwait(false);
+        var result = await _jira.RestClient.ExecuteRequestAsync(Method.Get, resource, null, token).ConfigureAwait(false);
         var versions = result["values"]
             .Cast<JObject>()
             .Select(versionJson =>
@@ -74,7 +74,7 @@ internal class ProjectVersionService : IProjectVersionService
         var serializer = JsonSerializer.Create(settings);
         var resource = "/rest/api/2/version";
         var requestBody = JToken.FromObject(projectVersion, serializer);
-        var remoteVersion = await _jira.RestClient.ExecuteRequestAsync<RemoteVersion>(Method.POST, resource, requestBody, token).ConfigureAwait(false);
+        var remoteVersion = await _jira.RestClient.ExecuteRequestAsync<RemoteVersion>(Method.Post, resource, requestBody, token).ConfigureAwait(false);
         remoteVersion.ProjectKey = projectVersion.ProjectKey;
         var version = new ProjectVersion(_jira, remoteVersion);
 
@@ -91,7 +91,7 @@ internal class ProjectVersionService : IProjectVersionService
             string.IsNullOrEmpty(moveFixIssuesTo) ? null : "moveFixIssuesTo=" + Uri.EscapeDataString(moveFixIssuesTo),
             string.IsNullOrEmpty(moveAffectedIssuesTo) ? null : "moveAffectedIssuesTo=" + Uri.EscapeDataString(moveAffectedIssuesTo));
 
-        await _jira.RestClient.ExecuteRequestAsync(Method.DELETE, resource, null, token).ConfigureAwait(false);
+        await _jira.RestClient.ExecuteRequestAsync(Method.Delete, resource, null, token).ConfigureAwait(false);
 
         _jira.Cache.Versions.TryRemove(versionId);
     }
@@ -99,7 +99,7 @@ internal class ProjectVersionService : IProjectVersionService
     public async Task<ProjectVersion> GetVersionAsync(string versionId, CancellationToken token = default)
     {
         var resource = string.Format("rest/api/2/version/{0}", versionId);
-        var remoteVersion = await _jira.RestClient.ExecuteRequestAsync<RemoteVersion>(Method.GET, resource, null, token).ConfigureAwait(false);
+        var remoteVersion = await _jira.RestClient.ExecuteRequestAsync<RemoteVersion>(Method.Get, resource, null, token).ConfigureAwait(false);
 
         return new ProjectVersion(_jira, remoteVersion);
     }
@@ -109,7 +109,7 @@ internal class ProjectVersionService : IProjectVersionService
         var resource = string.Format("rest/api/2/version/{0}", version.Id);
         var serializerSettings = _jira.RestClient.Settings.JsonSerializerSettings;
         var versionJson = JsonConvert.SerializeObject(version.RemoteVersion, serializerSettings);
-        var remoteVersion = await _jira.RestClient.ExecuteRequestAsync<RemoteVersion>(Method.PUT, resource, versionJson, token).ConfigureAwait(false);
+        var remoteVersion = await _jira.RestClient.ExecuteRequestAsync<RemoteVersion>(Method.Put, resource, versionJson, token).ConfigureAwait(false);
 
         // invalidate the cache
         _jira.Cache.Versions.Clear();

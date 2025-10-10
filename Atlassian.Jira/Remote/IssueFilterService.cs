@@ -19,7 +19,7 @@ internal class IssueFilterService : IIssueFilterService
 
     public async IAsyncEnumerable<JiraFilter> GetFavouritesAsync([EnumeratorCancellation] CancellationToken token = default)
     {
-        var array = await _jira.RestClient.ExecuteRequestAsync<JiraFilter[]>(Method.GET, "rest/api/2/filter/favourite", null, token);
+        var array = await _jira.RestClient.ExecuteRequestAsync<JiraFilter[]>(Method.Get, "rest/api/2/filter/favourite", null, token);
         foreach (var item in array)
         {
             yield return item;
@@ -28,7 +28,7 @@ internal class IssueFilterService : IIssueFilterService
 
     public Task<JiraFilter> GetFilterAsync(string filterId, CancellationToken token = default)
     {
-        return _jira.RestClient.ExecuteRequestAsync<JiraFilter>(Method.GET, $"rest/api/2/filter/{filterId}", null, token);
+        return _jira.RestClient.ExecuteRequestAsync<JiraFilter>(Method.Get, $"rest/api/2/filter/{filterId}", null, token);
     }
 
     public async IAsyncEnumerable<Issue> GetIssuesFromFavoriteAsync(string filterName, [EnumeratorCancellation] CancellationToken token = default)

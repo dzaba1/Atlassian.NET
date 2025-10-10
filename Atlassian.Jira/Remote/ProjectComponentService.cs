@@ -25,7 +25,7 @@ internal class ProjectComponentService : IProjectComponentService
         var serializer = JsonSerializer.Create(_jira.RestClient.Settings.JsonSerializerSettings);
         var resource = "/rest/api/2/component";
         var requestBody = JToken.FromObject(projectComponent, serializer);
-        var remoteComponent = await _jira.RestClient.ExecuteRequestAsync<RemoteComponent>(Method.POST, resource, requestBody, token).ConfigureAwait(false);
+        var remoteComponent = await _jira.RestClient.ExecuteRequestAsync<RemoteComponent>(Method.Post, resource, requestBody, token).ConfigureAwait(false);
         remoteComponent.ProjectKey = projectComponent.ProjectKey;
         var component = new ProjectComponent(remoteComponent);
 
@@ -40,7 +40,7 @@ internal class ProjectComponentService : IProjectComponentService
             componentId,
             string.IsNullOrEmpty(moveIssuesTo) ? null : "moveIssuesTo=" + Uri.EscapeDataString(moveIssuesTo));
 
-        await _jira.RestClient.ExecuteRequestAsync(Method.DELETE, resource, null, token).ConfigureAwait(false);
+        await _jira.RestClient.ExecuteRequestAsync(Method.Delete, resource, null, token).ConfigureAwait(false);
 
         _jira.Cache.Components.TryRemove(componentId);
     }
@@ -53,7 +53,7 @@ internal class ProjectComponentService : IProjectComponentService
         if (!cache.Components.Values.Any(c => string.Equals(c.ProjectKey, projectKey)))
         {
             var resource = string.Format("rest/api/2/project/{0}/components", projectKey);
-            var remoteComponents = await _jira.RestClient.ExecuteRequestAsync<RemoteComponent[]>(Method.GET, resource).ConfigureAwait(false);
+            var remoteComponents = await _jira.RestClient.ExecuteRequestAsync<RemoteComponent[]>(Method.Get, resource).ConfigureAwait(false);
             var components = remoteComponents.Select(remoteComponent =>
             {
                 remoteComponent.ProjectKey = projectKey;
