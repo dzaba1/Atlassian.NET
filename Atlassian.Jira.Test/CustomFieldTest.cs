@@ -1,11 +1,11 @@
-﻿using System.Linq;
+﻿using Atlassian.Jira.Remote;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Atlassian.Jira.Remote;
 using Xunit;
-using System.Collections.Generic;
-using Newtonsoft.Json.Linq;
-using Newtonsoft.Json;
 
 namespace Atlassian.Jira.Test;
 

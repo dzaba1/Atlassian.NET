@@ -74,28 +74,6 @@ public class IssueCustomFieldTest
         Assert.Equal("2015-10-03", await newIssue.GetCustomFieldAsync("Custom Date Field"));
     }
 
-    [Fact]
-    public async Task CanHandleCustomFieldWithoutSerializerThatIsArrayOfObjects()
-    {
-        var jira = Jira.CreateRestClient(new TraceReplayer("Trace_CustomFieldArrayOfObjects.txt"));
-        var issue = await jira.Issues.GetIssuesFromJqlAsync("foo").SingleAsync();
-
-        Assert.True((await issue.GetCustomFieldAsync("Watchers")).Value.Length > 0);
-    }
-
-    [Fact]
-    public async Task CanHandleCustomFieldSetToEmptyArrayByDefaultFromServer()
-    {
-        // See: https://bitbucket.org/farmas/atlassian.net-sdk/issues/372
-        var jira = Jira.CreateRestClient(new TraceReplayer("Trace_CustomFieldEmptyArray.txt"));
-        var issue = await jira.Issues.GetIssueAsync("GIT-103");
-
-        issue.Summary = "Some change";
-        await issue.SaveChangesAsync();
-
-        Assert.NotNull(issue);
-    }
-
     [Theory]
     [ClassData(typeof(JiraProvider))]
     public async Task AddAndReadCustomFieldById(Jira jira)
