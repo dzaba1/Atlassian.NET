@@ -8,13 +8,22 @@ This is a fork of https://bitbucket.org/farmas/atlassian.net-sdk
 
 ## Download
 
-- 
+- https://www.nuget.org/packages/Dzaba.AtlassianSDK/
 
 ## License
 
 This project is licensed under  [BSD](/LICENSE.md).
 
 ## History
+
+v14:
+
+- Support of .NET Standard 2.0 and .NET 8.0
+- Fixed JQL query issue
+- Changed some `Task<IEnumerable>` API to `IAsyncEnumerable`
+- Fixed some tests running against Jira Cloud. Currently, not every integration test is green.
+
+Original history:
 
 - For a description changes, check out the [Change History Page](/docs/change-history.md).
 
