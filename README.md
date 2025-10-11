@@ -20,7 +20,8 @@ v14:
 
 - Support of .NET Standard 2.0 and .NET 8.0
 - Fixed JQL query issue
-- Changed some `Task<IEnumerable>` API to `IAsyncEnumerable`
+- Changed some `Task<IEnumerable<>>` API to `IAsyncEnumerable<>`
+- Replaced `Trace.` logging into [Microsoft.Extensions.Logging.Abstractions](https://learn.microsoft.com/en-us/dotnet/api/microsoft.extensions.logging.iloggerfactory)
 - Fixed some tests running against Jira Cloud. Currently, not every integration test is green.
 
 Original history:
