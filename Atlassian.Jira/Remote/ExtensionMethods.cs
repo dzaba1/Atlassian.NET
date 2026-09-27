@@ -27,7 +27,7 @@ public static class ExtensionMethods
     /// <summary>
     /// Create a new Attachment from a RemoteAttachment
     /// </summary>
-    public static Attachment ToLocal(this RemoteAttachment remoteAttachment, Jira jira)
+    public static Attachment ToLocal(this Model.V3.Attachment remoteAttachment, Jira jira)
     {
         return new Attachment(jira, remoteAttachment);
     }

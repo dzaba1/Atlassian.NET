@@ -27,6 +27,19 @@ public class JiraUser
         InternalIdentifier = userPrivacyEnabled ? remoteUser.AccountId : remoteUser.Name;
     }
 
+    public JiraUser(UserDetails remoteUser, bool userPrivacyEnabled = false)
+    {
+        AccountId = remoteUser.AccountId;
+        DisplayName = remoteUser.DisplayName;
+        Email = remoteUser.EmailAddress;
+        IsActive = remoteUser.Active;
+        Key = remoteUser.Key;
+        Self = new Uri(remoteUser.Self);
+        Username = remoteUser.Name;
+        AvatarUrls = new AvatarUrls(remoteUser.AvatarUrls);
+        InternalIdentifier = userPrivacyEnabled ? remoteUser.AccountId : remoteUser.Name;
+    }
+
     /// <summary>
     /// Initializes a new instance of the <see cref="JiraUser"/> class.
     /// </summary>

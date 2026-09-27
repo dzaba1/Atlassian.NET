@@ -15,16 +15,16 @@ public class Attachment
     /// </summary>
     /// <param name="jira">Object used to interact with JIRA.</param>
     /// <param name="remoteAttachment">Remote attachment entity.</param>
-    public Attachment(Jira jira, RemoteAttachment remoteAttachment)
+    public Attachment(Jira jira, Model.V3.Attachment remoteAttachment)
     {
         _jira = jira;
 
-        AuthorUser = remoteAttachment.authorUser;
-        CreatedDate = remoteAttachment.created;
-        FileName = remoteAttachment.filename;
-        MimeType = remoteAttachment.mimetype;
-        FileSize = remoteAttachment.filesize;
-        Id = remoteAttachment.id;
+        AuthorUser = new JiraUser(remoteAttachment.Author);
+        CreatedDate = remoteAttachment.Created;
+        FileName = remoteAttachment.Filename;
+        MimeType = remoteAttachment.MimeType;
+        FileSize = remoteAttachment.Size;
+        Id = remoteAttachment.Id;
     }
 
     /// <summary>
@@ -51,7 +51,7 @@ public class Attachment
     /// <summary>
     /// Date of creation
     /// </summary>
-    public DateTime? CreatedDate { get; private set; }
+    public DateTimeOffset CreatedDate { get; private set; }
 
     /// <summary>
     /// File name of the attachment
