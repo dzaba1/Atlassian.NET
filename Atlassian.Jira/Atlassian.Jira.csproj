@@ -15,6 +15,8 @@
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIcon>AtlassianIcon.png</PackageIcon>
+    <JiraV3SwaggerFile>$(MSBuildProjectDirectory)\Model\V3\swagger.json</JiraV3SwaggerFile>
+    <JiraV3ModelOutputFile>$(MSBuildProjectDirectory)\Model\V3\JiraModelV3.g.cs</JiraV3ModelOutputFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
@@ -37,5 +39,17 @@
     <PackageReference Include="Newtonsoft.Json" />
     <PackageReference Include="RestSharp" />
     <PackageReference Include="System.Linq.Async" Condition="'$(TargetFramework)' != 'net10.0'" />
+    <PackageReference Include="NSwag.MSBuild" PrivateAssets="All" />
+    <PackageReference Include="System.ComponentModel.Annotations" Condition="'$(TargetFramework)' == 'netstandard2.0'" />
+    <PackageReference Include="System.Text.Json" Condition="'$(TargetFramework)' == 'netstandard2.0'" />
   </ItemGroup>
+
+  <!-- Off by default: regenerating overwrites manual fixes applied for https://github.com/RicoSuter/NSwag/issues/3738.
+       Run `dotnet build Atlassian.Jira/Atlassian.Jira.csproj -p:RegenerateJiraModelV3=true` to regenerate;
+       see docs/how-to-regenerate-jira-v3-model.md. -->
+  <Target Name="GenerateJiraModelV3"
+          BeforeTargets="DispatchToInnerBuilds;CoreCompile"
+          Condition="'$(RegenerateJiraModelV3)' == 'true'">
+    <Exec Command="$(NSwagExe_Net100) openapi2csclient /input:$(JiraV3SwaggerFile) /output:$(JiraV3ModelOutputFile) /namespace:Atlassian.Jira.Model.V3 /TypeAccessModifier:public /GenerateClientClasses:false /GenerateClientInterfaces:false /JsonLibrary:SystemTextJson /GenerateDefaultValues:false" />
+  </Target>
 </Project>

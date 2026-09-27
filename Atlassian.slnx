@@ -10,7 +10,7 @@
     <File Path="docs/how-to-connect-using-oauth.md" />
     <File Path="docs/how-to-debug-problems.md" />
     <File Path="docs/how-to-handle-gdpr-changes.md" />
-    <File Path="docs/how-to-run-the-integration-tests.md" />
+    <File Path="docs/how-to-regenerate-jira-v3-model.md" />
     <File Path="docs/how-to-use-custom-fields.md" />
     <File Path="docs/how-to-use-the-sdk.md" />
     <File Path="docs/README.md" />
