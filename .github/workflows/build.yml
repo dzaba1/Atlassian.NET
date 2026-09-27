@@ -32,10 +32,10 @@ jobs:
     - name: Build
       run: dotnet build --no-restore
     - name: Unit tests
-      run: dotnet test Atlassian.Jira.Test --no-build --verbosity normal 
+      run: dotnet test src/Atlassian.Jira.Test --no-build --verbosity normal
     - name: Integration tests
       if: ${{inputs.skipIntegrationTests == 'false'}}
-      run: dotnet test Dzaba.AtlassianSdk.Jira.IntegrationTests --no-build --verbosity normal
+      run: dotnet test src/Dzaba.AtlassianSdk.Jira.IntegrationTests --no-build --verbosity normal
       env:
         TEST_JIRA_URL: ${{secrets.TEST_JIRA_URL}}
         TEST_JIRA_USER: ${{secrets.TEST_JIRA_USER}}

@@ -24,11 +24,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="..\AtlassianIcon.png">
+    <None Include="..\..\AtlassianIcon.png">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
-    <None Include="..\README.md">
+    <None Include="..\..\README.md">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>

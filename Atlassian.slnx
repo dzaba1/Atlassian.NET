@@ -21,15 +21,14 @@
     <File Path=".editorconfig" />
     <File Path=".gitignore" />
     <File Path="Directory.Packages.props" />
-    <File Path="docker-compose.yml" />
     <File Path="LICENSE.md" />
     <File Path="README.md" />
   </Folder>
-  <Project Path="Atlassian.Jira.Test/Atlassian.Jira.Test.csproj">
+  <Project Path="src/Atlassian.Jira.Test/Atlassian.Jira.Test.csproj">
     <Build Solution="*|x86" Project="false" />
   </Project>
-  <Project Path="Atlassian.Jira/Atlassian.Jira.csproj">
+  <Project Path="src/Atlassian.Jira/Atlassian.Jira.csproj">
     <Build Solution="*|x86" Project="false" />
   </Project>
-  <Project Path="Dzaba.AtlassianSdk.Jira.IntegrationTests/Dzaba.AtlassianSdk.Jira.IntegrationTests.csproj" />
+  <Project Path="src/Dzaba.AtlassianSdk.Jira.IntegrationTests/Dzaba.AtlassianSdk.Jira.IntegrationTests.csproj" />
 </Solution>
