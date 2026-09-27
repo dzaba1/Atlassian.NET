@@ -80,17 +80,28 @@ public class JiraUser
 
     internal string InternalIdentifier { get; set; }
 
+    /// <summary>
+    /// Returns the internal identifier used to reference this user (either the account id or username).
+    /// </summary>
     public override string ToString()
     {
         return InternalIdentifier;
     }
 
+    /// <summary>
+    /// Determines whether the specified object represents the same JIRA user.
+    /// </summary>
+    /// <param name="other">The object to compare with the current instance.</param>
+    /// <returns><c>true</c> if the object is a <see cref="JiraUser"/> with the same internal identifier; otherwise, <c>false</c>.</returns>
     public override bool Equals(object other)
     {
         var otherAsThisType = other as JiraUser;
         return otherAsThisType != null && InternalIdentifier.Equals(otherAsThisType.InternalIdentifier);
     }
 
+    /// <summary>
+    /// Returns a hash code based on the user's internal identifier.
+    /// </summary>
     public override int GetHashCode()
     {
         return InternalIdentifier.GetHashCode();

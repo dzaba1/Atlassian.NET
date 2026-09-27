@@ -5,27 +5,38 @@ using System.Threading.Tasks;
 
 namespace Atlassian.Jira.Linq;
 
+/// <summary>
+/// Translates LINQ expression trees into JQL and executes them against JIRA.
+/// </summary>
 public class JiraQueryProvider : IQueryProvider
 {
     private readonly IJqlExpressionVisitor _translator;
     private readonly IIssueService _issues;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="JiraQueryProvider"/> class.
+    /// </summary>
+    /// <param name="translator">Translates expression trees into JQL.</param>
+    /// <param name="issues">The service used to run JQL queries against JIRA.</param>
     public JiraQueryProvider(IJqlExpressionVisitor translator, IIssueService issues)
     {
         _translator = translator;
         _issues = issues;
     }
 
+    /// <inheritdoc/>
     public IQueryable<T> CreateQuery<T>(Expression expression)
     {
         return new JiraQueryable<T>(this, expression);
     }
 
+    /// <inheritdoc/>
     public IQueryable CreateQuery(Expression expression)
     {
         throw new NotImplementedException();
     }
 
+    /// <inheritdoc/>
     public T Execute<T>(Expression expression)
     {
         bool isEnumerable = (typeof(T).Name == "IEnumerable`1");
@@ -33,6 +44,7 @@ public class JiraQueryProvider : IQueryProvider
         return (T)ExecuteAsync(expression, isEnumerable).Result;
     }
 
+    /// <inheritdoc/>
     public object Execute(Expression expression)
     {
         return ExecuteAsync(expression, true).Result;

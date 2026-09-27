@@ -46,11 +46,19 @@ public class JiraNamedEntity : IJiraEntity
     /// </summary>
     public string Name { get; protected set; }
 
+    /// <summary>
+    /// Retrieves the entities of this type from JIRA, used to resolve an id/name pair that is missing one of the two.
+    /// </summary>
+    /// <param name="jira">The JIRA instance to query.</param>
+    /// <param name="token">A token to cancel the operation.</param>
     protected virtual IAsyncEnumerable<JiraNamedEntity> GetEntitiesAsync(Jira jira, CancellationToken token)
     {
         throw new NotImplementedException();
     }
 
+    /// <summary>
+    /// Returns the name of the entity, or its id if the name is not set.
+    /// </summary>
     public override string ToString()
     {
         if (!string.IsNullOrEmpty(Name))

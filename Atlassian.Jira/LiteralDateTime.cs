@@ -16,71 +16,114 @@ public class LiteralDateTime
 {
     private readonly string _dateTimeString;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="LiteralDateTime"/> class.
+    /// </summary>
+    /// <param name="dateTimeString">The literal string to use as the JQL query value.</param>
     public LiteralDateTime(string dateTimeString)
     {
         _dateTimeString = dateTimeString;
     }
 
+    /// <summary>
+    /// Returns the literal string that will be used as the JQL query value.
+    /// </summary>
     public override string ToString()
     {
         return _dateTimeString;
     }
 
+    /// <summary>
+    /// Present only so the LINQ to JQL provider can translate the comparison; not intended to be evaluated at runtime and always returns <c>false</c>.
+    /// </summary>
     public static bool operator ==(DateTime dateTime, LiteralDateTime literalDateTime)
     {
         return false;
     }
 
+    /// <summary>
+    /// Present only so the LINQ to JQL provider can translate the comparison; not intended to be evaluated at runtime and always returns <c>false</c>.
+    /// </summary>
     public static bool operator !=(DateTime dateTime, LiteralDateTime literalDateTime)
     {
         return false;
     }
 
+    /// <summary>
+    /// Present only so the LINQ to JQL provider can translate the comparison; not intended to be evaluated at runtime and always returns <c>false</c>.
+    /// </summary>
     public static bool operator >(DateTime dateTime, LiteralDateTime literalDateTime)
     {
         return false;
     }
 
+    /// <summary>
+    /// Present only so the LINQ to JQL provider can translate the comparison; not intended to be evaluated at runtime and always returns <c>false</c>.
+    /// </summary>
     public static bool operator <(DateTime dateTime, LiteralDateTime literalDateTime)
     {
         return false;
     }
 
+    /// <summary>
+    /// Present only so the LINQ to JQL provider can translate the comparison; not intended to be evaluated at runtime and always returns <c>false</c>.
+    /// </summary>
     public static bool operator >=(DateTime dateTime, LiteralDateTime literalDateTime)
     {
         return false;
     }
 
+    /// <summary>
+    /// Present only so the LINQ to JQL provider can translate the comparison; not intended to be evaluated at runtime and always returns <c>false</c>.
+    /// </summary>
     public static bool operator <=(DateTime dateTime, LiteralDateTime literalDateTime)
     {
         return false;
     }
 
+    /// <summary>
+    /// Present only so the LINQ to JQL provider can translate the comparison; not intended to be evaluated at runtime and always returns <c>false</c>.
+    /// </summary>
     public static bool operator ==(DateTime? dateTime, LiteralDateTime literalDateTime)
     {
         return false;
     }
 
+    /// <summary>
+    /// Present only so the LINQ to JQL provider can translate the comparison; not intended to be evaluated at runtime and always returns <c>false</c>.
+    /// </summary>
     public static bool operator !=(DateTime? dateTime, LiteralDateTime literalDateTime)
     {
         return false;
     }
 
+    /// <summary>
+    /// Present only so the LINQ to JQL provider can translate the comparison; not intended to be evaluated at runtime and always returns <c>false</c>.
+    /// </summary>
     public static bool operator >(DateTime? dateTime, LiteralDateTime literalDateTime)
     {
         return false;
     }
 
+    /// <summary>
+    /// Present only so the LINQ to JQL provider can translate the comparison; not intended to be evaluated at runtime and always returns <c>false</c>.
+    /// </summary>
     public static bool operator <(DateTime? dateTime, LiteralDateTime literalDateTime)
     {
         return false;
     }
 
+    /// <summary>
+    /// Present only so the LINQ to JQL provider can translate the comparison; not intended to be evaluated at runtime and always returns <c>false</c>.
+    /// </summary>
     public static bool operator >=(DateTime? dateTime, LiteralDateTime literalDateTime)
     {
         return false;
     }
 
+    /// <summary>
+    /// Present only so the LINQ to JQL provider can translate the comparison; not intended to be evaluated at runtime and always returns <c>false</c>.
+    /// </summary>
     public static bool operator <=(DateTime? dateTime, LiteralDateTime literalDateTime)
     {
         return false;

@@ -37,6 +37,9 @@ public class JiraUserCreationInfo
     [JsonProperty("notification")]
     public bool Notification { get; set; }
 
+    /// <summary>
+    /// Returns the username of the user to create.
+    /// </summary>
     public override string ToString()
     {
         return Username;

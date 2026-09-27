@@ -15,16 +15,28 @@ public class LiteralMatch
 {
     private readonly string _value;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="LiteralMatch"/> class.
+    /// </summary>
+    /// <param name="value">The literal value to match exactly.</param>
     public LiteralMatch(string value)
     {
         _value = value;
     }
 
+    /// <summary>
+    /// Returns the literal value being matched.
+    /// </summary>
     public override string ToString()
     {
         return _value;
     }
 
+    /// <summary>
+    /// Determines whether the comparable value equals the literal value; used by the LINQ to JQL provider to force an exact match operator.
+    /// </summary>
+    /// <param name="comparable">The field value being compared.</param>
+    /// <param name="literal">The literal value to match exactly.</param>
     public static bool operator ==(ComparableString comparable, LiteralMatch literal)
     {
         if ((object)comparable == null)
@@ -37,6 +49,11 @@ public class LiteralMatch
         }
     }
 
+    /// <summary>
+    /// Determines whether the comparable value does not equal the literal value; used by the LINQ to JQL provider to force an exact match operator.
+    /// </summary>
+    /// <param name="comparable">The field value being compared.</param>
+    /// <param name="literal">The literal value to match exactly.</param>
     public static bool operator !=(ComparableString comparable, LiteralMatch literal)
     {
         if ((object)comparable == null)

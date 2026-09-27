@@ -7,6 +7,9 @@ using System.Text;
 
 namespace Atlassian.Jira.Linq;
 
+/// <summary>
+/// Translates a LINQ expression tree into a JQL query by walking the expression and building up the JQL text.
+/// </summary>
 public class JqlExpressionVisitor : ExpressionVisitor, IJqlExpressionVisitor
 {
     private StringBuilder _jqlWhere;
@@ -15,6 +18,9 @@ public class JqlExpressionVisitor : ExpressionVisitor, IJqlExpressionVisitor
     private int? _skipResults;
     private List<Expression> _whereExpressions;
 
+    /// <summary>
+    /// Gets the JQL text produced from the last processed expression.
+    /// </summary>
     public string Jql
     {
         get
@@ -23,6 +29,9 @@ public class JqlExpressionVisitor : ExpressionVisitor, IJqlExpressionVisitor
         }
     }
 
+    /// <summary>
+    /// Gets the maximum number of results to return, if a Take was applied.
+    /// </summary>
     public int? NumberOfResults
     {
         get
@@ -31,6 +40,9 @@ public class JqlExpressionVisitor : ExpressionVisitor, IJqlExpressionVisitor
         }
     }
 
+    /// <summary>
+    /// Gets the number of results to skip, if a Skip was applied.
+    /// </summary>
     public int? SkipResults
     {
         get
@@ -39,6 +51,7 @@ public class JqlExpressionVisitor : ExpressionVisitor, IJqlExpressionVisitor
         }
     }
 
+    /// <inheritdoc/>
     public JqlData Process(Expression expression)
     {
         expression = ExpressionEvaluator.PartialEval(expression);
@@ -248,6 +261,7 @@ public class JqlExpressionVisitor : ExpressionVisitor, IJqlExpressionVisitor
         _jqlWhere.Append(")");
     }
 
+    /// <inheritdoc/>
     protected override Expression VisitMethodCall(MethodCallExpression node)
     {
         if (node.Method.Name == "OrderBy"
@@ -319,6 +333,7 @@ public class JqlExpressionVisitor : ExpressionVisitor, IJqlExpressionVisitor
         }
     }
 
+    /// <inheritdoc/>
     protected override Expression VisitBinary(BinaryExpression node)
     {
         var isWhere = _whereExpressions.Contains(node);

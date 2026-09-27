@@ -32,6 +32,7 @@ public class IssueStatus : JiraNamedConstant
     {
     }
 
+    /// <inheritdoc/>
     protected override IAsyncEnumerable<JiraNamedEntity> GetEntitiesAsync(Jira jira, CancellationToken token)
     {
         return jira.Statuses.GetStatusesAsync(token);

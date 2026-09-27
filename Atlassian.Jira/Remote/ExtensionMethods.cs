@@ -3,6 +3,9 @@ using System.Threading.Tasks;
 
 namespace Atlassian.Jira.Remote;
 
+/// <summary>
+/// Extension methods to convert between remote (wire) types and their local representations.
+/// </summary>
 public static class ExtensionMethods
 {
     /// <summary>

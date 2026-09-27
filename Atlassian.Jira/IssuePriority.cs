@@ -33,6 +33,7 @@ public class IssuePriority : JiraNamedConstant
     {
     }
 
+    /// <inheritdoc/>
     protected override IAsyncEnumerable<JiraNamedEntity> GetEntitiesAsync(Jira jira, CancellationToken token)
     {
         return jira.Priorities.GetPrioritiesAsync(token);
@@ -105,21 +106,33 @@ public class IssuePriority : JiraNamedConstant
         }
     }
 
+    /// <summary>
+    /// Not supported; priority does not have a relative ordering. Always throws <see cref="NotImplementedException"/>.
+    /// </summary>
     public static bool operator >(IssuePriority field, string value)
     {
         throw new NotImplementedException();
     }
 
+    /// <summary>
+    /// Not supported; priority does not have a relative ordering. Always throws <see cref="NotImplementedException"/>.
+    /// </summary>
     public static bool operator <(IssuePriority field, string value)
     {
         throw new NotImplementedException();
     }
 
+    /// <summary>
+    /// Not supported; priority does not have a relative ordering. Always throws <see cref="NotImplementedException"/>.
+    /// </summary>
     public static bool operator <=(IssuePriority field, string value)
     {
         throw new NotImplementedException();
     }
 
+    /// <summary>
+    /// Not supported; priority does not have a relative ordering. Always throws <see cref="NotImplementedException"/>.
+    /// </summary>
     public static bool operator >=(IssuePriority field, string value)
     {
         throw new NotImplementedException();

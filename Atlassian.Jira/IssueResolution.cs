@@ -32,6 +32,7 @@ public class IssueResolution : JiraNamedEntity
     {
     }
 
+    /// <inheritdoc/>
     protected override IAsyncEnumerable<JiraNamedEntity> GetEntitiesAsync(Jira jira, CancellationToken token)
     {
         return jira.Resolutions.GetResolutionsAsync(token);

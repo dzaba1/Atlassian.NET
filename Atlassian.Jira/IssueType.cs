@@ -51,10 +51,14 @@ public class IssueType : JiraNamedConstant
     /// </summary>
     public IssueStatus[] Statuses { get; private set; }
 
+    /// <summary>
+    /// Gets or sets a value indicating whether the issue type should only be resolved against <see cref="ProjectKey"/>'s issue types.
+    /// </summary>
     public bool SearchByProjectOnly { get; set; }
 
     internal string ProjectKey { get; set; }
 
+    /// <inheritdoc/>
     protected override async IAsyncEnumerable<JiraNamedEntity> GetEntitiesAsync(Jira jira, [EnumeratorCancellation] CancellationToken token)
     {
         var results = await jira.IssueTypes.GetIssueTypesAsync(token)

@@ -8,35 +8,60 @@ using Newtonsoft.Json.Linq;
 
 namespace Atlassian.Jira.Remote;
 
+/// <summary>
+/// Wraps a <see cref="RemoteIssue"/> together with the key of its parent issue, for use with <see cref="RemoteIssueJsonConverter"/>.
+/// </summary>
 public class RemoteIssueWrapper
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="RemoteIssueWrapper"/> class.
+    /// </summary>
+    /// <param name="remoteIssue">The remote issue being wrapped.</param>
+    /// <param name="parentIssueKey">The key of the parent issue, if the issue is a sub-task.</param>
     public RemoteIssueWrapper(RemoteIssue remoteIssue, string parentIssueKey = null)
     {
         RemoteIssue = remoteIssue;
         ParentIssueKey = parentIssueKey;
     }
 
+    /// <summary>
+    /// Gets the wrapped remote issue.
+    /// </summary>
     public RemoteIssue RemoteIssue { get; private set; }
 
+    /// <summary>
+    /// Gets the key of the parent issue, if the issue is a sub-task.
+    /// </summary>
     public string ParentIssueKey { get; private set; }
 }
 
+/// <summary>
+/// Converts a <see cref="RemoteIssueWrapper"/> to and from the JSON format used by JIRA's issue REST endpoints,
+/// including custom field values.
+/// </summary>
 public class RemoteIssueJsonConverter : JsonConverter
 {
     private readonly IEnumerable<RemoteField> _remoteFields;
     private readonly IDictionary<string, ICustomFieldValueSerializer> _customFieldSerializers;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="RemoteIssueJsonConverter"/> class.
+    /// </summary>
+    /// <param name="remoteFields">The fields defined on the JIRA instance, used to resolve custom field types.</param>
+    /// <param name="customFieldSerializers">The serializers used to convert custom field values, keyed by custom field type.</param>
     public RemoteIssueJsonConverter(IEnumerable<RemoteField> remoteFields, IDictionary<string, ICustomFieldValueSerializer> customFieldSerializers)
     {
         _remoteFields = remoteFields;
         _customFieldSerializers = customFieldSerializers;
     }
 
+    /// <inheritdoc/>
     public override bool CanConvert(Type objectType)
     {
         return objectType == typeof(RemoteIssueWrapper);
     }
 
+    /// <inheritdoc/>
     public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
     {
         var issueObj = JObject.Load(reader);
@@ -64,6 +89,7 @@ public class RemoteIssueJsonConverter : JsonConverter
         return new RemoteIssueWrapper(remoteIssue);
     }
 
+    /// <inheritdoc/>
     public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
     {
         var issueWrapper = value as RemoteIssueWrapper;

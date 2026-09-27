@@ -39,11 +39,23 @@ public class IssueLabelCollection : List<string>, IRemoteIssueFieldProvider
         AddRange(labels);
     }
 
+    /// <summary>
+    /// Determines whether the collection contains the given label.
+    /// </summary>
+    /// <param name="list">The collection to search.</param>
+    /// <param name="value">The label to look for.</param>
+    /// <returns><c>true</c> if the collection contains <paramref name="value"/>; otherwise, <c>false</c>.</returns>
     public static bool operator ==(IssueLabelCollection list, string value)
     {
         return (object)list == null ? value == null : list.Any(v => v == value);
     }
 
+    /// <summary>
+    /// Determines whether the collection does not contain the given label.
+    /// </summary>
+    /// <param name="list">The collection to search.</param>
+    /// <param name="value">The label to look for.</param>
+    /// <returns><c>true</c> if the collection does not contain <paramref name="value"/>; otherwise, <c>false</c>.</returns>
     public static bool operator !=(IssueLabelCollection list, string value)
     {
         return (object)list == null ? value == null : !list.Any(v => v == value);

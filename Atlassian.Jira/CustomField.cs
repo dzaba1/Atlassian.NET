@@ -3,6 +3,9 @@ using Atlassian.Jira.Remote;
 
 namespace Atlassian.Jira;
 
+/// <summary>
+/// Represents a custom field defined on a JIRA instance.
+/// </summary>
 public class CustomField : JiraNamedEntity
 {
     private readonly RemoteField _remoteField;
@@ -29,6 +32,9 @@ public class CustomField : JiraNamedEntity
         }
     }
 
+    /// <summary>
+    /// Gets the custom field type identifier (e.g. "com.atlassian.jira.plugin.system.customfieldtypes:textfield").
+    /// </summary>
     public string CustomType
     {
         get
@@ -37,6 +43,9 @@ public class CustomField : JiraNamedEntity
         }
     }
 
+    /// <summary>
+    /// Gets the numeric identifier of the custom field.
+    /// </summary>
     public string CustomIdentifier
     {
         get

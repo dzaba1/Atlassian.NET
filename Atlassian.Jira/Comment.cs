@@ -42,30 +42,69 @@ public class Comment
         RenderedBody = remoteComment.renderedBody;
     }
 
+    /// <summary>
+    /// Gets the identifier of the comment.
+    /// </summary>
     public string Id { get; private set; }
 
+    /// <summary>
+    /// Gets or sets the username of the comment's author.
+    /// </summary>
     public string Author { get; set; }
 
+    /// <summary>
+    /// Gets the user who authored the comment.
+    /// </summary>
     public JiraUser AuthorUser { get; private set; }
 
+    /// <summary>
+    /// Gets or sets the text of the comment.
+    /// </summary>
     public string Body { get; set; }
 
+    /// <summary>
+    /// Gets or sets the group visibility level of the comment.
+    /// </summary>
     public string GroupLevel { get; set; }
 
+    /// <summary>
+    /// Gets or sets the role visibility level of the comment.
+    /// </summary>
     public string RoleLevel { get; set; }
 
+    /// <summary>
+    /// Gets the date and time the comment was created.
+    /// </summary>
     public DateTime? CreatedDate { get; private set; }
 
+    /// <summary>
+    /// Gets the username of the user who last updated the comment.
+    /// </summary>
     public string UpdateAuthor { get; private set; }
 
+    /// <summary>
+    /// Gets the user who last updated the comment.
+    /// </summary>
     public JiraUser UpdateAuthorUser { get; private set; }
 
+    /// <summary>
+    /// Gets the date and time the comment was last updated.
+    /// </summary>
     public DateTime? UpdatedDate { get; private set; }
 
+    /// <summary>
+    /// Gets or sets the visibility restriction applied to the comment.
+    /// </summary>
     public CommentVisibility Visibility { get; set; }
 
+    /// <summary>
+    /// Gets or sets the rendered (HTML) representation of the comment body.
+    /// </summary>
     public string RenderedBody { get; set; }
 
+    /// <summary>
+    /// Gets the custom properties attached to the comment.
+    /// </summary>
     public IReadOnlyDictionary<string, object> Properties
     {
         get

@@ -8,18 +8,49 @@ namespace Atlassian.Jira;
 /// </summary>
 public class Worklog
 {
+    /// <summary>
+    /// Gets or sets the username of the worklog's author.
+    /// </summary>
     public string Author { get; set; }
+
+    /// <summary>
+    /// Gets the user who authored the worklog entry.
+    /// </summary>
     public JiraUser AuthorUser { get; private set; }
+
+    /// <summary>
+    /// Gets or sets an optional comment describing the work.
+    /// </summary>
     public string Comment { get; set; }
+
+    /// <summary>
+    /// Gets or sets the date and time the work was started.
+    /// </summary>
     public DateTime? StartDate { get; set; }
+
+    /// <summary>
+    /// Gets or sets the time spent working, in JIRA duration format (e.g. "1d 2h").
+    /// </summary>
     public string TimeSpent { get; set; }
 
+    /// <summary>
+    /// Gets the identifier of the worklog entry.
+    /// </summary>
     public string Id { get; private set; }
 
+    /// <summary>
+    /// Gets the time spent working, in seconds.
+    /// </summary>
     public long TimeSpentInSeconds { get; private set; }
 
+    /// <summary>
+    /// Gets the date and time the worklog entry was created.
+    /// </summary>
     public DateTime? CreateDate { get; private set; }
 
+    /// <summary>
+    /// Gets the date and time the worklog entry was last updated.
+    /// </summary>
     public DateTime? UpdateDate { get; private set; }
 
     /// <summary>

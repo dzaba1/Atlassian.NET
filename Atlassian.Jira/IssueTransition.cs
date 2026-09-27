@@ -31,15 +31,33 @@ public class IssueTransition : JiraNamedEntity
     {
     }
 
+    /// <summary>
+    /// Gets the status the issue will transition to.
+    /// </summary>
     public IssueStatus To { get; private set; }
 
+    /// <summary>
+    /// Gets a value indicating whether the transition displays a screen.
+    /// </summary>
     public bool HasScreen { get; private set; }
 
+    /// <summary>
+    /// Gets a value indicating whether the transition is available from any status.
+    /// </summary>
     public bool IsGlobal { get; private set; }
 
+    /// <summary>
+    /// Gets a value indicating whether the transition is an initial (creation) transition.
+    /// </summary>
     public bool IsInitial { get; private set; }
 
+    /// <summary>
+    /// Gets a value indicating whether the transition has conditions attached to it.
+    /// </summary>
     public bool IsConditional { get; private set; }
 
+    /// <summary>
+    /// Gets the field metadata available on the transition screen, keyed by field id.
+    /// </summary>
     public Dictionary<string, IssueFieldEditMetadata> Fields { get; private set; }
 }

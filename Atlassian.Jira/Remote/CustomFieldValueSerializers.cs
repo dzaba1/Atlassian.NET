@@ -7,74 +7,106 @@ using Newtonsoft.Json.Linq;
 
 namespace Atlassian.Jira.Remote;
 
+/// <summary>
+/// Serializes and deserializes a custom field value that is represented as a single JSON object with one property of interest (e.g. a "select" field).
+/// </summary>
 public class SingleObjectCustomFieldValueSerializer : ICustomFieldValueSerializer
 {
     private readonly string _propertyName;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="SingleObjectCustomFieldValueSerializer"/> class.
+    /// </summary>
+    /// <param name="propertyName">The name of the JSON property holding the value.</param>
     public SingleObjectCustomFieldValueSerializer(string propertyName)
     {
         _propertyName = propertyName;
     }
 
+    /// <inheritdoc/>
     public string[] FromJson(JToken json)
     {
         return new string[1] { json[_propertyName]?.ToString() };
     }
 
+    /// <inheritdoc/>
     public JToken ToJson(string[] values)
     {
         return new JObject(new JProperty(_propertyName, values[0]));
     }
 }
 
+/// <summary>
+/// Serializes and deserializes a custom field value that is represented as a JSON array of objects, each with one property of interest (e.g. a "multi-select" field).
+/// </summary>
 public class MultiObjectCustomFieldValueSerializer : ICustomFieldValueSerializer
 {
     private readonly string _propertyName;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="MultiObjectCustomFieldValueSerializer"/> class.
+    /// </summary>
+    /// <param name="propertyName">The name of the JSON property holding each value.</param>
     public MultiObjectCustomFieldValueSerializer(string propertyName)
     {
         _propertyName = propertyName;
     }
 
+    /// <inheritdoc/>
     public string[] FromJson(JToken json)
     {
         return ((JArray)json).Select(j => j[_propertyName].ToString()).ToArray();
     }
 
+    /// <inheritdoc/>
     public JToken ToJson(string[] values)
     {
         return JArray.FromObject(values.Select(v => new JObject(new JProperty(_propertyName, v))).ToArray());
     }
 }
 
+/// <summary>
+/// Serializes and deserializes a custom field value that is represented as a floating-point number.
+/// </summary>
 public class FloatCustomFieldValueSerializer : ICustomFieldValueSerializer
 {
+    /// <inheritdoc/>
     public string[] FromJson(JToken json)
     {
         return new string[1] { json.ToObject<string>() };
     }
 
+    /// <inheritdoc/>
     public JToken ToJson(string[] values)
     {
         return float.Parse(values[0], CultureInfo.InvariantCulture);
     }
 }
 
+/// <summary>
+/// Serializes and deserializes a custom field value that is represented as a JSON array of strings.
+/// </summary>
 public class MultiStringCustomFieldValueSerializer : ICustomFieldValueSerializer
 {
+    /// <inheritdoc/>
     public string[] FromJson(JToken json)
     {
         return JsonConvert.DeserializeObject<string[]>(json.ToString());
     }
 
+    /// <inheritdoc/>
     public JToken ToJson(string[] values)
     {
         return JArray.FromObject(values);
     }
 }
 
+/// <summary>
+/// Serializes and deserializes the value of a cascading select custom field, which has a parent value and an optional child value.
+/// </summary>
 public class CascadingSelectCustomFieldValueSerializer : ICustomFieldValueSerializer
 {
+    /// <inheritdoc/>
     public string[] FromJson(JToken json)
     {
         var parentOption = json["value"];
@@ -96,6 +128,7 @@ public class CascadingSelectCustomFieldValueSerializer : ICustomFieldValueSerial
         }
     }
 
+    /// <inheritdoc/>
     public JToken ToJson(string[] values)
     {
         if (values == null || values.Length < 1)
@@ -120,15 +153,24 @@ public class CascadingSelectCustomFieldValueSerializer : ICustomFieldValueSerial
     }
 }
 
+/// <summary>
+/// Serializes and deserializes the value of the GreenHopper/Jira Software "Sprint" custom field from its legacy,
+/// malformed <c>toString()</c> representation (see https://ecosystem.atlassian.net/browse/ACJIRA-918).
+/// </summary>
 public class GreenhopperSprintCustomFieldValueSerialiser : ICustomFieldValueSerializer
 {
     private readonly string _propertyName;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="GreenhopperSprintCustomFieldValueSerialiser"/> class.
+    /// </summary>
+    /// <param name="propertyName">The name of the malformed property holding the sprint value (e.g. "id" or "name").</param>
     public GreenhopperSprintCustomFieldValueSerialiser(string propertyName)
     {
         _propertyName = propertyName;
     }
 
+    /// <inheritdoc/>
     // Sprint field is malformed
     // See https://ecosystem.atlassian.net/browse/ACJIRA-918 for more information
     public string[] FromJson(JToken json)
@@ -140,6 +182,7 @@ public class GreenhopperSprintCustomFieldValueSerialiser : ICustomFieldValueSeri
             .ToArray();
     }
 
+    /// <inheritdoc/>
     public JToken ToJson(string[] values)
     {
         string val = values != null ? values.FirstOrDefault() : null;
@@ -154,8 +197,12 @@ public class GreenhopperSprintCustomFieldValueSerialiser : ICustomFieldValueSeri
     }
 }
 
+/// <summary>
+/// Serializes and deserializes the value of the GreenHopper/Jira Software "Sprint" custom field from its proper JSON representation.
+/// </summary>
 public class GreenhopperSprintJsonCustomFieldValueSerialiser : ICustomFieldValueSerializer
 {
+    /// <inheritdoc/>
     public string[] FromJson(JToken json)
     {
         return JsonConvert
@@ -165,6 +212,7 @@ public class GreenhopperSprintJsonCustomFieldValueSerialiser : ICustomFieldValue
             .ToArray();
     }
 
+    /// <inheritdoc/>
     public JToken ToJson(string[] values)
     {
         var val = values?.FirstOrDefault();

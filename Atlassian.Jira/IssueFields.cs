@@ -57,10 +57,19 @@ public class IssueFields : IReadOnlyDictionary<string, JToken>
     /// </summary>
     public IPagedQueryResult<Worklog> Worklogs { get; private set; }
 
+    /// <summary>
+    /// Gets the keys of the fields.
+    /// </summary>
     public IEnumerable<string> Keys => _map.Keys;
 
+    /// <summary>
+    /// Gets the values of the fields.
+    /// </summary>
     public IEnumerable<JToken> Values => _map.Values;
 
+    /// <summary>
+    /// Gets the number of fields.
+    /// </summary>
     public int Count => _map.Count;
 
     /// <summary>
@@ -84,6 +93,9 @@ public class IssueFields : IReadOnlyDictionary<string, JToken>
         return _map.TryGetValue(key, out value);
     }
 
+    /// <summary>
+    /// Returns an enumerator that iterates through the fields.
+    /// </summary>
     public IEnumerator<KeyValuePair<string, JToken>> GetEnumerator()
     {
         return _map.GetEnumerator();

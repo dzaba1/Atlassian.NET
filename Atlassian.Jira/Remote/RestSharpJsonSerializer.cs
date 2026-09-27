@@ -72,11 +72,13 @@ public class RestSharpJsonSerializer : IRestSerializer, ISerializer, IDeserializ
         }
     }
 
+    /// <inheritdoc/>
     public string Serialize(Parameter parameter)
     {
         return Serialize(parameter.Value);
     }
 
+    /// <inheritdoc/>
     public T Deserialize<T>(RestResponse response)
     {
         if (response.Content == null)
@@ -109,13 +111,18 @@ public class RestSharpJsonSerializer : IRestSerializer, ISerializer, IDeserializ
     /// </summary>
     public ContentType ContentType { get; set; } = ContentType.Json;
 
+    /// <inheritdoc/>
     public ISerializer Serializer => this;
 
+    /// <inheritdoc/>
     public IDeserializer Deserializer => this;
 
+    /// <inheritdoc/>
     public string[] AcceptedContentTypes => ContentType.JsonAccept;
 
+    /// <inheritdoc/>
     public SupportsContentType SupportsContentType => contentType => contentType.Value.Contains("json");
 
+    /// <inheritdoc/>
     public DataFormat DataFormat => DataFormat.Json;
 }
