@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System;
+using System.Text.Json.Serialization;
 
 namespace Dzaba.AtlassianSdk.Jira;
 
@@ -20,7 +21,7 @@ public class JiraNamedResource : IJiraEntity
     /// <param name="id">Identifier of the resource.</param>
     /// <param name="name">Name of the resource.</param>
     /// <param name="self">Url to the resource.</param>
-    public JiraNamedResource(string id, string name, string self = null)
+    public JiraNamedResource(string id, string name, Uri self = null)
     {
         Id = id;
         Name = name;
@@ -43,5 +44,5 @@ public class JiraNamedResource : IJiraEntity
     /// Url to access this resource.
     /// </summary>
     [JsonPropertyName("self")]
-    public string Self { get; private set; }
+    public Uri Self { get; private set; }
 }

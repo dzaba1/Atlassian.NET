@@ -1,4 +1,4 @@
-﻿using Atlassian.Jira.Model.V3;
+﻿using Dzaba.AtlassianSdk.Jira.Model.V3;
 
 namespace Dzaba.AtlassianSdk.Jira;
 
