@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net8.0;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>net8.0;net9.0;net10.0;netstandard2.0</TargetFrameworks>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <WarningsNotAsErrors>CS1591</WarningsNotAsErrors>
+    <WarningsNotAsErrors>CS1591,NU1903</WarningsNotAsErrors>
     <PackageId>Dzaba.AtlassianSDK</PackageId>
     <Authors>dzaba1</Authors>
     <Product>Atlassian.SDK</Product>
@@ -12,16 +12,15 @@
     <PackageProjectUrl>https://github.com/dzaba1/Atlassian.NET</PackageProjectUrl>
     <RepositoryUrl>https://github.com/dzaba1/Atlassian.NET</RepositoryUrl>
     <PackageLicenseExpression>BSD-2-Clause</PackageLicenseExpression>
-    <LangVersion>12.0</LangVersion>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
-    <AssemblyVersion>$(Version)</AssemblyVersion>
-    <FileVersion>$(Version)</FileVersion>
-    <PackageVersion>$(Version)</PackageVersion>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <Version>$(Version)</Version>
     <PackageIcon>AtlassianIcon.png</PackageIcon>
   </PropertyGroup>
-  
+
+  <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+    <LangVersion>14</LangVersion>
+  </PropertyGroup>
+
   <ItemGroup>
     <None Include="..\AtlassianIcon.png">
       <Pack>True</Pack>
@@ -37,6 +36,6 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
     <PackageReference Include="Newtonsoft.Json" />
     <PackageReference Include="RestSharp" />
-    <PackageReference Include="System.Linq.Async" />
+    <PackageReference Include="System.Linq.Async" Condition="'$(TargetFramework)' != 'net10.0'" />
   </ItemGroup>
 </Project>
