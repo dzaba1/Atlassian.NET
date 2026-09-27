@@ -24,6 +24,9 @@
     <File Path="LICENSE.md" />
     <File Path="README.md" />
   </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/Dzaba.AtlassianSdk.Jira/Dzaba.AtlassianSdk.Jira.csproj" />
+  </Folder>
   <Project Path="src/Atlassian.Jira.Test/Atlassian.Jira.Test.csproj">
     <Build Solution="*|x86" Project="false" />
   </Project>
