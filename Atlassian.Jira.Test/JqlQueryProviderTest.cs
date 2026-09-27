@@ -1,13 +1,14 @@
-﻿using System.Linq;
+using System.Linq;
 using Atlassian.Jira.Linq;
 using Atlassian.Jira.Remote;
-using Xunit;
+using FluentAssertions;
+using NUnit.Framework;
 
 namespace Atlassian.Jira.Test;
 
 public class JqlQueryProviderTest
 {
-    [Fact]
+    [Test]
     public void Count()
     {
         var jira = TestableJira.Create();
@@ -16,10 +17,10 @@ public class JqlQueryProviderTest
 
         jira.SetupIssues(new RemoteIssue());
 
-        Assert.Equal(1, queryable.Count());
+        queryable.Count().Should().Be(1);
     }
 
-    [Fact]
+    [Test]
     public void First()
     {
         var jira = TestableJira.Create();
@@ -28,6 +29,6 @@ public class JqlQueryProviderTest
 
         jira.SetupIssues(new RemoteIssue() { summary = "foo" }, new RemoteIssue());
 
-        Assert.Equal("foo", queryable.First().Summary);
+        queryable.First().Summary.Should().Be("foo");
     }
 }

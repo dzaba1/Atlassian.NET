@@ -1,85 +1,86 @@
-﻿using System;
-using Xunit;
+using System;
+using FluentAssertions;
+using NUnit.Framework;
 
 namespace Atlassian.Jira.Test;
 
 public class ComparableStringTest
 {
-    [Fact]
+    [Test]
     public void RefereceIsNull_EqualsOperators()
     {
         ComparableString field = null;
-        Assert.True(field == null);
-        Assert.False(field != null);
+        (field == null).Should().BeTrue();
+        (field != null).Should().BeFalse();
     }
 
     public class WithDate
     {
-        [Fact]
+        [Test]
         public void StringEqualsOperator()
         {
-            Assert.False(new ComparableString("2012/05/01") == new DateTime(2012, 4, 1));
-            Assert.True(new ComparableString("2012/04/01") == new DateTime(2012, 4, 1));
+            (new ComparableString("2012/05/01") == new DateTime(2012, 4, 1)).Should().BeFalse();
+            (new ComparableString("2012/04/01") == new DateTime(2012, 4, 1)).Should().BeTrue();
         }
 
-        [Fact]
+        [Test]
         public void StringNotEqualsOperator()
         {
-            Assert.True(new ComparableString("2012/05/01") != new DateTime(2012, 4, 1));
-            Assert.False(new ComparableString("2012/04/01") != new DateTime(2012, 4, 1));
+            (new ComparableString("2012/05/01") != new DateTime(2012, 4, 1)).Should().BeTrue();
+            (new ComparableString("2012/04/01") != new DateTime(2012, 4, 1)).Should().BeFalse();
         }
 
-        [Fact]
+        [Test]
         public void StringGreaterThanOperator()
         {
-            Assert.True(new ComparableString("2012/01/10") > new DateTime(2012, 1, 1));
+            (new ComparableString("2012/01/10") > new DateTime(2012, 1, 1)).Should().BeTrue();
         }
 
-        [Fact]
+        [Test]
         public void StringLessThanOperator()
         {
-            Assert.True(new ComparableString("2012/01/10") < new DateTime(2012, 1, 11));
+            (new ComparableString("2012/01/10") < new DateTime(2012, 1, 11)).Should().BeTrue();
         }
 
-        [Fact]
+        [Test]
         public void StringLessThanOrEqualsOperator()
         {
-            Assert.True(new ComparableString("2012/01/10") <= new DateTime(2012, 1, 10));
+            (new ComparableString("2012/01/10") <= new DateTime(2012, 1, 10)).Should().BeTrue();
         }
     }
 
     public class WithString
     {
-        [Fact]
+        [Test]
         public void StringEqualsOperator()
         {
-            Assert.False(new ComparableString("bar") == "foo");
-            Assert.True(new ComparableString("foo") == "foo");
+            (new ComparableString("bar") == "foo").Should().BeFalse();
+            (new ComparableString("foo") == "foo").Should().BeTrue();
         }
 
-        [Fact]
+        [Test]
         public void StringNotEqualsOperator()
         {
-            Assert.True(new ComparableString("bar") != "foo");
-            Assert.False(new ComparableString("foo") != "foo");
+            (new ComparableString("bar") != "foo").Should().BeTrue();
+            (new ComparableString("foo") != "foo").Should().BeFalse();
         }
 
-        [Fact]
+        [Test]
         public void StringGreaterThanOperator()
         {
-            Assert.True(new ComparableString("TST-23") > "TST-1");
+            (new ComparableString("TST-23") > "TST-1").Should().BeTrue();
         }
 
-        [Fact]
+        [Test]
         public void StringLessThanOperator()
         {
-            Assert.True(new ComparableString("TST-1") < "TST-2");
+            (new ComparableString("TST-1") < "TST-2").Should().BeTrue();
         }
 
-        [Fact]
+        [Test]
         public void StringLessThanOrEqualsOperator()
         {
-            Assert.True(new ComparableString("TST-1") <= "TST-2");
+            (new ComparableString("TST-1") <= "TST-2").Should().BeTrue();
         }
     }
 

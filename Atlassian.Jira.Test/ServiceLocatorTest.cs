@@ -1,15 +1,16 @@
-﻿using System.Linq;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Atlassian.Jira.Remote;
+using FluentAssertions;
 using Moq;
-using Xunit;
+using NUnit.Framework;
 
 namespace Atlassian.Jira.Test;
 
 public class ServiceLocatorTest
 {
-    [Fact]
+    [Test]
     public async Task UserCanProvideCustomProjectVersionService()
     {
         // Arrange
@@ -36,10 +37,10 @@ public class ServiceLocatorTest
         var versions = await proj.GetVersionsAsync().ToArrayAsync();
 
         // Assert
-        Assert.Equal("my version", versions.First().Name);
+        versions.First().Name.Should().Be("my version");
     }
 
-    [Fact]
+    [Test]
     public async Task UserCanProvideCustomProjectComponentsService()
     {
         // Arrange
@@ -66,6 +67,6 @@ public class ServiceLocatorTest
         var components = await proj.GetComponentsAsync().ToArrayAsync();
 
         // Assert
-        Assert.Equal("my component", components.First().Name);
+        components.First().Name.Should().Be("my component");
     }
 }

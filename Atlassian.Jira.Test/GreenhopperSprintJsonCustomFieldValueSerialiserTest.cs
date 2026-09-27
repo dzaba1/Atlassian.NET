@@ -1,12 +1,13 @@
-﻿using Atlassian.Jira.Remote;
+using Atlassian.Jira.Remote;
+using FluentAssertions;
 using Newtonsoft.Json.Linq;
-using Xunit;
+using NUnit.Framework;
 
 namespace Atlassian.Jira.Test;
 
 public class GreenhopperSprintJsonCustomFieldValueSerialiserTest
 {
-    [Fact]
+    [Test]
     public void Test_FromJson()
     {
         var serialiser = new GreenhopperSprintJsonCustomFieldValueSerialiser();
@@ -32,10 +33,10 @@ public class GreenhopperSprintJsonCustomFieldValueSerialiserTest
             ]".Replace('\'', '\"'));
 
         var expected = new[] {"Sprint2", "Sprint1"};
-        Assert.Equal(expected, actual);
+        actual.Should().Equal(expected);
     }
 
-    [Fact]
+    [Test]
     public void Test_ToJson()
     {
         var serialiser = new GreenhopperSprintJsonCustomFieldValueSerialiser();
@@ -47,6 +48,6 @@ public class GreenhopperSprintJsonCustomFieldValueSerialiserTest
         });
 
         var expected = (JToken) "Sprint1";
-        Assert.Equal(expected.ToString(), actual.ToString());
+        actual.ToString().Should().Be(expected.ToString());
     }
 }

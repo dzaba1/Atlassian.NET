@@ -1,15 +1,16 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Atlassian.Jira.Remote;
-using Xunit;
+using FluentAssertions;
+using NUnit.Framework;
 
 namespace Atlassian.Jira.Test;
 
 public class CustomFieldCollectionTest
 {
-    [Fact]
+    [Test]
     public async Task IndexByName_ShouldThrowIfUnableToFindRemoteValue()
     {
         var jira = TestableJira.Create();
@@ -27,10 +28,11 @@ public class CustomFieldCollectionTest
                         }
         }.ToLocal(jira);
 
-        await Assert.ThrowsAsync<InvalidOperationException>(() => issue.GetCustomFieldAsync("CustomField"));
+        Func<Task> act = () => issue.GetCustomFieldAsync("CustomField");
+        await act.Should().ThrowAsync<InvalidOperationException>();
     }
 
-    [Fact]
+    [Test]
     public async Task IndexByName_ShouldReturnRemoteValue()
     {
         //arrange
@@ -52,14 +54,14 @@ public class CustomFieldCollectionTest
         }.ToLocal(jira);
 
         //assert
-        Assert.Equal("abc", await issue.GetCustomFieldAsync("CustomField"));
-        Assert.Equal("123", (await issue.CustomFields.GetCustomFieldAsync("CustomField")).Id);
+        (await issue.GetCustomFieldAsync("CustomField")).Should().Be("abc");
+        (await issue.CustomFields.GetCustomFieldAsync("CustomField")).Id.Should().Be("123");
 
         await issue.SetCustomFieldAsync("customfield", "foobar");
-        Assert.Equal("foobar", await issue.GetCustomFieldAsync("customfield"));
+        (await issue.GetCustomFieldAsync("customfield")).Should().Be("foobar");
     }
 
-    [Fact]
+    [Test]
     public async Task WillThrowErrorIfCustomFieldNotFound()
     {
         // Arrange
@@ -76,6 +78,7 @@ public class CustomFieldCollectionTest
         }.ToLocal(jira);
 
         // Act / Assert
-        await Assert.ThrowsAsync<InvalidOperationException>(async () => _ = (await issue.CustomFields.GetCustomFieldAsync("NonExistantField")).Values[0]);
+        Func<Task> act = async () => _ = (await issue.CustomFields.GetCustomFieldAsync("NonExistantField")).Values[0];
+        await act.Should().ThrowAsync<InvalidOperationException>();
     }
 }

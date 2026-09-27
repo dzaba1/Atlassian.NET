@@ -1,11 +1,12 @@
-﻿using System.Linq;
-using Xunit;
+using System.Linq;
+using FluentAssertions;
+using NUnit.Framework;
 
 namespace Atlassian.Jira.Test;
 
 public class QueryParametersTest
 {
-    [Fact]
+    [Test]
     public void GetQueryParametersFromPath()
     {
         // Arrange
@@ -15,17 +16,17 @@ public class QueryParametersTest
         var parameters =  QueryParametersHelper.GetParametersFromPath(url);
 
         // Assert
-        Assert.NotNull(parameters);
-        Assert.Equal(2, parameters.Count());
+        parameters.Should().NotBeNull();
+        parameters.Count().Should().Be(2);
 
-        Assert.Equal("field1", parameters.First().Name);
-        Assert.Equal(parameters.First().Value, "9");
+        parameters.First().Name.Should().Be("field1");
+        parameters.First().Value.Should().Be("9");
 
-        Assert.Equal("field2", parameters.ElementAt(1).Name);
-        Assert.Equal(parameters.ElementAt(1).Value, "Test");
+        parameters.ElementAt(1).Name.Should().Be("field2");
+        parameters.ElementAt(1).Value.Should().Be("Test");
     }
 
-    [Fact]
+    [Test]
     public void GetQueryParametersFromPathNoEqual()
     {
         // Arrange
@@ -35,14 +36,14 @@ public class QueryParametersTest
         var parameters = QueryParametersHelper.GetParametersFromPath(url);
 
         // Assert
-        Assert.NotNull(parameters);
-        Assert.Single(parameters);
+        parameters.Should().NotBeNull();
+        parameters.Should().ContainSingle();
 
-        Assert.Equal("field1", parameters.First().Name);
-        Assert.Equal(parameters.First().Value, "");
+        parameters.First().Name.Should().Be("field1");
+        parameters.First().Value.Should().Be("");
     }
 
-    [Fact]
+    [Test]
     public void GetQueryParametersFromPathMultipleEquals()
     {
         // Arrange
@@ -52,10 +53,10 @@ public class QueryParametersTest
         var parameters = QueryParametersHelper.GetParametersFromPath(url);
 
         // Assert
-        Assert.NotNull(parameters);
-        Assert.Single(parameters);
+        parameters.Should().NotBeNull();
+        parameters.Should().ContainSingle();
 
-        Assert.Equal("field1", parameters.First().Name);
-        Assert.Equal(parameters.First().Value, "value=string==");
+        parameters.First().Name.Should().Be("field1");
+        parameters.First().Value.Should().Be("value=string==");
     }
 }

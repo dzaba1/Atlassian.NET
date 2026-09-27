@@ -1,11 +1,12 @@
-﻿using System;
+using System;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
 using Atlassian.Jira.Linq;
 using Atlassian.Jira.Remote;
+using FluentAssertions;
 using Moq;
-using Xunit;
+using NUnit.Framework;
 
 namespace Atlassian.Jira.Test;
 
@@ -27,7 +28,7 @@ public class JqlExpressionTranslatorTest
         return new JiraQueryable<Issue>(provider);
     }
 
-    [Fact]
+    [Test]
     public void EqualsOperatorForNonString()
     {
         var queryable = CreateQueryable();
@@ -36,10 +37,10 @@ public class JqlExpressionTranslatorTest
                       where i.Votes == 5
                       select i).ToArray();
 
-        Assert.Equal("Votes = 5", _translator.Jql);
+        _translator.Jql.Should().Be("Votes = 5");
     }
 
-    [Fact]
+    [Test]
     public void EqualsOperatorForStringWithFuzzyEquality()
     {
         var queryable = CreateQueryable();
@@ -48,10 +49,10 @@ public class JqlExpressionTranslatorTest
                       where i.Summary == "Foo"
                       select i).ToArray();
 
-        Assert.Equal("Summary ~ \"Foo\"", _translator.Jql);
+        _translator.Jql.Should().Be("Summary ~ \"Foo\"");
     }
 
-    [Fact]
+    [Test]
     public void EqualsOperatorForString()
     {
         var queryable = CreateQueryable();
@@ -60,10 +61,10 @@ public class JqlExpressionTranslatorTest
                       where i.Assignee == "Foo"
                       select i).ToArray();
 
-        Assert.Equal("Assignee = \"Foo\"", _translator.Jql);
+        _translator.Jql.Should().Be("Assignee = \"Foo\"");
     }
 
-    [Fact]
+    [Test]
     public void NotEqualsOperatorForNonString()
     {
         var queryable = CreateQueryable();
@@ -72,10 +73,10 @@ public class JqlExpressionTranslatorTest
                       where i.Votes != 5
                       select i).ToArray();
 
-        Assert.Equal("Votes != 5", _translator.Jql);
+        _translator.Jql.Should().Be("Votes != 5");
     }
 
-    [Fact]
+    [Test]
     public void NotEqualsOperatorForStringWithFuzzyEquality()
     {
         var queryable = CreateQueryable();
@@ -84,10 +85,10 @@ public class JqlExpressionTranslatorTest
                       where i.Summary != "Foo"
                       select i).ToArray();
 
-        Assert.Equal("Summary !~ \"Foo\"", _translator.Jql);
+        _translator.Jql.Should().Be("Summary !~ \"Foo\"");
     }
 
-    [Fact]
+    [Test]
     public void NotEqualsOperatorForString()
     {
         var queryable = CreateQueryable();
@@ -96,10 +97,10 @@ public class JqlExpressionTranslatorTest
                       where i.Assignee != "Foo"
                       select i).ToArray();
 
-        Assert.Equal("Assignee != \"Foo\"", _translator.Jql);
+        _translator.Jql.Should().Be("Assignee != \"Foo\"");
     }
 
-    [Fact]
+    [Test]
     public void GreaterThanOperator()
     {
         var queryable = CreateQueryable();
@@ -108,10 +109,10 @@ public class JqlExpressionTranslatorTest
                       where i.Votes > 5
                       select i).ToArray();
 
-        Assert.Equal("Votes > 5", _translator.Jql);
+        _translator.Jql.Should().Be("Votes > 5");
     }
 
-    [Fact]
+    [Test]
     public void GreaterThanEqualsOperator()
     {
         var queryable = CreateQueryable();
@@ -120,10 +121,10 @@ public class JqlExpressionTranslatorTest
                       where i.Votes >= 5
                       select i).ToArray();
 
-        Assert.Equal("Votes >= 5", _translator.Jql);
+        _translator.Jql.Should().Be("Votes >= 5");
     }
 
-    [Fact]
+    [Test]
     public void LessThanOperator()
     {
         var queryable = CreateQueryable();
@@ -132,10 +133,10 @@ public class JqlExpressionTranslatorTest
                       where i.Votes < 5
                       select i).ToArray();
 
-        Assert.Equal("Votes < 5", _translator.Jql);
+        _translator.Jql.Should().Be("Votes < 5");
     }
 
-    [Fact]
+    [Test]
     public void LessThanOrEqualsOperator()
     {
         var queryable = CreateQueryable();
@@ -144,10 +145,10 @@ public class JqlExpressionTranslatorTest
                       where i.Votes <= 5
                       select i).ToArray();
 
-        Assert.Equal("Votes <= 5", _translator.Jql);
+        _translator.Jql.Should().Be("Votes <= 5");
     }
 
-    [Fact]
+    [Test]
     public void AndKeyWord()
     {
         var queryable = CreateQueryable();
@@ -156,10 +157,10 @@ public class JqlExpressionTranslatorTest
                       where i.Votes > 5 && i.Votes < 10
                       select i).ToArray();
 
-        Assert.Equal("(Votes > 5 and Votes < 10)", _translator.Jql);
+        _translator.Jql.Should().Be("(Votes > 5 and Votes < 10)");
     }
 
-    [Fact]
+    [Test]
     public void OrKeyWord()
     {
         var queryable = CreateQueryable();
@@ -168,10 +169,10 @@ public class JqlExpressionTranslatorTest
                       where i.Votes > 5 || i.Votes < 10
                       select i).ToArray();
 
-        Assert.Equal("(Votes > 5 or Votes < 10)", _translator.Jql);
+        _translator.Jql.Should().Be("(Votes > 5 or Votes < 10)");
     }
 
-    [Fact]
+    [Test]
     public void AssociativeGrouping()
     {
         var queryable = CreateQueryable();
@@ -180,10 +181,10 @@ public class JqlExpressionTranslatorTest
                       where i.Votes > 5 && (i.Votes < 10 || i.Votes == 20)
                       select i).ToArray();
 
-        Assert.Equal("(Votes > 5 and (Votes < 10 or Votes = 20))", _translator.Jql);
+        _translator.Jql.Should().Be("(Votes > 5 and (Votes < 10 or Votes = 20))");
     }
 
-    [Fact]
+    [Test]
     public void IsOperatorForEmptyString()
     {
         var queryable = CreateQueryable();
@@ -192,10 +193,10 @@ public class JqlExpressionTranslatorTest
                       where i.Summary == ""
                       select i).ToArray();
 
-        Assert.Equal("Summary is empty", _translator.Jql);
+        _translator.Jql.Should().Be("Summary is empty");
     }
 
-    [Fact]
+    [Test]
     public void IsNotOperatorForEmptyString()
     {
         var queryable = CreateQueryable();
@@ -204,10 +205,10 @@ public class JqlExpressionTranslatorTest
                       where i.Summary != ""
                       select i).ToArray();
 
-        Assert.Equal("Summary is not empty", _translator.Jql);
+        _translator.Jql.Should().Be("Summary is not empty");
     }
 
-    [Fact]
+    [Test]
     public void IsOperatorForNull()
     {
         var queryable = CreateQueryable();
@@ -216,10 +217,10 @@ public class JqlExpressionTranslatorTest
                       where i.Summary == null
                       select i).ToArray();
 
-        Assert.Equal("Summary is null", _translator.Jql);
+        _translator.Jql.Should().Be("Summary is null");
     }
 
-    [Fact]
+    [Test]
     public void GreaterThanOperatorWhenUsingComparableFieldWithString()
     {
         var queryable = CreateQueryable();
@@ -228,10 +229,10 @@ public class JqlExpressionTranslatorTest
                       where i.Priority > "foo"
                       select i).ToArray();
 
-        Assert.Equal("Priority > \"foo\"", _translator.Jql);
+        _translator.Jql.Should().Be("Priority > \"foo\"");
     }
 
-    [Fact]
+    [Test]
     public void EqualsOperatorWhenUsingComparableFieldWithString()
     {
         var queryable = CreateQueryable();
@@ -240,10 +241,10 @@ public class JqlExpressionTranslatorTest
                       where i.Priority == "foo"
                       select i).ToArray();
 
-        Assert.Equal("Priority = \"foo\"", _translator.Jql);
+        _translator.Jql.Should().Be("Priority = \"foo\"");
     }
 
-    [Fact]
+    [Test]
     public void OrderBy()
     {
         var queryable = CreateQueryable();
@@ -253,10 +254,10 @@ public class JqlExpressionTranslatorTest
                       orderby i.Created
                       select i).ToArray();
 
-        Assert.Equal("Priority = \"1\" order by Created asc", _translator.Jql);
+        _translator.Jql.Should().Be("Priority = \"1\" order by Created asc");
     }
 
-    [Fact]
+    [Test]
     public void OrderByDescending()
     {
         var queryable = CreateQueryable();
@@ -266,10 +267,10 @@ public class JqlExpressionTranslatorTest
                       orderby i.Created descending
                       select i).ToArray();
 
-        Assert.Equal("Priority = \"1\" order by Created desc", _translator.Jql);
+        _translator.Jql.Should().Be("Priority = \"1\" order by Created desc");
     }
 
-    [Fact]
+    [Test]
     public void MultipleOrderBys()
     {
         var queryable = CreateQueryable();
@@ -279,10 +280,10 @@ public class JqlExpressionTranslatorTest
                       orderby i.Created, i.DueDate
                       select i).ToArray();
 
-        Assert.Equal("Priority = \"1\" order by Created asc, DueDate asc", _translator.Jql);
+        _translator.Jql.Should().Be("Priority = \"1\" order by Created asc, DueDate asc");
     }
 
-    [Fact]
+    [Test]
     public void MultipleOrderByDescending()
     {
         var queryable = CreateQueryable();
@@ -292,10 +293,10 @@ public class JqlExpressionTranslatorTest
                       orderby i.Created, i.DueDate descending
                       select i).ToArray();
 
-        Assert.Equal("Priority = \"1\" order by Created asc, DueDate desc", _translator.Jql);
+        _translator.Jql.Should().Be("Priority = \"1\" order by Created asc, DueDate desc");
     }
 
-    [Fact]
+    [Test]
     public void NewDateTime()
     {
         var queryable = CreateQueryable();
@@ -304,10 +305,10 @@ public class JqlExpressionTranslatorTest
                       where i.Created > new DateTime(2011, 1, 1)
                       select i).ToArray();
 
-        Assert.Equal("Created > \"2011/01/01\"", _translator.Jql);
+        _translator.Jql.Should().Be("Created > \"2011/01/01\"");
     }
 
-    [Fact]
+    [Test]
     public void MultipleDateTimes()
     {
         var queryable = CreateQueryable();
@@ -316,10 +317,10 @@ public class JqlExpressionTranslatorTest
                       where i.Created > new DateTime(2011, 1, 1) && i.Created < new DateTime(2012, 1, 1)
                       select i).ToArray();
 
-        Assert.Equal("(Created > \"2011/01/01\" and Created < \"2012/01/01\")", _translator.Jql);
+        _translator.Jql.Should().Be("(Created > \"2011/01/01\" and Created < \"2012/01/01\")");
     }
 
-    [Fact]
+    [Test]
     public void LocalStringVariables()
     {
         var queryable = CreateQueryable();
@@ -329,10 +330,10 @@ public class JqlExpressionTranslatorTest
                       where i.Assignee == user
                       select i).ToArray();
 
-        Assert.Equal("Assignee = \"farmas\"", _translator.Jql);
+        _translator.Jql.Should().Be("Assignee = \"farmas\"");
     }
 
-    [Fact]
+    [Test]
     public void LocalDateVariables()
     {
         var queryable = CreateQueryable();
@@ -342,10 +343,10 @@ public class JqlExpressionTranslatorTest
                       where i.Created > date
                       select i).ToArray();
 
-        Assert.Equal("Created > \"2011/01/01\"", _translator.Jql);
+        _translator.Jql.Should().Be("Created > \"2011/01/01\"");
     }
 
-    [Fact]
+    [Test]
     public void DateTimeWithLiteralString()
     {
         var queryable = CreateQueryable();
@@ -355,10 +356,10 @@ public class JqlExpressionTranslatorTest
                       where i.Created > new LiteralDateTime(date.ToString("yyyy/MM/dd HH:mm", CultureInfo.InvariantCulture))
                       select i).ToArray();
 
-        Assert.Equal("Created > \"2011/01/01 00:00\"", _translator.Jql);
+        _translator.Jql.Should().Be("Created > \"2011/01/01 00:00\"");
     }
 
-    [Fact]
+    [Test]
     // https://bitbucket.org/farmas/atlassian.net-sdk/issue/31
     public void DateTimeFormattedAsEnUs()
     {
@@ -374,7 +375,7 @@ public class JqlExpressionTranslatorTest
                           where i.Created > date
                           select i).ToArray();
 
-            Assert.Equal("Created > \"2011/01/01\"", _translator.Jql);
+            _translator.Jql.Should().Be("Created > \"2011/01/01\"");
         }
         finally
         {
@@ -382,7 +383,7 @@ public class JqlExpressionTranslatorTest
         }
     }
 
-    [Fact]
+    [Test]
     public void DateNow()
     {
         var queryable = CreateQueryable();
@@ -391,10 +392,10 @@ public class JqlExpressionTranslatorTest
                       where i.Created > DateTime.Now.Date
                       select i).ToArray();
 
-        Assert.Equal("Created > \"" + DateTime.Now.ToString("yyyy/MM/dd", CultureInfo.InvariantCulture) + "\"", _translator.Jql);
+        _translator.Jql.Should().Be("Created > \"" + DateTime.Now.ToString("yyyy/MM/dd", CultureInfo.InvariantCulture) + "\"");
     }
 
-    [Fact]
+    [Test]
     public void DateTimeNow()
     {
         var queryable = CreateQueryable();
@@ -403,10 +404,10 @@ public class JqlExpressionTranslatorTest
                       where i.Created > DateTime.Now
                       select i).ToArray();
 
-        Assert.Equal("Created > \"" + DateTime.Now.ToString("yyyy/MM/dd HH:mm", CultureInfo.InvariantCulture) + "\"", _translator.Jql);
+        _translator.Jql.Should().Be("Created > \"" + DateTime.Now.ToString("yyyy/MM/dd HH:mm", CultureInfo.InvariantCulture) + "\"");
     }
 
-    [Fact]
+    [Test]
     public void TakeWithConstant()
     {
         var queryable = CreateQueryable();
@@ -415,10 +416,10 @@ public class JqlExpressionTranslatorTest
                       where i.Assignee == "foo"
                       select i).Take(50).ToArray();
 
-        Assert.Equal(50, _translator.NumberOfResults);
+        _translator.NumberOfResults.Should().Be(50);
     }
 
-    [Fact]
+    [Test]
     public void SkipWithConstant()
     {
         var queryable = CreateQueryable();
@@ -427,10 +428,10 @@ public class JqlExpressionTranslatorTest
                       where i.Assignee == "foo"
                       select i).Skip(25).Take(50).ToArray();
 
-        Assert.Equal(25, _translator.SkipResults);
+        _translator.SkipResults.Should().Be(25);
     }
 
-    [Fact]
+    [Test]
     public void SkipAndTakeShouldResetOnEveryProcessOperation()
     {
         var queryable = CreateQueryable();
@@ -443,11 +444,11 @@ public class JqlExpressionTranslatorTest
                        where i.Assignee == "foo"
                        select i).ToArray();
 
-        Assert.Null(_translator.SkipResults);
-        Assert.Null(_translator.NumberOfResults);
+        _translator.SkipResults.Should().BeNull();
+        _translator.NumberOfResults.Should().BeNull();
     }
 
-    [Fact]
+    [Test]
     public void TakeWithLocalVariable()
     {
         var queryable = CreateQueryable();
@@ -457,10 +458,10 @@ public class JqlExpressionTranslatorTest
                       where i.Assignee == "foo"
                       select i).Take(take).ToArray();
 
-        Assert.Equal(100, _translator.NumberOfResults);
+        _translator.NumberOfResults.Should().Be(100);
     }
 
-    [Fact]
+    [Test]
     public void VersionsEqual()
     {
         var queryable = CreateQueryable();
@@ -468,10 +469,10 @@ public class JqlExpressionTranslatorTest
                       where i.FixVersions == "1.0" && i.AffectsVersions == "2.0"
                       select i).ToArray();
 
-        Assert.Equal("(FixVersion = \"1.0\" and AffectedVersion = \"2.0\")", _translator.Jql);
+        _translator.Jql.Should().Be("(FixVersion = \"1.0\" and AffectedVersion = \"2.0\")");
     }
 
-    [Fact]
+    [Test]
     public void ComponentEqual()
     {
         var queryable = CreateQueryable();
@@ -479,10 +480,10 @@ public class JqlExpressionTranslatorTest
                       where i.Components == "foo"
                       select i).ToArray();
 
-        Assert.Equal("component = \"foo\"", _translator.Jql);
+        _translator.Jql.Should().Be("component = \"foo\"");
     }
 
-    [Fact]
+    [Test]
     public void VersionsNotEqual()
     {
         var queryable = CreateQueryable();
@@ -490,10 +491,10 @@ public class JqlExpressionTranslatorTest
                       where i.FixVersions != "1.0" && i.AffectsVersions != "2.0"
                       select i).ToArray();
 
-        Assert.Equal("(FixVersion != \"1.0\" and AffectedVersion != \"2.0\")", _translator.Jql);
+        _translator.Jql.Should().Be("(FixVersion != \"1.0\" and AffectedVersion != \"2.0\")");
     }
 
-    [Fact]
+    [Test]
     public void ComponentNotEqual()
     {
         var queryable = CreateQueryable();
@@ -501,10 +502,10 @@ public class JqlExpressionTranslatorTest
                       where i.Components != "foo"
                       select i).ToArray();
 
-        Assert.Equal("component != \"foo\"", _translator.Jql);
+        _translator.Jql.Should().Be("component != \"foo\"");
     }
 
-    [Fact]
+    [Test]
     public void CanUseLiteralMatchOnMemberProperties()
     {
         var queryable = CreateQueryable();
@@ -512,10 +513,10 @@ public class JqlExpressionTranslatorTest
                       where i.Summary == new LiteralMatch("Literal Summary") && i.Description == new LiteralMatch("Literal Description")
                       select i).ToArray();
 
-        Assert.Equal("(Summary = \"Literal Summary\" and Description = \"Literal Description\")", _translator.Jql);
+        _translator.Jql.Should().Be("(Summary = \"Literal Summary\" and Description = \"Literal Description\")");
     }
 
-    [Fact]
+    [Test]
     public void MultipleSeparateWheres()
     {
         var queryable = CreateQueryable();
@@ -534,6 +535,6 @@ public class JqlExpressionTranslatorTest
 
         var issuesArray = issues.ToArray();
 
-        Assert.Equal("Votes = 5 and (Status = \"Open\" and Assignee = \"admin\") and Priority = \"1\"", _translator.Jql);
+        _translator.Jql.Should().Be("Votes = 5 and (Status = \"Open\" and Assignee = \"admin\") and Priority = \"1\"");
     }
 }

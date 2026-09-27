@@ -1,17 +1,18 @@
-﻿using Atlassian.Jira.Remote;
+using Atlassian.Jira.Remote;
+using FluentAssertions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Xunit;
+using NUnit.Framework;
 
 namespace Atlassian.Jira.Test;
 
 public class CustomFieldTest
 {
-    [Fact]
+    [Test]
     public async Task Name_ShouldRetriveValueFromRemote()
     {
         //arrange
@@ -33,10 +34,10 @@ public class CustomFieldTest
         }.ToLocal(jira);
 
         //assert
-        Assert.Equal("CustomField", await issue.CustomFields[0].GetNameAsync());
+        (await issue.CustomFields[0].GetNameAsync()).Should().Be("CustomField");
     }
 
-    [Fact]
+    [Test]
     public async Task WhenAddingArrayOfValues_CanSerializeAsStringArrayWhenNoSerializerIsFound()
     {
         // arrange issue
@@ -65,12 +66,12 @@ public class CustomFieldTest
         var jObject = JObject.Parse(issueJson);
         var remoteFieldValue = jObject["fields"]["remotefield_id"];
         var valueArray = remoteFieldValue.ToObject<string[]>();
-        Assert.Equal(2, valueArray.Length);
-        Assert.Contains("val1", valueArray);
-        Assert.Contains("val2", valueArray);
+        valueArray.Should().HaveCount(2);
+        valueArray.Should().Contain("val1");
+        valueArray.Should().Contain("val2");
     }
 
-    [Fact]
+    [Test]
     public void CanDeserializeArrayOfStrings_WhenCustomFieldValueIsArrayAndNoSerializerIsRegistered()
     {
         // arrange issue
@@ -96,8 +97,8 @@ public class CustomFieldTest
 
         // assert
         var customFieldValues = remoteIssue.customFieldValues.First().values;
-        Assert.Equal(2, customFieldValues.Length);
-        Assert.Contains("val1", customFieldValues);
-        Assert.Contains("val2", customFieldValues);
+        customFieldValues.Should().HaveCount(2);
+        customFieldValues.Should().Contain("val1");
+        customFieldValues.Should().Contain("val2");
     }
 }

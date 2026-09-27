@@ -1,10 +1,11 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Atlassian.Jira.Remote;
+using FluentAssertions;
 using Moq;
-using Xunit;
+using NUnit.Framework;
 
 namespace Atlassian.Jira.Test;
 
@@ -12,31 +13,31 @@ public class IssueTest
 {
     public class Constructor
     {
-        [Fact]
+        [Test]
         public void ShouldSetDefaultValues()
         {
             var issue = CreateIssue("ProjectKey");
-            Assert.Empty(issue.AffectsVersions);
-            Assert.Null(issue.Assignee);
-            Assert.Empty(issue.Components);
-            Assert.Null(issue.Created);
-            Assert.Empty(issue.CustomFields);
-            Assert.Null(issue.Description);
-            Assert.Null(issue.DueDate);
-            Assert.Null(issue.Environment);
-            Assert.Null(issue.Key);
-            Assert.Null(issue.Priority);
-            Assert.Equal("ProjectKey", issue.Project);
-            Assert.Null(issue.Reporter);
-            Assert.Null(issue.Resolution);
-            Assert.Null(issue.Status);
-            Assert.Null(issue.Summary);
-            Assert.Null(issue.Type);
-            Assert.Null(issue.Updated);
-            Assert.Null(issue.Votes);
+            issue.AffectsVersions.Should().BeEmpty();
+            issue.Assignee.Should().BeNull();
+            issue.Components.Should().BeEmpty();
+            issue.Created.Should().BeNull();
+            issue.CustomFields.Should().BeEmpty();
+            issue.Description.Should().BeNull();
+            issue.DueDate.Should().BeNull();
+            issue.Environment.Should().BeNull();
+            issue.Key.Should().BeNull();
+            issue.Priority.Should().BeNull();
+            issue.Project.Should().Be("ProjectKey");
+            issue.Reporter.Should().BeNull();
+            issue.Resolution.Should().BeNull();
+            issue.Status.Should().BeNull();
+            issue.Summary.Should().BeNull();
+            issue.Type.Should().BeNull();
+            issue.Updated.Should().BeNull();
+            issue.Votes.Should().BeNull();
         }
 
-        [Fact]
+        [Test]
         public void FromRemote_ShouldPopulateFields()
         {
             var remoteIssue = new RemoteIssue()
@@ -64,58 +65,58 @@ public class IssueTest
 
             var issue = remoteIssue.ToLocal(TestableJira.Create());
 
-            Assert.Single(issue.AffectsVersions);
-            Assert.Equal("assignee", issue.Assignee);
-            Assert.Single(issue.Components);
-            Assert.Equal(new DateTime(2011, 1, 1), issue.Created);
-            Assert.Single(issue.CustomFields);
-            Assert.Equal("description", issue.Description);
-            Assert.Equal(new DateTime(2011, 3, 3), issue.DueDate);
-            Assert.Equal("environment", issue.Environment);
-            Assert.Equal("key", issue.Key.Value);
-            Assert.Equal("priority", issue.Priority.Id);
-            Assert.Equal("project", issue.Project);
-            Assert.Equal("reporter", issue.Reporter);
-            Assert.Equal("resolution", issue.Resolution.Id);
-            Assert.Equal("status", issue.Status.Id);
-            Assert.Equal("summary", issue.Summary);
-            Assert.Equal("type", issue.Type.Id);
-            Assert.Equal(new DateTime(2011, 2, 2), issue.Updated);
-            Assert.Equal(1, issue.Votes);
-            Assert.True(issue.HasUserVoted);
+            issue.AffectsVersions.Should().ContainSingle();
+            issue.Assignee.Should().Be("assignee");
+            issue.Components.Should().ContainSingle();
+            issue.Created.Should().Be(new DateTime(2011, 1, 1));
+            issue.CustomFields.Should().ContainSingle();
+            issue.Description.Should().Be("description");
+            issue.DueDate.Should().Be(new DateTime(2011, 3, 3));
+            issue.Environment.Should().Be("environment");
+            issue.Key.Value.Should().Be("key");
+            issue.Priority.Id.Should().Be("priority");
+            issue.Project.Should().Be("project");
+            issue.Reporter.Should().Be("reporter");
+            issue.Resolution.Id.Should().Be("resolution");
+            issue.Status.Id.Should().Be("status");
+            issue.Summary.Should().Be("summary");
+            issue.Type.Id.Should().Be("type");
+            issue.Updated.Should().Be(new DateTime(2011, 2, 2));
+            issue.Votes.Should().Be(1);
+            issue.HasUserVoted.Should().BeTrue();
         }
     }
 
     public class ToRemote
     {
-        [Fact]
+        [Test]
         public async Task IfFieldsNotSet_ShouldLeaveFieldsNull()
         {
             var issue = CreateIssue("ProjectKey");
 
             var remoteIssue = await issue.ToRemoteAsync();
 
-            Assert.Null(remoteIssue.affectsVersions);
-            Assert.Null(remoteIssue.assignee);
-            Assert.Null(remoteIssue.components);
-            Assert.Null(remoteIssue.created);
-            Assert.Null(remoteIssue.customFieldValues);
-            Assert.Null(remoteIssue.description);
-            Assert.Null(remoteIssue.duedate);
-            Assert.Null(remoteIssue.environment);
-            Assert.Null(remoteIssue.key);
-            Assert.Null(remoteIssue.priority);
-            Assert.Equal("ProjectKey", remoteIssue.project);
-            Assert.Null(remoteIssue.reporter);
-            Assert.Null(remoteIssue.resolution);
-            Assert.Null(remoteIssue.status);
-            Assert.Null(remoteIssue.summary);
-            Assert.Null(remoteIssue.type);
-            Assert.Null(remoteIssue.updated);
-            Assert.Null(remoteIssue.votesData);
+            remoteIssue.affectsVersions.Should().BeNull();
+            remoteIssue.assignee.Should().BeNull();
+            remoteIssue.components.Should().BeNull();
+            remoteIssue.created.Should().BeNull();
+            remoteIssue.customFieldValues.Should().BeNull();
+            remoteIssue.description.Should().BeNull();
+            remoteIssue.duedate.Should().BeNull();
+            remoteIssue.environment.Should().BeNull();
+            remoteIssue.key.Should().BeNull();
+            remoteIssue.priority.Should().BeNull();
+            remoteIssue.project.Should().Be("ProjectKey");
+            remoteIssue.reporter.Should().BeNull();
+            remoteIssue.resolution.Should().BeNull();
+            remoteIssue.status.Should().BeNull();
+            remoteIssue.summary.Should().BeNull();
+            remoteIssue.type.Should().BeNull();
+            remoteIssue.updated.Should().BeNull();
+            remoteIssue.votesData.Should().BeNull();
         }
 
-        [Fact]
+        [Test]
         public async Task IfFieldsSet_ShouldPopulateFields()
         {
             var jira = TestableJira.Create();
@@ -145,25 +146,25 @@ public class IssueTest
 
             var remoteIssue = await issue.ToRemoteAsync();
 
-            Assert.Single(remoteIssue.affectsVersions);
-            Assert.Equal("assignee", remoteIssue.assignee);
-            Assert.Single(remoteIssue.components);
-            Assert.Null(remoteIssue.created);
-            Assert.Equal("description", remoteIssue.description);
-            Assert.Equal(new DateTime(2011, 1, 1), remoteIssue.duedate);
-            Assert.Equal("environment", remoteIssue.environment);
-            Assert.Null(remoteIssue.key);
-            Assert.Equal("1", remoteIssue.priority.id);
-            Assert.Equal("ProjectKey", remoteIssue.project);
-            Assert.Equal("reporter", remoteIssue.reporter);
-            Assert.Null(remoteIssue.resolution);
-            Assert.Null(remoteIssue.status);
-            Assert.Equal("summary", remoteIssue.summary);
-            Assert.Equal("4", remoteIssue.type.id);
-            Assert.Null(remoteIssue.updated);
+            remoteIssue.affectsVersions.Should().ContainSingle();
+            remoteIssue.assignee.Should().Be("assignee");
+            remoteIssue.components.Should().ContainSingle();
+            remoteIssue.created.Should().BeNull();
+            remoteIssue.description.Should().Be("description");
+            remoteIssue.duedate.Should().Be(new DateTime(2011, 1, 1));
+            remoteIssue.environment.Should().Be("environment");
+            remoteIssue.key.Should().BeNull();
+            remoteIssue.priority.id.Should().Be("1");
+            remoteIssue.project.Should().Be("ProjectKey");
+            remoteIssue.reporter.Should().Be("reporter");
+            remoteIssue.resolution.Should().BeNull();
+            remoteIssue.status.Should().BeNull();
+            remoteIssue.summary.Should().Be("summary");
+            remoteIssue.type.id.Should().Be("4");
+            remoteIssue.updated.Should().BeNull();
         }
 
-        [Fact]
+        [Test]
         public async Task ToRemote_IfTypeSetByName_FetchId()
         {
             var jira = TestableJira.Create();
@@ -175,13 +176,13 @@ public class IssueTest
             issue.Type = "Bug";
 
             var remoteIssue = await issue.ToRemoteAsync();
-            Assert.Equal("1", remoteIssue.type.id);
+            remoteIssue.type.id.Should().Be("1");
         }
     }
 
     public class GetUpdatedFields
     {
-        [Fact]
+        [Test]
         public async Task ReturnsCustomFieldsAdded()
         {
             var jira = TestableJira.Create();
@@ -201,11 +202,11 @@ public class IssueTest
             await issue.SetCustomFieldAsync("My Custom Field", "test value");
 
             var result = await GetUpdatedFieldsForIssueAsync(issue);
-            Assert.Single(result);
-            Assert.Equal("CustomField1", result.First().id);
+            result.Should().ContainSingle();
+            result.First().id.Should().Be("CustomField1");
         }
 
-        [Fact]
+        [Test]
         public async Task ExcludesCustomFieldsNotModified()
         {
             var jira = TestableJira.Create();
@@ -233,10 +234,10 @@ public class IssueTest
             var issue = await jira.Issues.GetIssueAsync("TST-1");
 
             var result = await GetUpdatedFieldsForIssueAsync(issue);
-            Assert.Empty(result);
+            result.Should().BeEmpty();
         }
 
-        [Fact]
+        [Test]
         public async Task ReturnsCustomFieldThatWasModified()
         {
             var jira = TestableJira.Create();
@@ -265,12 +266,12 @@ public class IssueTest
             await issue.SetCustomFieldAsync("My Custom Field", "My New Value");
 
             var result = await GetUpdatedFieldsForIssueAsync(issue);
-            Assert.Single(result);
-            Assert.Equal("CustomField1", result.First().id);
-            Assert.Equal("My New Value", result.First().values[0]);
+            result.Should().ContainSingle();
+            result.First().id.Should().Be("CustomField1");
+            result.First().values[0].Should().Be("My New Value");
         }
 
-        [Fact]
+        [Test]
         public async Task IfIssueTypeWithId_ReturnField()
         {
             var jira = TestableJira.Create();
@@ -281,11 +282,11 @@ public class IssueTest
                 .Returns(Enumerable.Repeat(new IssuePriority("5"), 1).ToAsyncEnumerable());
 
             var result = await GetUpdatedFieldsForIssueAsync(issue);
-            Assert.Single(result);
-            Assert.Equal("5", result[0].values[0]);
+            result.Should().ContainSingle();
+            result[0].values[0].Should().Be("5");
         }
 
-        [Fact]
+        [Test]
         public async Task IfIssueTypeWithName_ReturnsFieldWithIdInferred()
         {
             var jira = TestableJira.Create();
@@ -296,11 +297,11 @@ public class IssueTest
             issue.Type = "Task";
 
             var result = await GetUpdatedFieldsForIssueAsync(issue);
-            Assert.Single(result);
-            Assert.Equal("2", result[0].values[0]);
+            result.Should().ContainSingle();
+            result[0].values[0].Should().Be("2");
         }
 
-        [Fact]
+        [Test]
         public async Task IfIssueTypeWithNameNotChanged_ReturnsNoFieldsChanged()
         {
             var jira = TestableJira.Create();
@@ -316,27 +317,27 @@ public class IssueTest
             issue.Type = "Task";
 
             var fields = await GetUpdatedFieldsForIssueAsync(issue);
-            Assert.Empty(fields);
+            fields.Should().BeEmpty();
         }
 
-        [Fact]
+        [Test]
         public async Task ReturnEmptyIfNothingChanged()
         {
             var issue = CreateIssue();
 
-            Assert.Empty((await GetUpdatedFieldsForIssueAsync(issue)));
+            (await GetUpdatedFieldsForIssueAsync(issue)).Should().BeEmpty();
         }
 
-        [Fact]
+        [Test]
         public async Task IfString_ReturnOneFieldThatChanged()
         {
             var issue = CreateIssue();
             issue.Summary = "foo";
 
-            Assert.Single((await GetUpdatedFieldsForIssueAsync(issue)));
+            (await GetUpdatedFieldsForIssueAsync(issue)).Should().ContainSingle();
         }
 
-        [Fact]
+        [Test]
         public async Task IfString_ReturnAllFieldsThatChanged()
         {
             var jira = TestableJira.Create();
@@ -357,10 +358,10 @@ public class IssueTest
             jira.IssueTypeService.Setup(s => s.GetIssueTypesAsync(CancellationToken.None))
                 .Returns(Enumerable.Repeat(new IssueType("2"), 1).ToAsyncEnumerable());
 
-            Assert.Equal(8, (await GetUpdatedFieldsForIssueAsync(issue)).Length);
+            (await GetUpdatedFieldsForIssueAsync(issue)).Length.Should().Be(8);
         }
 
-        [Fact]
+        [Test]
         public async Task IfStringEqual_ReturnNoFieldsThatChanged()
         {
             var remoteIssue = new RemoteIssue()
@@ -372,10 +373,10 @@ public class IssueTest
 
             issue.Summary = "Summary";
 
-            Assert.Empty(await GetUpdatedFieldsForIssueAsync(issue));
+            (await GetUpdatedFieldsForIssueAsync(issue)).Should().BeEmpty();
         }
 
-        [Fact]
+        [Test]
         public async Task IfComparableEqual_ReturnNoFieldsThatChanged()
         {
             var jira = TestableJira.Create();
@@ -389,10 +390,10 @@ public class IssueTest
 
             jira.IssuePriorityService.Setup(s => s.GetPrioritiesAsync(CancellationToken.None))
                 .Returns(Enumerable.Repeat(new IssuePriority("5"), 1).ToAsyncEnumerable());
-            Assert.Empty(await GetUpdatedFieldsForIssueAsync(issue));
+            (await GetUpdatedFieldsForIssueAsync(issue)).Should().BeEmpty();
         }
 
-        [Fact]
+        [Test]
         public async Task IfComparable_ReturnsFieldsThatChanged()
         {
             var jira = TestableJira.Create();
@@ -402,21 +403,21 @@ public class IssueTest
             jira.IssuePriorityService.Setup(s => s.GetPrioritiesAsync(CancellationToken.None))
                 .Returns(Enumerable.Repeat(new IssuePriority("5"), 1).ToAsyncEnumerable());
 
-            Assert.Single(await GetUpdatedFieldsForIssueAsync(issue));
+            (await GetUpdatedFieldsForIssueAsync(issue)).Should().ContainSingle();
         }
 
-        [Fact]
+        [Test]
         public async Task IfDateTimeChanged_ReturnsFieldsThatChanged()
         {
             var issue = CreateIssue();
             issue.DueDate = new DateTime(2011, 10, 10);
 
             var fields = await GetUpdatedFieldsForIssueAsync(issue);
-            Assert.Single(fields);
-            Assert.Equal("10/Oct/11", fields[0].values[0]);
+            fields.Should().ContainSingle();
+            fields[0].values[0].Should().Be("10/Oct/11");
         }
 
-        [Fact]
+        [Test]
         public async Task IfDateTimeUnChangd_ShouldNotIncludeItInFieldsThatChanged()
         {
             var remoteIssue = new RemoteIssue()
@@ -425,10 +426,10 @@ public class IssueTest
             };
 
             var issue = remoteIssue.ToLocal(TestableJira.Create());
-            Assert.Empty(await GetUpdatedFieldsForIssueAsync(issue));
+            (await GetUpdatedFieldsForIssueAsync(issue)).Should().BeEmpty();
         }
 
-        [Fact]
+        [Test]
         public async Task IfComponentsAdded_ReturnsFields()
         {
             var issue = new RemoteIssue() { key = "foo" }.ToLocal(TestableJira.Create());
@@ -436,12 +437,12 @@ public class IssueTest
             issue.Components.Add(component.ToLocal());
 
             var fields = await GetUpdatedFieldsForIssueAsync(issue);
-            Assert.Single(fields);
-            Assert.Equal("components", fields[0].id);
-            Assert.Equal("1", fields[0].values[0]);
+            fields.Should().ContainSingle();
+            fields[0].id.Should().Be("components");
+            fields[0].values[0].Should().Be("1");
         }
 
-        [Fact]
+        [Test]
         public async Task IfAddFixVersion_ReturnAllFieldsThatChanged()
         {
             var issue = new RemoteIssue() { key = "foo" }.ToLocal(TestableJira.Create());
@@ -449,12 +450,12 @@ public class IssueTest
             issue.FixVersions.Add(version.ToLocal(TestableJira.Create()));
 
             var fields = await GetUpdatedFieldsForIssueAsync(issue);
-            Assert.Single(fields);
-            Assert.Equal("fixVersions", fields[0].id);
-            Assert.Equal("1", fields[0].values[0]);
+            fields.Should().ContainSingle();
+            fields[0].id.Should().Be("fixVersions");
+            fields[0].values[0].Should().Be("1");
         }
 
-        [Fact]
+        [Test]
         public async Task IfAddAffectsVersion_ReturnAllFieldsThatChanged()
         {
             var issue = new RemoteIssue() { key = "foo" }.ToLocal(TestableJira.Create());
@@ -462,23 +463,24 @@ public class IssueTest
             issue.AffectsVersions.Add(version.ToLocal(TestableJira.Create()));
 
             var fields = await GetUpdatedFieldsForIssueAsync(issue);
-            Assert.Single(fields);
-            Assert.Equal("versions", fields[0].id);
-            Assert.Equal("1", fields[0].values[0]);
+            fields.Should().ContainSingle();
+            fields[0].id.Should().Be("versions");
+            fields[0].values[0].Should().Be("1");
         }
     }
 
     public class GetAttachments
     {
-        [Fact]
+        [Test]
         public async Task IfIssueNotCreated_ShouldThrowException()
         {
             var issue = CreateIssue();
 
-            await Assert.ThrowsAsync<InvalidOperationException>(async () => await issue.GetAttachmentsAsync().ToArrayAsync());
+            Func<Task> act = async () => await issue.GetAttachmentsAsync().ToArrayAsync();
+            await act.Should().ThrowAsync<InvalidOperationException>();
         }
 
-        [Fact]
+        [Test]
         public async Task IfIssueIsCreated_ShouldLoadAttachments()
         {
             //arrange
@@ -494,45 +496,48 @@ public class IssueTest
                 .ToArrayAsync();
 
             //assert
-            Assert.Single(attachments);
-            Assert.Equal("attach.txt", attachments.First().FileName);
+            attachments.Should().ContainSingle();
+            attachments.First().FileName.Should().Be("attach.txt");
         }
     }
 
     public class AddAttachment
     {
-        [Fact]
+        [Test]
         public async Task AddAttachment_IfIssueNotCreated_ShouldThrowAnException()
         {
             var issue = CreateIssue();
 
-            await Assert.ThrowsAsync<InvalidOperationException>(() => issue.AddAttachmentAsync("foo", new byte[] { 1 }));
+            Func<Task> act = () => issue.AddAttachmentAsync("foo", new byte[] { 1 });
+            await act.Should().ThrowAsync<InvalidOperationException>();
         }
     }
 
     public class WorkflowTransition
     {
-        [Fact]
+        [Test]
         public void IfTransitionNotFound_ShouldThrowAnException()
         {
             var jira = TestableJira.Create();
             var issue = (new RemoteIssue() { key = "key" }).ToLocal(jira);
 
-            Assert.Throws<AggregateException>(() => issue.WorkflowTransitionAsync("foo").Wait());
+            Action act = () => issue.WorkflowTransitionAsync("foo").Wait();
+            act.Should().Throw<AggregateException>();
         }
     }
 
     public class GetComments
     {
-        [Fact]
+        [Test]
         public async Task IfIssueNotCreated_ShouldThrowException()
         {
             var issue = CreateIssue();
 
-            await Assert.ThrowsAsync<InvalidOperationException>(async () => await issue.GetCommentsAsync().ToArrayAsync());
+            Func<Task> act = async () => await issue.GetCommentsAsync().ToArrayAsync();
+            await act.Should().ThrowAsync<InvalidOperationException>();
         }
 
-        [Fact]
+        [Test]
         public async Task IfIssueIsCreated_ShouldLoadComments()
         {
             //arrange
@@ -546,8 +551,8 @@ public class IssueTest
                 .ToArrayAsync();
 
             //assert
-            Assert.Single(comments);
-            Assert.Equal("the comment", comments.First().Body);
+            comments.Should().ContainSingle();
+            comments.First().Body.Should().Be("the comment");
         }
     }
 

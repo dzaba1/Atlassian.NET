@@ -1,12 +1,13 @@
-﻿using Atlassian.Jira.OAuth;
+using Atlassian.Jira.OAuth;
+using FluentAssertions;
 using Newtonsoft.Json;
-using Xunit;
+using NUnit.Framework;
 
 namespace Atlassian.Jira.Test;
 
 public class OAuthRequestTokenTest
 {
-    [Fact]
+    [Test]
     public void OAuthRequestToken_CanDeserialize()
     {
         // Arrange
@@ -21,9 +22,9 @@ public class OAuthRequestTokenTest
         var deserializedRequestToken = JsonConvert.DeserializeObject<OAuthRequestToken>(json);
 
         // Assert
-        Assert.Equal(requestToken.AuthorizeUri, deserializedRequestToken.AuthorizeUri);
-        Assert.Equal(requestToken.OAuthToken, deserializedRequestToken.OAuthToken);
-        Assert.Equal(requestToken.OAuthTokenSecret, deserializedRequestToken.OAuthTokenSecret);
-        Assert.Equal(requestToken.OAuthCallbackConfirmation, deserializedRequestToken.OAuthCallbackConfirmation);
+        deserializedRequestToken.AuthorizeUri.Should().Be(requestToken.AuthorizeUri);
+        deserializedRequestToken.OAuthToken.Should().Be(requestToken.OAuthToken);
+        deserializedRequestToken.OAuthTokenSecret.Should().Be(requestToken.OAuthTokenSecret);
+        deserializedRequestToken.OAuthCallbackConfirmation.Should().Be(requestToken.OAuthCallbackConfirmation);
     }
 }
