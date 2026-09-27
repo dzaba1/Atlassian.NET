@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using Dzaba.AtlassianSdk.Jira.Linq;
 
 namespace Dzaba.AtlassianSdk.Jira;
 
@@ -160,7 +161,7 @@ public class Issue : IRemoteIssueFieldProvider
     /// <summary>
     /// The JIRA server that created this issue
     /// </summary>
-    public Jira Jira
+    public IJira Jira
     {
         get
         {
