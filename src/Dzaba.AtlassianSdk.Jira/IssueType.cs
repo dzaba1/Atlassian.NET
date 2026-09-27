@@ -50,8 +50,38 @@ public class IssueType : JiraNamedConstant, IEquatable<IssueType>
 
     internal string ProjectKey { get; set; }
 
+    /// <summary>
+    /// Determines whether the specified <see cref="IssueType"/> represents the same JIRA issue type.
+    /// </summary>
+    public bool Equals(IssueType other)
+    {
+        if (other is null)
+        {
+            return false;
+        }
+
+        if (ReferenceEquals(this, other))
+        {
+            return true;
+        }
+
+        return string.Equals(Id, other.Id, StringComparison.Ordinal)
+            && string.Equals(Name, other.Name, StringComparison.Ordinal);
+    }
+
     /// <inheritdoc/>
-    protected override async IAsyncEnumerable<JiraNamedEntity> GetEntitiesAsync(Jira jira, [EnumeratorCancellation] CancellationToken token)
+    public override bool Equals(object obj)
+    {
+        return Equals(obj as IssueType);
+    }
+
+    /// <inheritdoc/>
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(Id, Name);
+    }
+
+    protected async IAsyncEnumerable<JiraNamedEntity> GetEntitiesAsync(IJira jira, [EnumeratorCancellation] CancellationToken token)
     {
         var results = await jira.IssueTypes.GetIssueTypesAsync(token)
             .ToArrayAsync()

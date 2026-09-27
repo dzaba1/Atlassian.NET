@@ -9,7 +9,7 @@ namespace Dzaba.AtlassianSdk.Jira;
 /// </summary>
 public class ProjectVersion : JiraNamedEntity
 {
-    private readonly Jira _jira;
+    private readonly IJira _jira;
     private Model.V3.Version _remoteVersion;
 
     /// <summary>
@@ -17,7 +17,7 @@ public class ProjectVersion : JiraNamedEntity
     /// </summary>
     /// <param name="jira">The jira instance.</param>
     /// <param name="remoteVersion">The remote version.</param>
-    public ProjectVersion(Jira jira, Model.V3.Version remoteVersion)
+    public ProjectVersion(IJira jira, Model.V3.Version remoteVersion)
         : base(remoteVersion.Id, remoteVersion.Name)
     {
         if (jira == null)

@@ -11,7 +11,7 @@ namespace Dzaba.AtlassianSdk.Jira;
 /// </summary>
 public class Project : JiraNamedEntity
 {
-    private readonly Jira _jira;
+    private readonly IJira _jira;
     private readonly Model.V3.Project _remoteProject;
 
     /// <summary>
@@ -19,7 +19,7 @@ public class Project : JiraNamedEntity
     /// </summary>
     /// <param name="jira">Instance of the Jira client.</param>
     /// <param name="remoteProject">Remote project.</param>
-    public Project(Jira jira, Model.V3.Project remoteProject)
+    public Project(IJira jira, Model.V3.Project remoteProject)
         : base(remoteProject.Id, remoteProject.Name)
     {
         _jira = jira;

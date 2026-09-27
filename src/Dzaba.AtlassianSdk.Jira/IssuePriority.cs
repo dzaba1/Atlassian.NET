@@ -26,10 +26,40 @@ public class IssuePriority : JiraNamedConstant, IEquatable<IssuePriority>
     {
     }
 
-    /// <inheritdoc/>
-    protected override IAsyncEnumerable<JiraNamedEntity> GetEntitiesAsync(Jira jira, CancellationToken token)
+    protected IAsyncEnumerable<JiraNamedEntity> GetEntitiesAsync(IJira jira, CancellationToken token)
     {
         return jira.Priorities.GetPrioritiesAsync(token);
+    }
+
+    /// <summary>
+    /// Determines whether the specified <see cref="IssuePriority"/> represents the same JIRA priority.
+    /// </summary>
+    public bool Equals(IssuePriority other)
+    {
+        if (other is null)
+        {
+            return false;
+        }
+
+        if (ReferenceEquals(this, other))
+        {
+            return true;
+        }
+
+        return string.Equals(Id, other.Id, StringComparison.Ordinal)
+            && string.Equals(Name, other.Name, StringComparison.Ordinal);
+    }
+
+    /// <inheritdoc/>
+    public override bool Equals(object obj)
+    {
+        return Equals(obj as IssuePriority);
+    }
+
+    /// <inheritdoc/>
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(Id, Name);
     }
 
     /// <summary>

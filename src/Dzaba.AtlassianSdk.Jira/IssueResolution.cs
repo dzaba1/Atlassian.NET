@@ -17,10 +17,40 @@ public class IssueResolution : JiraNamedEntity, IEquatable<IssueResolution>
     {
     }
 
-    /// <inheritdoc/>
-    protected override IAsyncEnumerable<JiraNamedEntity> GetEntitiesAsync(Jira jira, CancellationToken token)
+    protected IAsyncEnumerable<JiraNamedEntity> GetEntitiesAsync(IJira jira, CancellationToken token)
     {
         return jira.Resolutions.GetResolutionsAsync(token);
+    }
+
+    /// <summary>
+    /// Determines whether the specified <see cref="IssueResolution"/> represents the same JIRA resolution.
+    /// </summary>
+    public bool Equals(IssueResolution other)
+    {
+        if (other is null)
+        {
+            return false;
+        }
+
+        if (ReferenceEquals(this, other))
+        {
+            return true;
+        }
+
+        return string.Equals(Id, other.Id, StringComparison.Ordinal)
+            && string.Equals(Name, other.Name, StringComparison.Ordinal);
+    }
+
+    /// <inheritdoc/>
+    public override bool Equals(object obj)
+    {
+        return Equals(obj as IssueResolution);
+    }
+
+    /// <inheritdoc/>
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(Id, Name);
     }
 
     /// <summary>

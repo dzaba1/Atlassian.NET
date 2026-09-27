@@ -37,8 +37,7 @@ public class IssueStatus : JiraNamedConstant, IEquatable<IssueStatus>
     {
     }
 
-    /// <inheritdoc/>
-    protected override IAsyncEnumerable<JiraNamedEntity> GetEntitiesAsync(Jira jira, CancellationToken token)
+    protected IAsyncEnumerable<JiraNamedEntity> GetEntitiesAsync(IJira jira, CancellationToken token)
     {
         return jira.Statuses.GetStatusesAsync(token);
     }
@@ -47,6 +46,37 @@ public class IssueStatus : JiraNamedConstant, IEquatable<IssueStatus>
     /// The category assigned to this issue status.
     /// </summary>
     public IssueStatusCategory StatusCategory { get; }
+
+    /// <summary>
+    /// Determines whether the specified <see cref="IssueStatus"/> represents the same JIRA status.
+    /// </summary>
+    public bool Equals(IssueStatus other)
+    {
+        if (other is null)
+        {
+            return false;
+        }
+
+        if (ReferenceEquals(this, other))
+        {
+            return true;
+        }
+
+        return string.Equals(Id, other.Id, StringComparison.Ordinal)
+            && string.Equals(Name, other.Name, StringComparison.Ordinal);
+    }
+
+    /// <inheritdoc/>
+    public override bool Equals(object obj)
+    {
+        return Equals(obj as IssueStatus);
+    }
+
+    /// <inheritdoc/>
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(Id, Name);
+    }
 
     /// <summary>
     /// Allows assignation by name

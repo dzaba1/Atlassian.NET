@@ -90,14 +90,23 @@ public class JiraUser : IEquatable<JiraUser>
     }
 
     /// <summary>
+    /// Determines whether the specified <see cref="JiraUser"/> represents the same JIRA user.
+    /// </summary>
+    /// <param name="other">The user to compare with the current instance.</param>
+    /// <returns><c>true</c> if the user has the same internal identifier; otherwise, <c>false</c>.</returns>
+    public bool Equals(JiraUser other)
+    {
+        return other != null && InternalIdentifier.Equals(other.InternalIdentifier);
+    }
+
+    /// <summary>
     /// Determines whether the specified object represents the same JIRA user.
     /// </summary>
     /// <param name="other">The object to compare with the current instance.</param>
     /// <returns><c>true</c> if the object is a <see cref="JiraUser"/> with the same internal identifier; otherwise, <c>false</c>.</returns>
     public override bool Equals(object other)
     {
-        var otherAsThisType = other as JiraUser;
-        return otherAsThisType != null && InternalIdentifier.Equals(otherAsThisType.InternalIdentifier);
+        return Equals(other as JiraUser);
     }
 
     /// <summary>
