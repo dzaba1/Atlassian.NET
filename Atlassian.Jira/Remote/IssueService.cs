@@ -1,5 +1,5 @@
 using Atlassian.Jira.Linq;
-using Atlassian.Jira.Swagger;
+using Atlassian.Jira.Model.V3;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
