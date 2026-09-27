@@ -1,4 +1,5 @@
-﻿using Atlassian.Jira.Remote;
+﻿using System;
+using Atlassian.Jira.Model.V3;
 
 namespace Atlassian.Jira;
 
@@ -12,18 +13,18 @@ public class JiraUser
     /// </summary>
     /// <param name="remoteUser">The remote user.</param>
     /// <param name="userPrivacyEnabled">if set to <c>true</c> enable user privacy mode (use 'accountId' insead of 'name' for serialization).</param>
-    public JiraUser(RemoteJiraUser remoteUser, bool userPrivacyEnabled = false)
+    public JiraUser(User remoteUser, bool userPrivacyEnabled = false)
     {
-        AccountId = remoteUser.accountId;
-        DisplayName = remoteUser.displayName;
-        Email = remoteUser.emailAddress;
-        IsActive = remoteUser.active;
-        Key = remoteUser.key;
-        Locale = remoteUser.locale;
-        Self = remoteUser.self;
-        Username = remoteUser.name;
-        AvatarUrls = remoteUser.avatarUrls;
-        InternalIdentifier = userPrivacyEnabled ? remoteUser.accountId : remoteUser.name;
+        AccountId = remoteUser.AccountId;
+        DisplayName = remoteUser.DisplayName;
+        Email = remoteUser.EmailAddress;
+        IsActive = remoteUser.Active;
+        Key = remoteUser.Key;
+        Locale = remoteUser.Locale;
+        Self = remoteUser.Self;
+        Username = remoteUser.Name;
+        AvatarUrls = new AvatarUrls(remoteUser.AvatarUrls);
+        InternalIdentifier = userPrivacyEnabled ? remoteUser.AccountId : remoteUser.Name;
     }
 
     /// <summary>
@@ -71,7 +72,7 @@ public class JiraUser
     /// <summary>
     /// Url to access this resource.
     /// </summary>
-    public string Self { get; internal set; }
+    public Uri Self { get; internal set; }
 
     /// <summary>
     /// The list of the Avatar URL's for this user

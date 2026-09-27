@@ -24,7 +24,7 @@ public class JiraUserJsonConverter : JsonConverter
     /// <inheritdoc/>
     public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
     {
-        var remoteUser = serializer.Deserialize<RemoteJiraUser>(reader);
+        var remoteUser = serializer.Deserialize<Model.V3.User>(reader);
         return new JiraUser(remoteUser, UserPrivacyEnabled);
     }
 
