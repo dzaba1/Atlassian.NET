@@ -25,10 +25,6 @@
     <File Path="LICENSE.md" />
     <File Path="README.md" />
   </Folder>
-  <Project Path="Atlassian.Jira.Test.Integration.Setup/Atlassian.Jira.Test.Integration.Setup.csproj" />
-  <Project Path="Atlassian.Jira.Test.Integration/Atlassian.Jira.Test.Integration.csproj">
-    <Build Solution="*|x86" Project="false" />
-  </Project>
   <Project Path="Atlassian.Jira.Test/Atlassian.Jira.Test.csproj">
     <Build Solution="*|x86" Project="false" />
   </Project>
