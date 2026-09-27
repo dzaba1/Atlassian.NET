@@ -1,3 +1,5 @@
+using Dzaba.AtlassianSdk.Jira.Services;
+
 namespace Dzaba.AtlassianSdk.Jira;
 
 public interface IJira

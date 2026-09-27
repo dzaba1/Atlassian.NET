@@ -1,0 +1,16 @@
+﻿using System.Collections.Generic;
+using System.Threading;
+
+namespace Dzaba.AtlassianSdk.Jira.Services;
+
+/// <summary>
+/// Represents the operations on the issue resolutions of jira.
+/// </summary>
+public interface IIssueResolutionService
+{
+    /// <summary>
+    /// Returns all the issue resolutions within JIRA.
+    /// </summary>
+    /// <param name="token">Cancellation token for this operation.</param>
+    IAsyncEnumerable<IssueResolution> GetResolutionsAsync(CancellationToken token = default);
+}
