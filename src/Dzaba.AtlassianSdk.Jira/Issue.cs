@@ -1092,7 +1092,7 @@ public class Issue : IRemoteIssueFieldProvider
     /// Gets the RemoteFields representing the fields that were updated
     /// </summary>
     /// <param name="token">Cancellation token for this operation.</param>
-    async Task<RemoteFieldValue[]> IRemoteIssueFieldProvider.GetRemoteFieldValuesAsync(CancellationToken token)
+    public async IAsyncEnumerable<RemoteFieldValue> GetRemoteFieldValuesAsync(CancellationToken token)
     {
         var fields = new List<RemoteFieldValue>();
 
