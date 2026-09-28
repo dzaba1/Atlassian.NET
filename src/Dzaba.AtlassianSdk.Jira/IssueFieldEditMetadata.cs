@@ -1,5 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
+using System.Text.Json.Nodes;
+using Dzaba.AtlassianSdk.Jira.Model.V3;
 
 namespace Dzaba.AtlassianSdk.Jira;
 
@@ -12,13 +15,15 @@ public class IssueFieldEditMetadata
     /// Creates a new instance of IssueFieldEditMetadata based on a remote Entity
     /// </summary>
     /// <param name="remoteEntity">The remote field entity</param>
-    public IssueFieldEditMetadata(RemoteIssueFieldMetadata remoteEntity)
+    public IssueFieldEditMetadata(FieldMetadata remoteEntity)
     {
         IsRequired = remoteEntity.Required;
         Schema = remoteEntity.Schema == null ? null : new IssueFieldEditMetadataSchema(remoteEntity.Schema);
-        Name = remoteEntity.name;
+        Name = remoteEntity.Name;
         AutoCompleteUrl = remoteEntity.AutoCompleteUrl;
-        AllowedValues = remoteEntity.AllowedValues;
+        AllowedValues = remoteEntity.AllowedValues == null
+            ? null
+            : (JsonArray)JsonSerializer.SerializeToNode(remoteEntity.AllowedValues);
         HasDefaultValue = remoteEntity.HasDefaultValue;
         Operations = remoteEntity.Operations;
     }
@@ -26,13 +31,7 @@ public class IssueFieldEditMetadata
     /// <summary>
     /// Whether this is a custom field.
     /// </summary>
-    public bool IsCustom
-    {
-        get
-        {
-            return Schema.Custom != null;
-        }
-    }
+    public bool IsCustom => Schema.Custom != null;
 
     /// <summary>
     /// Whether the field is required.
@@ -64,7 +63,7 @@ public class IssueFieldEditMetadata
     /// However there is multiple possible types it could be.
     /// You should decide what the type it is and convert to custom implemented type by yourself.
     /// </summary>
-    public JArray AllowedValues { get; private set; }
+    public JsonArray AllowedValues { get; private set; }
 
     /// <summary>
     /// Whether the field has a default value.
@@ -73,10 +72,10 @@ public class IssueFieldEditMetadata
 
     /// <summary>
     /// List of field's available allowed values as object of class T which is ought to be implemented by user of this method.
-    /// Conversion from serialized JObject to custom class T takes here place.
+    /// Conversion from serialized JsonObject to custom class T takes here place.
     /// </summary>
     public IEnumerable<T> AllowedValuesAs<T>()
     {
-        return AllowedValues.Values<JObject>().Select(x => x.ToObject<T>());
+        return AllowedValues.Select(x => x.Deserialize<T>());
     }
 }

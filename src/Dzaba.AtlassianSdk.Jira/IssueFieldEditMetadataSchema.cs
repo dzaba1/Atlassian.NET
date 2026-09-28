@@ -1,4 +1,6 @@
-﻿namespace Dzaba.AtlassianSdk.Jira;
+﻿using Dzaba.AtlassianSdk.Jira.Model.V3;
+
+namespace Dzaba.AtlassianSdk.Jira;
 
 /// <summary>
 /// Represents the schema of an issue field.
@@ -9,16 +11,13 @@ public class IssueFieldEditMetadataSchema
     /// Creates a new instance of IssueFieldSchema based on a remote Entity
     /// </summary>
     /// <param name="remoteEntity">The remote field schema entity</param>
-    public IssueFieldEditMetadataSchema(FieldSchema remoteEntity)
+    public IssueFieldEditMetadataSchema(JsonTypeBean remoteEntity)
     {
         Type = remoteEntity.Type;
         Items = remoteEntity.Items;
         System = remoteEntity.System;
         Custom = remoteEntity.Custom;
-        if (int.TryParse(remoteEntity.CustomId, out int value))
-        {
-            CustomId = value;
-        }
+        CustomId = remoteEntity.CustomId;
     }
 
     /// <summary>
@@ -45,5 +44,5 @@ public class IssueFieldEditMetadataSchema
     /// <summary>
     /// Id of the custom field.
     /// </summary>
-    public int CustomId { get; private set; }
+    public long CustomId { get; private set; }
 }
