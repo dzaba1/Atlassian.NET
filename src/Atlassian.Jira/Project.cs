@@ -12,7 +12,7 @@ namespace Atlassian.Jira;
 /// </summary>
 public class Project : JiraNamedEntity
 {
-    private readonly Jira _jira;
+    private readonly IJira _jira;
     private readonly RemoteProject _remoteProject;
 
     /// <summary>
@@ -20,7 +20,7 @@ public class Project : JiraNamedEntity
     /// </summary>
     /// <param name="jira">Instance of the Jira client.</param>
     /// <param name="remoteProject">Remote project.</param>
-    public Project(Jira jira, RemoteProject remoteProject)
+    public Project(IJira jira, RemoteProject remoteProject)
         : base(remoteProject)
     {
         _jira = jira;

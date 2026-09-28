@@ -10,9 +10,9 @@ namespace Atlassian.Jira.Remote;
 
 internal class IssueFilterService : IIssueFilterService
 {
-    private readonly Jira _jira;
+    private readonly IJira _jira;
 
-    public IssueFilterService(Jira jira)
+    public IssueFilterService(IJira jira)
     {
         _jira = jira;
     }

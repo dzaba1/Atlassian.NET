@@ -34,7 +34,7 @@ public class IssuePriority : JiraNamedConstant
     }
 
     /// <inheritdoc/>
-    protected override IAsyncEnumerable<JiraNamedEntity> GetEntitiesAsync(Jira jira, CancellationToken token)
+    protected override IAsyncEnumerable<JiraNamedEntity> GetEntitiesAsync(IJira jira, CancellationToken token)
     {
         return jira.Priorities.GetPrioritiesAsync(token);
     }

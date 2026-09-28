@@ -8,9 +8,9 @@ namespace Atlassian.Jira.Remote;
 
 internal class IssueResolutionService : IIssueResolutionService
 {
-    private readonly Jira _jira;
+    private readonly IJira _jira;
 
-    public IssueResolutionService(Jira jira)
+    public IssueResolutionService(IJira jira)
     {
         _jira = jira;
     }

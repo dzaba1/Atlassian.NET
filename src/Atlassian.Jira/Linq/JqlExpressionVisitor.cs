@@ -244,7 +244,7 @@ public class JqlExpressionVisitor : ExpressionVisitor, IJqlExpressionVisitor
         }
         else if (valueType == typeof(DateTime))
         {
-            _jqlWhere.Append(string.Format("\"{0}\"", Jira.FormatDateTimeString((DateTime)value)));
+            _jqlWhere.Append(string.Format("\"{0}\"", FormatUtils.FormatDateTimeString((DateTime)value)));
         }
         else
         {

@@ -11,9 +11,9 @@ namespace Atlassian.Jira.Remote;
 
 internal class JiraUserService : IJiraUserService
 {
-    private readonly Jira _jira;
+    private readonly IJira _jira;
 
-    public JiraUserService(Jira jira)
+    public JiraUserService(IJira jira)
     {
         _jira = jira;
     }

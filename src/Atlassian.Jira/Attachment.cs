@@ -8,14 +8,14 @@ namespace Atlassian.Jira;
 /// </summary>
 public class Attachment
 {
-    private readonly Jira _jira;
+    private readonly IJira _jira;
 
     /// <summary>
     /// Creates a new instance of an Attachment from a remote entity.
     /// </summary>
     /// <param name="jira">Object used to interact with JIRA.</param>
     /// <param name="remoteAttachment">Remote attachment entity.</param>
-    public Attachment(Jira jira, RemoteAttachment remoteAttachment)
+    public Attachment(IJira jira, RemoteAttachment remoteAttachment)
     {
         _jira = jira;
 

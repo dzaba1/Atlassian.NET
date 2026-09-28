@@ -6,9 +6,9 @@ namespace Atlassian.Jira.Remote;
 
 internal class ServerInfoService : IServerInfoService
 {
-    private readonly Jira _jira;
+    private readonly IJira _jira;
 
-    public ServerInfoService(Jira jira)
+    public ServerInfoService(IJira jira)
     {
         _jira = jira;
     }

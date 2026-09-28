@@ -10,7 +10,7 @@ namespace Atlassian.Jira;
 /// </summary>
 public class ProjectVersion : JiraNamedEntity
 {
-    private readonly Jira _jira;
+    private readonly IJira _jira;
     private RemoteVersion _remoteVersion;
 
     /// <summary>
@@ -18,7 +18,7 @@ public class ProjectVersion : JiraNamedEntity
     /// </summary>
     /// <param name="jira">The jira instance.</param>
     /// <param name="remoteVersion">The remote version.</param>
-    public ProjectVersion(Jira jira, RemoteVersion remoteVersion)
+    public ProjectVersion(IJira jira, RemoteVersion remoteVersion)
         : base(remoteVersion)
     {
         if (jira == null)

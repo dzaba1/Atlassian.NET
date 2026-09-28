@@ -8,9 +8,9 @@ namespace Atlassian.Jira.Remote;
 
 internal class ScreenService : IScreenService
 {
-    private readonly Jira _jira;
+    private readonly IJira _jira;
 
-    public ScreenService(Jira jira)
+    public ScreenService(IJira jira)
     {
         _jira = jira;
     }

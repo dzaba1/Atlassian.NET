@@ -8,9 +8,9 @@ namespace Atlassian.Jira.Remote;
 
 internal class IssuePriorityService : IIssuePriorityService
 {
-    private readonly Jira _jira;
+    private readonly IJira _jira;
 
-    public IssuePriorityService(Jira jira)
+    public IssuePriorityService(IJira jira)
     {
         _jira = jira;
     }

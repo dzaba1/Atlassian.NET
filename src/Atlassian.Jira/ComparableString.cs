@@ -128,7 +128,7 @@ public class ComparableString
         }
         else
         {
-            return field.Value == Jira.FormatDateTimeString(value);
+            return field.Value == FormatUtils.FormatDateTimeString(value);
         }
     }
 
@@ -145,7 +145,7 @@ public class ComparableString
         }
         else
         {
-            return field.Value != Jira.FormatDateTimeString(value);
+            return field.Value != FormatUtils.FormatDateTimeString(value);
         }
     }
 
@@ -156,7 +156,7 @@ public class ComparableString
     /// <param name="value">The date to compare against.</param>
     public static bool operator >(ComparableString field, DateTime value)
     {
-        return field.Value.CompareTo(Jira.FormatDateTimeString(value)) > 0;
+        return field.Value.CompareTo(FormatUtils.FormatDateTimeString(value)) > 0;
     }
 
     /// <summary>
@@ -166,7 +166,7 @@ public class ComparableString
     /// <param name="value">The date to compare against.</param>
     public static bool operator <(ComparableString field, DateTime value)
     {
-        return field.Value.CompareTo(Jira.FormatDateTimeString(value)) < 0;
+        return field.Value.CompareTo(FormatUtils.FormatDateTimeString(value)) < 0;
     }
 
     /// <summary>
@@ -176,7 +176,7 @@ public class ComparableString
     /// <param name="value">The date to compare against.</param>
     public static bool operator <=(ComparableString field, DateTime value)
     {
-        return field.Value.CompareTo(Jira.FormatDateTimeString(value)) <= 0;
+        return field.Value.CompareTo(FormatUtils.FormatDateTimeString(value)) <= 0;
     }
 
     /// <summary>
@@ -186,7 +186,7 @@ public class ComparableString
     /// <param name="value">The date to compare against.</param>
     public static bool operator >=(ComparableString field, DateTime value)
     {
-        return field.Value.CompareTo(Jira.FormatDateTimeString(value)) >= 0;
+        return field.Value.CompareTo(FormatUtils.FormatDateTimeString(value)) >= 0;
     }
 
     /// <summary>

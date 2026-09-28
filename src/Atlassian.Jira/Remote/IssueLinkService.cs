@@ -12,9 +12,9 @@ namespace Atlassian.Jira.Remote;
 
 internal class IssueLinkService : IIssueLinkService
 {
-    private readonly Jira _jira;
+    private readonly IJira _jira;
 
-    public IssueLinkService(Jira jira)
+    public IssueLinkService(IJira jira)
     {
         _jira = jira;
     }

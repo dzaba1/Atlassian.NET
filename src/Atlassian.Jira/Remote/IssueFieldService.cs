@@ -11,9 +11,9 @@ namespace Atlassian.Jira.Remote;
 
 internal class IssueFieldService : IIssueFieldService
 {
-    private readonly Jira _jira;
+    private readonly IJira _jira;
 
-    public IssueFieldService(Jira jira)
+    public IssueFieldService(IJira jira)
     {
         _jira = jira;
     }

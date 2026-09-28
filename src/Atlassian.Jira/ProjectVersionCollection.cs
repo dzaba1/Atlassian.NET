@@ -10,12 +10,12 @@ namespace Atlassian.Jira;
 /// </summary>
 public class ProjectVersionCollection : JiraNamedEntityCollection<ProjectVersion>
 {
-    internal ProjectVersionCollection(string fieldName, Jira jira, string projectKey)
+    internal ProjectVersionCollection(string fieldName, IJira jira, string projectKey)
         : this(fieldName, jira, projectKey, new List<ProjectVersion>())
     {
     }
 
-    internal ProjectVersionCollection(string fieldName, Jira jira, string projectKey, IList<ProjectVersion> list)
+    internal ProjectVersionCollection(string fieldName, IJira jira, string projectKey, IList<ProjectVersion> list)
         : base(fieldName, jira, projectKey, list)
     {
     }

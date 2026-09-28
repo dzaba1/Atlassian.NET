@@ -12,9 +12,9 @@ namespace Atlassian.Jira.Remote;
 
 internal class ProjectVersionService : IProjectVersionService
 {
-    private readonly Jira _jira;
+    private readonly IJira _jira;
 
-    public ProjectVersionService(Jira jira)
+    public ProjectVersionService(IJira jira)
     {
         _jira = jira;
     }

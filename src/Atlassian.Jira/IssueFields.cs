@@ -18,7 +18,7 @@ public class IssueFields : IReadOnlyDictionary<string, JToken>
     /// </summary>
     /// <param name="remoteIssue">The remote issue that contains the fields.</param>
     /// <param name="jira">The Jira instance that owns the issue.</param>
-    public IssueFields(RemoteIssue remoteIssue, Jira jira)
+    public IssueFields(RemoteIssue remoteIssue, IJira jira)
     {
         _map = remoteIssue.fieldsReadOnly ?? new Dictionary<string, JToken>();
 

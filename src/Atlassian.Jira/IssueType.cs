@@ -59,7 +59,7 @@ public class IssueType : JiraNamedConstant
     internal string ProjectKey { get; set; }
 
     /// <inheritdoc/>
-    protected override async IAsyncEnumerable<JiraNamedEntity> GetEntitiesAsync(Jira jira, [EnumeratorCancellation] CancellationToken token)
+    protected override async IAsyncEnumerable<JiraNamedEntity> GetEntitiesAsync(IJira jira, [EnumeratorCancellation] CancellationToken token)
     {
         var results = await jira.IssueTypes.GetIssueTypesAsync(token)
             .ToArrayAsync()

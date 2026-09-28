@@ -24,7 +24,7 @@ public class JiraNamedEntityCollection<T> : Collection<T>, IRemoteIssueFieldProv
     /// <summary>
     /// The JIRA instance that owns the collection.
     /// </summary>
-    protected readonly Jira _jira;
+    protected readonly IJira _jira;
 
     /// <summary>
     /// The key of the project the collection belongs to.
@@ -38,7 +38,7 @@ public class JiraNamedEntityCollection<T> : Collection<T>, IRemoteIssueFieldProv
 
     private readonly List<T> _originalList;
 
-    internal JiraNamedEntityCollection(string fieldName, Jira jira, string projectKey, IList<T> list)
+    internal JiraNamedEntityCollection(string fieldName, IJira jira, string projectKey, IList<T> list)
         : base(list)
     {
         _fieldName = fieldName;

@@ -51,7 +51,7 @@ public class JiraNamedEntity : IJiraEntity
     /// </summary>
     /// <param name="jira">The JIRA instance to query.</param>
     /// <param name="token">A token to cancel the operation.</param>
-    protected virtual IAsyncEnumerable<JiraNamedEntity> GetEntitiesAsync(Jira jira, CancellationToken token)
+    protected virtual IAsyncEnumerable<JiraNamedEntity> GetEntitiesAsync(IJira jira, CancellationToken token)
     {
         throw new NotImplementedException();
     }
@@ -71,7 +71,7 @@ public class JiraNamedEntity : IJiraEntity
         }
     }
 
-    internal async Task<JiraNamedEntity> LoadIdAndNameAsync(Jira jira, CancellationToken token)
+    internal async Task<JiraNamedEntity> LoadIdAndNameAsync(IJira jira, CancellationToken token)
     {
         if (string.IsNullOrEmpty(Id) || string.IsNullOrEmpty(Name))
         {

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Globalization;
 using Atlassian.Jira.Linq;
 using Atlassian.Jira.OAuth;
 using Atlassian.Jira.Remote;
@@ -9,12 +8,8 @@ namespace Atlassian.Jira;
 /// <summary>
 /// Represents a JIRA server
 /// </summary>
-public class Jira
+public class Jira : IJira
 {
-    internal const string DEFAULT_DATE_FORMAT = "yyyy/MM/dd";
-    internal const string DEFAULT_DATE_TIME_FORMAT = DEFAULT_DATE_FORMAT + " HH:mm";
-    internal static CultureInfo DefaultCultureInfo = CultureInfo.GetCultureInfo("en-us");
-
     private readonly JiraCache _cache;
     private readonly ServiceLocator _services;
 
@@ -276,6 +271,8 @@ public class Jira
         }
     }
 
+    public IJqlExpressionVisitor JqlExpressionVisitor => Services.Get<IJqlExpressionVisitor>();
+
     /// <summary>
     /// Gets the cache for frequently retrieved server items from JIRA.
     /// </summary>
@@ -322,7 +319,7 @@ public class Jira
         get { return RestClient.Url; }
     }
 
-    internal IFileSystem FileSystem
+    public IFileSystem FileSystem
     {
         get
         {
@@ -344,16 +341,6 @@ public class Jira
     public Issue CreateIssue(CreateIssueFields fields)
     {
         return new Issue(this, fields);
-    }
-
-    internal static string FormatDateTimeString(DateTime value)
-    {
-        /* Using "en-us" culture to conform to formats of JIRA.
-         * See https://bitbucket.org/farmas/atlassian.net-sdk/issue/31
-         */
-        return value.ToString(
-            value.TimeOfDay == TimeSpan.Zero ? DEFAULT_DATE_FORMAT : DEFAULT_DATE_TIME_FORMAT,
-            DefaultCultureInfo);
     }
 
     private static void ConfigureDefaultServices(ServiceLocator services, Jira jira, IJiraRestClient restClient)

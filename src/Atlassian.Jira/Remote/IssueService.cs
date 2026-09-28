@@ -20,13 +20,13 @@ internal class IssueService : IIssueService
     private const int DEFAULT_MAX_ISSUES_PER_REQUEST = 20;
     private const string ALL_FIELDS_QUERY_STRING = "*all";
 
-    private readonly Jira _jira;
+    private readonly IJira _jira;
     private readonly JiraRestClientSettings _restSettings;
     private readonly string[] _excludedFields = new string[] { "comment", "attachment", "issuelinks", "subtasks", "watches", "worklog" };
 
     private JsonSerializerSettings _serializerSettings;
 
-    public IssueService(Jira jira, JiraRestClientSettings restSettings)
+    public IssueService(IJira jira, JiraRestClientSettings restSettings)
     {
         _jira = jira;
         _restSettings = restSettings;
@@ -36,7 +36,7 @@ internal class IssueService : IIssueService
     {
         get
         {
-            var translator = _jira.Services.Get<IJqlExpressionVisitor>();
+            var translator = _jira.JqlExpressionVisitor;
             var provider = new JiraQueryProvider(translator, this);
             return new JiraQueryable<Issue>(provider);
         }
@@ -48,7 +48,7 @@ internal class IssueService : IIssueService
     {
         if (_serializerSettings == null)
         {
-            var fieldService = _jira.Services.Get<IIssueFieldService>();
+            var fieldService = _jira.Fields;
             var remoteFields = await fieldService.GetCustomFieldsAsync(token)
                 .Select(f => f.RemoteField)
                 .ToArrayAsync()
