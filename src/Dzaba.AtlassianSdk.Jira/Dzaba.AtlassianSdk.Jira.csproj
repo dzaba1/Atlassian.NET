@@ -48,6 +48,6 @@
   <Target Name="GenerateJiraModelV3"
           BeforeTargets="DispatchToInnerBuilds;CoreCompile"
           Condition="'$(RegenerateJiraModelV3)' == 'true'">
-    <Exec Command="$(NSwagExe_Net100) openapi2csclient /input:$(JiraV3SwaggerFile) /output:$(JiraV3ModelOutputFile) /namespace:Atlassian.Jira.Model.V3 /TypeAccessModifier:public /GenerateClientClasses:true /GenerateClientInterfaces:true /JsonLibrary:SystemTextJson /GenerateDefaultValues:false" />
+    <Exec Command="$(NSwagExe_Net100) openapi2csclient /input:$(JiraV3SwaggerFile) /output:$(JiraV3ModelOutputFile) /namespace:Dzaba.AtlassianSdk.Jira.Model.V3 /TypeAccessModifier:public /GenerateClientClasses:true /GenerateClientInterfaces:true /JsonLibrary:SystemTextJson /GenerateDefaultValues:false" />
   </Target>
 </Project>
