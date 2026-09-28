@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using Atlassian.Jira.Remote;
 
 namespace Atlassian.Jira;
@@ -73,32 +74,15 @@ public class Attachment
     /// </summary>
     public byte[] DownloadData()
     {
-        var url = GetRequestUrl();
-
-        return _jira.RestClient.DownloadData(url);
+        return _jira.Attachments.DownloadData(this);
     }
 
     /// <summary>
     /// Downloads attachment to specified file
     /// </summary>
     /// <param name="fullFileName">Full file name where attachment will be downloaded</param>
-    public void Download(string fullFileName)
+    public void Download(FileInfo fullFileName)
     {
-        var url = GetRequestUrl();
-
-        _jira.RestClient.Download(url, fullFileName);
-    }
-
-    private string GetRequestUrl()
-    {
-        if (string.IsNullOrEmpty(_jira.Url))
-        {
-            throw new InvalidOperationException("Unable to download attachment, JIRA url has not been set.");
-        }
-
-        return string.Format("{0}secure/attachment/{1}/{2}",
-            _jira.Url.EndsWith("/") ? _jira.Url : _jira.Url + "/",
-            Id,
-            FileName);
+        _jira.Attachments.Download(this, fullFileName);
     }
 }

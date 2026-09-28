@@ -334,18 +334,11 @@ public class Jira : IJira
     /// <summary>
     /// Url to the JIRA server
     /// </summary>
-    public string Url
-    {
-        get { return RestClient.Url; }
-    }
+    public string Url => RestClient.Url;
 
-    public IFileSystem FileSystem
-    {
-        get
-        {
-            return Services.Get<IFileSystem>();
-        }
-    }
+    public IFileSystem FileSystem => Services.Get<IFileSystem>();
+
+    public IAttachmentService Attachments => Services.Get<IAttachmentService>();
 
     /// <summary>
     /// Returns a new issue that when saved will be created on the remote JIRA server.
@@ -383,6 +376,7 @@ public class Jira : IJira
         services.Register<IServerInfoService>(() => new ServerInfoService(jira));
         services.Register<IJqlExpressionVisitor>(() => new JqlExpressionVisitor());
         services.Register<IFileSystem>(() => new FileSystem());
+        services.Register<IAttachmentService>(() => new AttachmentService(jira));
         services.Register(() => restClient);
         services.Register(() => clientV3);
     }

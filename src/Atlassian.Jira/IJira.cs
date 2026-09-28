@@ -86,6 +86,8 @@ public interface IJira
     /// </summary>
     IServerInfoService ServerInfo { get; }
 
+    IAttachmentService Attachments { get; }
+
     IJqlExpressionVisitor JqlExpressionVisitor { get; }
 
     /// <summary>
