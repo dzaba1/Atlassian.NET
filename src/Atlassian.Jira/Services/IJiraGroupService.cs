@@ -1,7 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 
-namespace Atlassian.Jira;
+namespace Atlassian.Jira.Services;
 
 /// <summary>
 /// Represents the operations on the user groups of jira.

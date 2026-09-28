@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using Atlassian.Jira.Remote;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RestSharp;
 
-namespace Atlassian.Jira.Remote;
+namespace Atlassian.Jira.Services;
 
-internal class IssueFieldService : IIssueFieldService
+internal sealed class IssueFieldService : IIssueFieldService
 {
     private readonly IJira _jira;
 

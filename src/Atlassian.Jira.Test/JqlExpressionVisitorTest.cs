@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using Atlassian.Jira.Linq;
 using Atlassian.Jira.Remote;
+using Atlassian.Jira.Services;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;

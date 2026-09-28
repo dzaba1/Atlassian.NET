@@ -8,9 +8,9 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RestSharp;
 
-namespace Atlassian.Jira.Remote;
+namespace Atlassian.Jira.Services;
 
-internal class IssueLinkService : IIssueLinkService
+internal sealed class IssueLinkService : IIssueLinkService
 {
     private readonly IJira _jira;
 

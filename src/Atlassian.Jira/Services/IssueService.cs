@@ -1,5 +1,6 @@
 using Atlassian.Jira.Linq;
 using Atlassian.Jira.Model.V3;
+using Atlassian.Jira.Remote;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -13,9 +14,9 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Atlassian.Jira.Remote;
+namespace Atlassian.Jira.Services;
 
-internal class IssueService : IIssueService
+internal sealed class IssueService : IIssueService
 {
     private const int DEFAULT_MAX_ISSUES_PER_REQUEST = 20;
     private const string ALL_FIELDS_QUERY_STRING = "*all";

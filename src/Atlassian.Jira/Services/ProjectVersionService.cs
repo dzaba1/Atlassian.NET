@@ -4,13 +4,14 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
+using Atlassian.Jira.Remote;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RestSharp;
 
-namespace Atlassian.Jira.Remote;
+namespace Atlassian.Jira.Services;
 
-internal class ProjectVersionService : IProjectVersionService
+internal sealed class ProjectVersionService : IProjectVersionService
 {
     private readonly IJira _jira;
 

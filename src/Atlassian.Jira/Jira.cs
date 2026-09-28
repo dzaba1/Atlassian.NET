@@ -2,6 +2,7 @@
 using Atlassian.Jira.Linq;
 using Atlassian.Jira.OAuth;
 using Atlassian.Jira.Remote;
+using Atlassian.Jira.Services;
 
 namespace Atlassian.Jira;
 

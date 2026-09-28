@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Atlassian.Jira.Remote;
+using Atlassian.Jira.Services;
 using Moq;
 using Moq.Language.Flow;
 

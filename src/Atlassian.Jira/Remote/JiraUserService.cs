@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using RestSharp;
+using Atlassian.Jira.Services;
 
 namespace Atlassian.Jira.Remote;
 

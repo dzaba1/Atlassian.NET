@@ -1,10 +1,11 @@
-﻿using RestSharp;
+﻿using Atlassian.Jira.Remote;
+using RestSharp;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Atlassian.Jira.Remote;
+namespace Atlassian.Jira.Services;
 
-internal class ServerInfoService : IServerInfoService
+internal sealed class ServerInfoService : IServerInfoService
 {
     private readonly IJira _jira;
 

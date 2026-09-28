@@ -3,6 +3,7 @@ using System.Linq.Expressions;
 using System.Threading;
 using Atlassian.Jira.Linq;
 using Atlassian.Jira.Remote;
+using Atlassian.Jira.Services;
 using Moq;
 
 namespace Atlassian.Jira.Test;

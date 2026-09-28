@@ -6,9 +6,9 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RestSharp;
 
-namespace Atlassian.Jira.Remote;
+namespace Atlassian.Jira.Services;
 
-internal class JiraGroupService : IJiraGroupService
+internal sealed class JiraGroupService : IJiraGroupService
 {
     private readonly IJira _jira;
 

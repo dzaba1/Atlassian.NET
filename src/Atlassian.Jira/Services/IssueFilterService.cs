@@ -6,9 +6,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using RestSharp;
 
-namespace Atlassian.Jira.Remote;
+namespace Atlassian.Jira.Services;
 
-internal class IssueFilterService : IIssueFilterService
+internal sealed class IssueFilterService : IIssueFilterService
 {
     private readonly IJira _jira;
 

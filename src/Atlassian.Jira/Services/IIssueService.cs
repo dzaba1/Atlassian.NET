@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Atlassian.Jira.Linq;
 using Newtonsoft.Json.Linq;
 
-namespace Atlassian.Jira;
+namespace Atlassian.Jira.Services;
 
 /// <summary>
 /// Represents the operations on the issues of jira.

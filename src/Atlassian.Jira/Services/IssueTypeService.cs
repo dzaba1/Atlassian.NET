@@ -1,12 +1,13 @@
-﻿using RestSharp;
+﻿using Atlassian.Jira.Remote;
+using RestSharp;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 
-namespace Atlassian.Jira.Remote;
+namespace Atlassian.Jira.Services;
 
-internal class IssueTypeService : IIssueTypeService
+internal sealed class IssueTypeService : IIssueTypeService
 {
     private readonly IJira _jira;
 

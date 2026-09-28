@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 
-namespace Atlassian.Jira;
+namespace Atlassian.Jira.Services;
 
 /// <summary>
 /// Represents the operations on the issue link types of jira.

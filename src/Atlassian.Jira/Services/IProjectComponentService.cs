@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Atlassian.Jira;
+namespace Atlassian.Jira.Services;
 
 /// <summary>
 /// Represents the operations for the project components.
