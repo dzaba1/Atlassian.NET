@@ -18,28 +18,43 @@ public partial class Client : IClient
     /// </summary>
     /// <param name="baseUrl">Url to the JIRA server.</param>
     /// <param name="settings">Settings used to configure the client, e.g. request/response logging.</param>
-    public Client(string baseUrl, JiraRestClientSettings settings = null)
-        : this(CreateHttpClient(settings))
+    /// <param name="authenticator">Authenticator used to authenticate every outgoing request, if any.</param>
+    public Client(string baseUrl, JiraRestClientSettings settings = null, IHttpRequestAuthenticator authenticator = null)
+        : this(CreateHttpClient(settings, authenticator))
     {
         BaseUrl = baseUrl;
     }
 
-    private static HttpClient CreateHttpClient(JiraRestClientSettings settings)
+    private static HttpClient CreateHttpClient(JiraRestClientSettings settings, IHttpRequestAuthenticator authenticator)
     {
         var logger = settings?.GetLogger<Client>();
-        if (logger == null)
+
+        // Wraps the shared handler rather than the shared HttpClient, so logging/authentication are
+        // per-instance while the underlying connection pool is still reused.
+        HttpMessageHandler handler = _sharedHandler;
+
+        if (logger != null)
+        {
+            handler = new HttpLoggingHandler(logger)
+            {
+                InnerHandler = handler
+            };
+        }
+
+        if (authenticator != null)
+        {
+            handler = new AuthenticatingHttpMessageHandler(authenticator)
+            {
+                InnerHandler = handler
+            };
+        }
+
+        if (ReferenceEquals(handler, _sharedHandler))
         {
             return _sharedHttpClient;
         }
 
-        // Wraps the shared handler rather than the shared HttpClient, so logging is
-        // per-instance while the underlying connection pool is still reused.
-        var loggingHandler = new HttpLoggingHandler(logger)
-        {
-            InnerHandler = _sharedHandler
-        };
-
-        return new HttpClient(loggingHandler, disposeHandler: false);
+        return new HttpClient(handler, disposeHandler: false);
     }
 
     static partial void UpdateJsonSerializerSettings(JsonSerializerOptions settings)

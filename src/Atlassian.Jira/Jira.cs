@@ -1,5 +1,7 @@
 ﻿using System;
+using Atlassian.Jira.Http;
 using Atlassian.Jira.Linq;
+using Atlassian.Jira.Model.V3;
 using Atlassian.Jira.OAuth;
 using Atlassian.Jira.Remote;
 using Atlassian.Jira.Services;
@@ -36,7 +38,11 @@ public class Jira : IJira
         settings = settings ?? new JiraRestClientSettings();
         var restClient = new JiraRestClient(url, username, password, settings);
 
-        return CreateRestClient(restClient, settings.Cache);
+        var authenticator = !string.IsNullOrEmpty(username)
+            ? new BasicHttpRequestAuthenticator(username, password)
+            : null;
+
+        return CreateRestClient(restClient, settings.Cache, authenticator);
     }
 
     /// <summary>
@@ -69,7 +75,14 @@ public class Jira : IJira
             oAuthSignatureMethod,
             settings);
 
-        return CreateRestClient(restClient, settings.Cache);
+        var authenticator = new OAuth1HttpRequestAuthenticator(
+            consumerKey,
+            consumerSecret,
+            oAuthAccessToken,
+            oAuthTokenSecret,
+            oAuthSignatureMethod);
+
+        return CreateRestClient(restClient, settings.Cache, authenticator);
     }
 
     /// <summary>
@@ -79,9 +92,15 @@ public class Jira : IJira
     /// <param name="cache">Cache to use.</param>
     public static Jira CreateRestClient(IJiraRestClient restClient, JiraCache cache = null)
     {
+        return CreateRestClient(restClient, cache, authenticator: null);
+    }
+
+    private static Jira CreateRestClient(IJiraRestClient restClient, JiraCache cache, IHttpRequestAuthenticator authenticator)
+    {
         var services = new ServiceLocator();
         var jira = new Jira(services, cache);
-        ConfigureDefaultServices(services, jira, restClient);
+        var clientV3 = new Client(restClient.Url, restClient.Settings, authenticator);
+        ConfigureDefaultServices(services, jira, restClient, clientV3);
         return jira;
     }
 
@@ -344,7 +363,7 @@ public class Jira : IJira
         return new Issue(this, fields);
     }
 
-    private static void ConfigureDefaultServices(ServiceLocator services, Jira jira, IJiraRestClient restClient)
+    private static void ConfigureDefaultServices(ServiceLocator services, Jira jira, IJiraRestClient restClient, IClient clientV3)
     {
         services.Register<IProjectVersionService>(() => new ProjectVersionService(jira));
         services.Register<IProjectComponentService>(() => new ProjectComponentService(jira));
@@ -365,5 +384,6 @@ public class Jira : IJira
         services.Register<IJqlExpressionVisitor>(() => new JqlExpressionVisitor());
         services.Register<IFileSystem>(() => new FileSystem());
         services.Register(() => restClient);
+        services.Register(() => clientV3);
     }
 }
