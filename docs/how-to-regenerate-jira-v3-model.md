@@ -1,10 +1,10 @@
 # How to regenerate the Jira V3 model classes
 
-`Atlassian.Jira/Model/V3/JiraModelV3.g.cs` contains the `Atlassian.Jira.Model.V3` DTO classes generated from `Atlassian.Jira/Model/V3/swagger.json` (Jira's V3 REST API OpenAPI document) using [NSwag](https://github.com/RicoSuter/NSwag). The classes are `public`, serialized with `System.Text.Json`, and the generated file is committed to git like normal source.
+`Atlassian.Jira/Model/V3/JiraModelV3.g.cs` contains the `Atlassian.Jira.Model.V3` DTO classes, client classes, and client interfaces generated from `contracts/swagger_v3.json` (Jira's V3 REST API OpenAPI document) using [NSwag](https://github.com/RicoSuter/NSwag). The classes are `public`, serialized with `System.Text.Json`, and the generated file is committed to git like normal source.
 
 ## Regenerating
 
-Generation does **not** run on a normal `dotnet build` — it's opt-in, because regenerating overwrites the manual fixes described below. To regenerate after updating `swagger.json`, pass the `RegenerateJiraModelV3` MSBuild property:
+Generation does **not** run on a normal `dotnet build` — it's opt-in, because regenerating overwrites the manual fixes described below. To regenerate after updating `swagger_v3.json`, pass the `RegenerateJiraModelV3` MSBuild property:
 
 ```
 dotnet build Atlassian.Jira/Atlassian.Jira.csproj -p:RegenerateJiraModelV3=true

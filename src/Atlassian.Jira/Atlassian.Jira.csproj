@@ -15,7 +15,7 @@
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIcon>AtlassianIcon.png</PackageIcon>
-    <JiraV3SwaggerFile>$(MSBuildProjectDirectory)\Model\V3\swagger.json</JiraV3SwaggerFile>
+    <JiraV3SwaggerFile>$(MSBuildProjectDirectory)\..\contracts\swagger_v3.json</JiraV3SwaggerFile>
     <JiraV3ModelOutputFile>$(MSBuildProjectDirectory)\Model\V3\JiraModelV3.g.cs</JiraV3ModelOutputFile>
   </PropertyGroup>
 
@@ -50,6 +50,6 @@
   <Target Name="GenerateJiraModelV3"
           BeforeTargets="DispatchToInnerBuilds;CoreCompile"
           Condition="'$(RegenerateJiraModelV3)' == 'true'">
-    <Exec Command="$(NSwagExe_Net100) openapi2csclient /input:$(JiraV3SwaggerFile) /output:$(JiraV3ModelOutputFile) /namespace:Atlassian.Jira.Model.V3 /TypeAccessModifier:public /GenerateClientClasses:false /GenerateClientInterfaces:false /JsonLibrary:SystemTextJson /GenerateDefaultValues:false" />
+    <Exec Command="$(NSwagExe_Net100) openapi2csclient /input:$(JiraV3SwaggerFile) /output:$(JiraV3ModelOutputFile) /namespace:Atlassian.Jira.Model.V3 /TypeAccessModifier:public /GenerateClientClasses:true /GenerateClientInterfaces:true /JsonLibrary:SystemTextJson /GenerateDefaultValues:false" />
   </Target>
 </Project>
