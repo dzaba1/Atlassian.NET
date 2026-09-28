@@ -36,8 +36,6 @@
   
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
-    <PackageReference Include="Newtonsoft.Json" />
-    <PackageReference Include="RestSharp" />
     <PackageReference Include="System.Linq.Async" Condition="'$(TargetFramework)' != 'net10.0'" />
     <PackageReference Include="NSwag.MSBuild" PrivateAssets="All" />
     <PackageReference Include="System.ComponentModel.Annotations" Condition="'$(TargetFramework)' == 'netstandard2.0'" />
@@ -50,6 +48,6 @@
   <Target Name="GenerateJiraModelV3"
           BeforeTargets="DispatchToInnerBuilds;CoreCompile"
           Condition="'$(RegenerateJiraModelV3)' == 'true'">
-    <Exec Command="$(NSwagExe_Net100) openapi2csclient /input:$(JiraV3SwaggerFile) /output:$(JiraV3ModelOutputFile) /namespace:Atlassian.Jira.Model.V3 /TypeAccessModifier:public /GenerateClientClasses:false /GenerateClientInterfaces:false /JsonLibrary:SystemTextJson /GenerateDefaultValues:false" />
+    <Exec Command="$(NSwagExe_Net100) openapi2csclient /input:$(JiraV3SwaggerFile) /output:$(JiraV3ModelOutputFile) /namespace:Atlassian.Jira.Model.V3 /TypeAccessModifier:public /GenerateClientClasses:true /GenerateClientInterfaces:true /JsonLibrary:SystemTextJson /GenerateDefaultValues:false" />
   </Target>
 </Project>
