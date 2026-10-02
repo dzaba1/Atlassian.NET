@@ -51,7 +51,10 @@ internal sealed class IssueTypeService : IIssueTypeService
             _logger.LogInformation("Getting all issue types");
 
             var issueTypes = await _clientV3.GetIssueAllTypesAsync(token).ConfigureAwait(false);
-            _cache.IssueTypes.TryAdd(issueTypes);
+            if (issueTypes != null)
+            {
+                _cache.IssueTypes.TryAdd(issueTypes);
+            }
         }
 
         var values = _cache.IssueTypes.Values;
@@ -65,17 +68,18 @@ internal sealed class IssueTypeService : IIssueTypeService
     {
         ArgumentException.ThrowIfNullOrEmpty(projectKey);
 
-        _logger.LogInformation("Getting issue types of project {ProjectKey}", projectKey);
-
-        var issueTypes = await _clientV3.GetAllStatusesAsync(projectKey, token).ConfigureAwait(false);
-        if (issueTypes == null)
+        if (!_cache.ProjectIssueTypes.ContainsKey(projectKey))
         {
-            yield break;
+            _logger.LogInformation("Getting issue types of project {ProjectKey}", projectKey);
+
+            var issueTypes = await _clientV3.GetAllStatusesAsync(projectKey, token).ConfigureAwait(false);
+            _cache.ProjectIssueTypes.TryAdd(projectKey, new JiraEntityDictionary<IssueTypeWithStatus>(issueTypes ?? []));
         }
 
-        foreach (var issueType in issueTypes)
+        var values = _cache.ProjectIssueTypes[projectKey].Values;
+        foreach (var value in values)
         {
-            yield return issueType;
+            yield return value;
         }
     }
 }

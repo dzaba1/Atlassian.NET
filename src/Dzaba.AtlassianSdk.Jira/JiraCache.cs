@@ -22,4 +22,29 @@ public class JiraCache
     /// Gets the cached project components.
     /// </summary>
     public JiraEntityDictionary<ProjectComponent> Components { get; } = new JiraEntityDictionary<ProjectComponent>();
+
+    /// <summary>
+    /// Gets the cached project versions.
+    /// </summary>
+    public JiraEntityDictionary<Version> Versions { get; } = new JiraEntityDictionary<Version>();
+
+    /// <summary>
+    /// Gets the cached issue priorities.
+    /// </summary>
+    public JiraEntityDictionary<Priority> Priorities { get; } = new JiraEntityDictionary<Priority>();
+
+    /// <summary>
+    /// Gets the cached issue statuses.
+    /// </summary>
+    public JiraEntityDictionary<StatusDetails> Statuses { get; } = new JiraEntityDictionary<StatusDetails>();
+
+    /// <summary>
+    /// Gets the cached issue resolutions.
+    /// </summary>
+    public JiraEntityDictionary<ResolutionJsonBean> Resolutions { get; } = new JiraEntityDictionary<ResolutionJsonBean>();
+
+    /// <summary>
+    /// Gets the cached issue types, keyed by project key.
+    /// </summary>
+    public ConcurrentDictionary<string, JiraEntityDictionary<IssueTypeWithStatus>> ProjectIssueTypes { get; } = new ConcurrentDictionary<string, JiraEntityDictionary<IssueTypeWithStatus>>();
 }

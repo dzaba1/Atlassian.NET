@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
+using System.Threading.Tasks;
 using Dzaba.AtlassianSdk.Jira.Model.V3;
 using Microsoft.Extensions.Logging;
 
@@ -25,26 +28,43 @@ internal sealed class IssuePriorityService : IIssuePriorityService
 
     private readonly IClient _clientV3;
     private readonly ILogger<IssuePriorityService> _logger;
+    private readonly JiraCache _cache;
 
-    public IssuePriorityService(IClient clientV3, ILogger<IssuePriorityService> logger)
+    public IssuePriorityService(IClient clientV3, ILogger<IssuePriorityService> logger, JiraCache cache)
     {
         ArgumentNullException.ThrowIfNull(clientV3);
         ArgumentNullException.ThrowIfNull(logger);
+        ArgumentNullException.ThrowIfNull(cache);
 
         _clientV3 = clientV3;
         _logger = logger;
+        _cache = cache;
     }
 
-    public IAsyncEnumerable<Priority> GetPrioritiesAsync(CancellationToken token = default)
+    public async IAsyncEnumerable<Priority> GetPrioritiesAsync([EnumeratorCancellation] CancellationToken token = default)
     {
-        _logger.LogInformation("Getting all issue priorities");
+        if (!_cache.Priorities.Any())
+        {
+            _logger.LogInformation("Getting all issue priorities");
 
-        return PageExpander.ExpandAsync(
-            (startAt, maxResults, t) => _clientV3.SearchPrioritiesAsync(
-                startAt.ToString(CultureInfo.InvariantCulture), maxResults.ToString(CultureInfo.InvariantCulture), null, null, null, null, null, t),
-            page => page.Values,
-            page => page.IsLast,
-            MaxPrioritiesResults,
-            token);
+            var priorities = PageExpander.ExpandAsync(
+                (startAt, maxResults, t) => _clientV3.SearchPrioritiesAsync(
+                    startAt.ToString(CultureInfo.InvariantCulture), maxResults.ToString(CultureInfo.InvariantCulture), null, null, null, null, null, t),
+                page => page.Values,
+                page => page.IsLast,
+                MaxPrioritiesResults,
+                token);
+
+            await foreach (var priority in priorities.WithCancellation(token).ConfigureAwait(false))
+            {
+                _cache.Priorities.TryAdd(priority);
+            }
+        }
+
+        var values = _cache.Priorities.Values;
+        foreach (var value in values)
+        {
+            yield return value;
+        }
     }
 }

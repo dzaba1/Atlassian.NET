@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Dzaba.AtlassianSdk.Jira.Model.V3;
@@ -60,14 +62,17 @@ internal sealed class ProjectVersionService : IProjectVersionService
 
     private readonly IClient _clientV3;
     private readonly ILogger<ProjectVersionService> _logger;
+    private readonly JiraCache _cache;
 
-    public ProjectVersionService(IClient clientV3, ILogger<ProjectVersionService> logger)
+    public ProjectVersionService(IClient clientV3, ILogger<ProjectVersionService> logger, JiraCache cache)
     {
         ArgumentNullException.ThrowIfNull(clientV3);
         ArgumentNullException.ThrowIfNull(logger);
+        ArgumentNullException.ThrowIfNull(cache);
 
         _clientV3 = clientV3;
         _logger = logger;
+        _cache = cache;
     }
 
     public async Task<Model.V3.Version> CreateVersionAsync(Model.V3.Version projectVersion, CancellationToken token = default)
@@ -76,7 +81,12 @@ internal sealed class ProjectVersionService : IProjectVersionService
 
         _logger.LogInformation("Creating version {Version} in project {ProjectKey}", projectVersion.Name, projectVersion.Project);
 
-        return await _clientV3.CreateVersionAsync(projectVersion, token).ConfigureAwait(false);
+        var version = await _clientV3.CreateVersionAsync(projectVersion, token).ConfigureAwait(false);
+
+        // invalidate the cache
+        _cache.Versions.Clear();
+
+        return version;
     }
 
     public async Task DeleteVersionAsync(string versionId, string moveFixIssuesTo = null, string moveAffectedIssuesTo = null, CancellationToken token = default)
@@ -92,6 +102,8 @@ internal sealed class ProjectVersionService : IProjectVersionService
             MoveAffectedIssuesTo = ParseReplacementVersionId(moveAffectedIssuesTo, nameof(moveAffectedIssuesTo))
         };
         await _clientV3.DeleteAndReplaceVersionAsync(versionId, body, token).ConfigureAwait(false);
+
+        _cache.Versions.TryRemove(versionId);
     }
 
     private static long ParseReplacementVersionId(string versionId, string paramName)
@@ -109,18 +121,33 @@ internal sealed class ProjectVersionService : IProjectVersionService
         return id;
     }
 
-    public IAsyncEnumerable<Model.V3.Version> GetVersionsAsync(string projectKey, CancellationToken token = default)
+    public async IAsyncEnumerable<Model.V3.Version> GetVersionsAsync(string projectKey, [EnumeratorCancellation] CancellationToken token = default)
     {
         ArgumentException.ThrowIfNullOrEmpty(projectKey);
 
-        _logger.LogInformation("Getting versions of project {ProjectKey}", projectKey);
+        if (!_cache.Versions.Values.Any(v => string.Equals(v.Project, projectKey)))
+        {
+            _logger.LogInformation("Getting versions of project {ProjectKey}", projectKey);
 
-        return PageExpander.ExpandAsync(
-            (startAt, maxResults, t) => _clientV3.GetProjectVersionsPaginatedAsync(projectKey, startAt, maxResults, null, null, null, null, t),
-            page => page.Values,
-            page => page.IsLast,
-            MaxVersionsResults,
-            token);
+            var versions = PageExpander.ExpandAsync(
+                (startAt, maxResults, t) => _clientV3.GetProjectVersionsPaginatedAsync(projectKey, startAt, maxResults, null, null, null, null, t),
+                page => page.Values,
+                page => page.IsLast,
+                MaxVersionsResults,
+                token);
+
+            await foreach (var version in versions.WithCancellation(token).ConfigureAwait(false))
+            {
+                version.Project ??= projectKey;
+                _cache.Versions.TryAdd(version);
+            }
+        }
+
+        var values = _cache.Versions.Values.Where(v => string.Equals(v.Project, projectKey));
+        foreach (var value in values)
+        {
+            yield return value;
+        }
     }
 
     public async Task<Model.V3.Version> GetVersionAsync(string versionId, CancellationToken token = default)
@@ -139,6 +166,11 @@ internal sealed class ProjectVersionService : IProjectVersionService
 
         _logger.LogInformation("Updating version {VersionId}", version.Id);
 
-        return await _clientV3.UpdateVersionAsync(version.Id, version, token).ConfigureAwait(false);
+        var updated = await _clientV3.UpdateVersionAsync(version.Id, version, token).ConfigureAwait(false);
+
+        // invalidate the cache
+        _cache.Versions.Clear();
+
+        return updated;
     }
 }
