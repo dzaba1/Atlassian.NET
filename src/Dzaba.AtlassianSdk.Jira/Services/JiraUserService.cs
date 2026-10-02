@@ -77,14 +77,17 @@ internal sealed class JiraUserService : IJiraUserService
 
     private readonly IClient _clientV3;
     private readonly ILogger<JiraUserService> _logger;
+    private readonly JiraCache _cache;
 
-    public JiraUserService(IClient clientV3, ILogger<JiraUserService> logger)
+    public JiraUserService(IClient clientV3, ILogger<JiraUserService> logger, JiraCache cache)
     {
         ArgumentNullException.ThrowIfNull(clientV3);
         ArgumentNullException.ThrowIfNull(logger);
+        ArgumentNullException.ThrowIfNull(cache);
 
         _clientV3 = clientV3;
         _logger = logger;
+        _cache = cache;
     }
 
     public async Task<User> GetUserAsync(string usernameOrAccountId, CancellationToken token = default)
@@ -116,9 +119,14 @@ internal sealed class JiraUserService : IJiraUserService
 
     public async Task<User> GetMyselfAsync(CancellationToken token = default)
     {
-        _logger.LogInformation("Getting the current user");
+        if (_cache.CurrentUser == null)
+        {
+            _logger.LogInformation("Getting the current user");
+            var jiraUser = await _clientV3.GetCurrentUserAsync(null, token).ConfigureAwait(false);
+            _cache.CurrentUser = jiraUser;
+        }
 
-        return await _clientV3.GetCurrentUserAsync(null, token).ConfigureAwait(false);
+        return _cache.CurrentUser;
     }
 
     public IAsyncEnumerable<User> SearchUsersAsync(string query, CancellationToken token = default)

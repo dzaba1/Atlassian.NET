@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Dzaba.AtlassianSdk.Jira.Model.V3;
@@ -30,29 +31,33 @@ internal sealed class IssueTypeService : IIssueTypeService
 {
     private readonly IClient _clientV3;
     private readonly ILogger<IssueTypeService> _logger;
+    private readonly JiraCache _cache;
 
-    public IssueTypeService(IClient clientV3, ILogger<IssueTypeService> logger)
+    public IssueTypeService(IClient clientV3, ILogger<IssueTypeService> logger, JiraCache cache)
     {
         ArgumentNullException.ThrowIfNull(clientV3);
         ArgumentNullException.ThrowIfNull(logger);
+        ArgumentNullException.ThrowIfNull(cache);
 
         _clientV3 = clientV3;
         _logger = logger;
+        _cache = cache;
     }
 
     public async IAsyncEnumerable<IssueTypeDetails> GetIssueTypesAsync([EnumeratorCancellation] CancellationToken token = default)
     {
-        _logger.LogInformation("Getting all issue types");
-
-        var issueTypes = await _clientV3.GetIssueAllTypesAsync(token).ConfigureAwait(false);
-        if (issueTypes == null)
+        if (!_cache.IssueTypes.Any())
         {
-            yield break;
+            _logger.LogInformation("Getting all issue types");
+
+            var issueTypes = await _clientV3.GetIssueAllTypesAsync(token).ConfigureAwait(false);
+            _cache.IssueTypes.TryAdd(issueTypes);
         }
 
-        foreach (var issueType in issueTypes)
+        var values = _cache.IssueTypes.Values;
+        foreach (var value in values)
         {
-            yield return issueType;
+            yield return value;
         }
     }
 
