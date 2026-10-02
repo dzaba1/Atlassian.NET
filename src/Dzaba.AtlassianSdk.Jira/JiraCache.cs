@@ -44,6 +44,16 @@ public class JiraCache
     public JiraEntityDictionary<ResolutionJsonBean> Resolutions { get; } = new JiraEntityDictionary<ResolutionJsonBean>();
 
     /// <summary>
+    /// Gets the cached custom fields.
+    /// </summary>
+    public JiraEntityDictionary<FieldDetails> CustomFields { get; } = new JiraEntityDictionary<FieldDetails>();
+
+    /// <summary>
+    /// Gets the cached custom fields, keyed by project key.
+    /// </summary>
+    public ConcurrentDictionary<string, JiraEntityDictionary<FieldDetails>> ProjectCustomFields { get; } = new ConcurrentDictionary<string, JiraEntityDictionary<FieldDetails>>();
+
+    /// <summary>
     /// Gets the cached issue types, keyed by project key.
     /// </summary>
     public ConcurrentDictionary<string, JiraEntityDictionary<IssueTypeWithStatus>> ProjectIssueTypes { get; } = new ConcurrentDictionary<string, JiraEntityDictionary<IssueTypeWithStatus>>();
