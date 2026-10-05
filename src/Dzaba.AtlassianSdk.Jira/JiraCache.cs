@@ -26,7 +26,7 @@ public class JiraCache
     /// <summary>
     /// Gets the cached project versions.
     /// </summary>
-    public JiraEntityDictionary<Version> Versions { get; } = new JiraEntityDictionary<Version>();
+    public JiraEntityDictionary<ProjectVersion> Versions { get; } = new JiraEntityDictionary<ProjectVersion>();
 
     /// <summary>
     /// Gets the cached issue priorities.

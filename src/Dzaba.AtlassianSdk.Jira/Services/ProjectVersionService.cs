@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -20,7 +19,7 @@ public interface IProjectVersionService
     /// </summary>
     /// <param name="projectVersion">Information of the new project version.</param>
     /// <param name="token">Cancellation token for this operation.</param>
-    Task<Model.V3.Version> CreateVersionAsync(Model.V3.Version projectVersion, CancellationToken token = default);
+    Task<ProjectVersion> CreateVersionAsync(Model.V3.Version projectVersion, CancellationToken token = default);
 
     /// <summary>
     /// Deletes a project version.
@@ -29,28 +28,28 @@ public interface IProjectVersionService
     /// <param name="moveFixIssuesTo">The version to set fixVersion to on issues where the deleted version is the fix version, If null then the fixVersion is removed.</param>
     /// <param name="moveAffectedIssuesTo">The version to set fixVersion to on issues where the deleted version is the fix version, If null then the fixVersion is removed.</param>
     /// <param name="token">Cancellation token for this operation.</param>
-    Task DeleteVersionAsync(string versionId, string moveFixIssuesTo = null, string moveAffectedIssuesTo = null, CancellationToken token = default);
+    Task DeleteVersionAsync(string versionId, long? moveFixIssuesTo = null, long? moveAffectedIssuesTo = null, CancellationToken token = default);
 
     /// <summary>
     /// Gets the versions for a given project.
     /// </summary>
     /// <param name="projectKey">Key of the project to retrieve versions from.</param>
     /// <param name="token">Cancellation token for this operation.</param>
-    IAsyncEnumerable<Model.V3.Version> GetVersionsAsync(string projectKey, CancellationToken token = default);
+    IAsyncEnumerable<ProjectVersion> GetVersionsAsync(string projectKey, CancellationToken token = default);
 
     /// <summary>
     /// Gets the version specified.
     /// </summary>
     /// <param name="versionId">Identifier of the version.</param>
     /// <param name="token">Cancellation token for this operation.</param>
-    Task<Model.V3.Version> GetVersionAsync(string versionId, CancellationToken token = default);
+    Task<ProjectVersion> GetVersionAsync(string versionId, CancellationToken token = default);
 
     /// <summary>
     /// Updates a version and returns a new instance populated from server.
     /// </summary>
     /// <param name="version">Version to update.</param>
     /// <param name="token">Cancellation token for this operation.</param>
-    Task<Model.V3.Version> UpdateVersionAsync(Model.V3.Version version, CancellationToken token = default);
+    Task<ProjectVersion> UpdateVersionAsync(Model.V3.Version version, CancellationToken token = default);
 }
 
 internal sealed class ProjectVersionService : IProjectVersionService
@@ -75,21 +74,22 @@ internal sealed class ProjectVersionService : IProjectVersionService
         _cache = cache;
     }
 
-    public async Task<Model.V3.Version> CreateVersionAsync(Model.V3.Version projectVersion, CancellationToken token = default)
+    public async Task<ProjectVersion> CreateVersionAsync(Model.V3.Version projectVersion, CancellationToken token = default)
     {
         ArgumentNullException.ThrowIfNull(projectVersion);
 
         _logger.LogInformation("Creating version {Version} in project {ProjectKey}", projectVersion.Name, projectVersion.Project);
 
-        var version = await _clientV3.CreateVersionAsync(projectVersion, token).ConfigureAwait(false);
+        var model = await _clientV3.CreateVersionAsync(projectVersion, token).ConfigureAwait(false);
+        model.Project ??= projectVersion.Project;
 
-        // invalidate the cache
+        // invalidate the cache, a partially filled one would hide the other versions of the project
         _cache.Versions.Clear();
 
-        return version;
+        return new ProjectVersion(model, this);
     }
 
-    public async Task DeleteVersionAsync(string versionId, string moveFixIssuesTo = null, string moveAffectedIssuesTo = null, CancellationToken token = default)
+    public async Task DeleteVersionAsync(string versionId, long? moveFixIssuesTo = null, long? moveAffectedIssuesTo = null, CancellationToken token = default)
     {
         ArgumentException.ThrowIfNullOrEmpty(versionId);
 
@@ -98,34 +98,19 @@ internal sealed class ProjectVersionService : IProjectVersionService
 
         var body = new DeleteAndReplaceVersionBean
         {
-            MoveFixIssuesTo = ParseReplacementVersionId(moveFixIssuesTo, nameof(moveFixIssuesTo)),
-            MoveAffectedIssuesTo = ParseReplacementVersionId(moveAffectedIssuesTo, nameof(moveAffectedIssuesTo))
+            MoveFixIssuesTo = moveFixIssuesTo ?? RemoveVersionFromIssues,
+            MoveAffectedIssuesTo = moveAffectedIssuesTo ?? RemoveVersionFromIssues
         };
         await _clientV3.DeleteAndReplaceVersionAsync(versionId, body, token).ConfigureAwait(false);
 
         _cache.Versions.TryRemove(versionId);
     }
 
-    private static long ParseReplacementVersionId(string versionId, string paramName)
-    {
-        if (string.IsNullOrEmpty(versionId))
-        {
-            return RemoveVersionFromIssues;
-        }
-
-        if (!long.TryParse(versionId, NumberStyles.None, CultureInfo.InvariantCulture, out var id))
-        {
-            throw new ArgumentException($"'{versionId}' is not a valid version identifier.", paramName);
-        }
-
-        return id;
-    }
-
-    public async IAsyncEnumerable<Model.V3.Version> GetVersionsAsync(string projectKey, [EnumeratorCancellation] CancellationToken token = default)
+    public async IAsyncEnumerable<ProjectVersion> GetVersionsAsync(string projectKey, [EnumeratorCancellation] CancellationToken token = default)
     {
         ArgumentException.ThrowIfNullOrEmpty(projectKey);
 
-        if (!_cache.Versions.Values.Any(v => string.Equals(v.Project, projectKey)))
+        if (!_cache.Versions.Values.Any(v => string.Equals(v.Model.Project, projectKey)))
         {
             _logger.LogInformation("Getting versions of project {ProjectKey}", projectKey);
 
@@ -136,41 +121,43 @@ internal sealed class ProjectVersionService : IProjectVersionService
                 MaxVersionsResults,
                 token);
 
-            await foreach (var version in versions.WithCancellation(token).ConfigureAwait(false))
+            await foreach (var model in versions.WithCancellation(token).ConfigureAwait(false))
             {
-                version.Project ??= projectKey;
-                _cache.Versions.TryAdd(version);
+                model.Project ??= projectKey;
+                _cache.Versions.TryAdd(new ProjectVersion(model, this));
             }
         }
 
-        var values = _cache.Versions.Values.Where(v => string.Equals(v.Project, projectKey));
+        var values = _cache.Versions.Values.Where(v => string.Equals(v.Model.Project, projectKey));
         foreach (var value in values)
         {
             yield return value;
         }
     }
 
-    public async Task<Model.V3.Version> GetVersionAsync(string versionId, CancellationToken token = default)
+    public async Task<ProjectVersion> GetVersionAsync(string versionId, CancellationToken token = default)
     {
         ArgumentException.ThrowIfNullOrEmpty(versionId);
 
         _logger.LogInformation("Getting version {VersionId}", versionId);
 
-        return await _clientV3.GetVersionAsync(versionId, null, token).ConfigureAwait(false);
+        var model = await _clientV3.GetVersionAsync(versionId, null, token).ConfigureAwait(false);
+        return new ProjectVersion(model, this);
     }
 
-    public async Task<Model.V3.Version> UpdateVersionAsync(Model.V3.Version version, CancellationToken token = default)
+    public async Task<ProjectVersion> UpdateVersionAsync(Model.V3.Version version, CancellationToken token = default)
     {
         ArgumentNullException.ThrowIfNull(version);
         ArgumentException.ThrowIfNullOrEmpty(version.Id, nameof(version));
 
         _logger.LogInformation("Updating version {VersionId}", version.Id);
 
-        var updated = await _clientV3.UpdateVersionAsync(version.Id, version, token).ConfigureAwait(false);
+        var model = await _clientV3.UpdateVersionAsync(version.Id, version, token).ConfigureAwait(false);
+        model.Project ??= version.Project;
 
         // invalidate the cache
         _cache.Versions.Clear();
 
-        return updated;
+        return new ProjectVersion(model, this);
     }
 }

@@ -124,7 +124,7 @@ public class Project : IJiraEntity
     /// </summary>
     /// <param name="projectVersion">Information of the new project version.</param>
     /// <param name="token">Cancellation token for this operation.</param>
-    public Task<Model.V3.Version> AddVersionAsync(Model.V3.Version projectVersion, CancellationToken token = default)
+    public Task<ProjectVersion> AddVersionAsync(Model.V3.Version projectVersion, CancellationToken token = default)
     {
         ArgumentNullException.ThrowIfNull(projectVersion);
 
@@ -136,7 +136,7 @@ public class Project : IJiraEntity
     /// Gets the versions for this project.
     /// </summary>
     /// <param name="token">Cancellation token for this operation.</param>
-    public IAsyncEnumerable<Model.V3.Version> GetVersionsAsync(CancellationToken token = default)
+    public IAsyncEnumerable<ProjectVersion> GetVersionsAsync(CancellationToken token = default)
     {
         return _versionService.GetVersionsAsync(Key, token);
     }
@@ -148,12 +148,12 @@ public class Project : IJiraEntity
     /// <param name="moveFixIssuesTo">The version to set fixVersion to on issues where the deleted version is the fix version, If null then the fixVersion is removed.</param>
     /// <param name="moveAffectedIssuesTo">The version to set fixVersion to on issues where the deleted version is the fix version, If null then the fixVersion is removed.</param>
     /// <param name="token">Cancellation token for this operation.</param>
-    public async Task DeleteVersionAsync(string versionName, string moveFixIssuesTo = null, string moveAffectedIssuesTo = null, CancellationToken token = default)
+    public async Task DeleteVersionAsync(string versionName, long? moveFixIssuesTo = null, long? moveAffectedIssuesTo = null, CancellationToken token = default)
     {
         ArgumentException.ThrowIfNullOrEmpty(versionName);
 
         var version = await GetVersionsAsync(token)
-            .FirstOrDefaultAsync(v => string.Equals(v.Name, versionName, StringComparison.OrdinalIgnoreCase), token)
+            .FirstOrDefaultAsync(v => string.Equals(v.Model.Name, versionName, StringComparison.OrdinalIgnoreCase), token)
             .ConfigureAwait(false);
 
         if (version == null)
