@@ -44,6 +44,11 @@ public class JiraCache
     public JiraEntityDictionary<ResolutionJsonBean> Resolutions { get; } = new JiraEntityDictionary<ResolutionJsonBean>();
 
     /// <summary>
+    /// Gets the cached projects.
+    /// </summary>
+    public JiraEntityDictionary<Project> Projects { get; } = new JiraEntityDictionary<Project>();
+
+    /// <summary>
     /// Gets the cached custom fields.
     /// </summary>
     public JiraEntityDictionary<FieldDetails> CustomFields { get; } = new JiraEntityDictionary<FieldDetails>();

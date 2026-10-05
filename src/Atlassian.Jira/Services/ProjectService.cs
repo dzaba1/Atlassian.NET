@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Atlassian.Jira.Remote;
+using Newtonsoft.Json;
 using RestSharp;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,7 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Atlassian.Jira.Remote;
+namespace Atlassian.Jira.Services;
 
 internal class ProjectService : IProjectService
 {
