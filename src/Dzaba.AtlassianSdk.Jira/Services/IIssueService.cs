@@ -1,0 +1,286 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace Dzaba.AtlassianSdk.Jira.Services;
+
+/// <summary>
+/// Represents the operations on the issues of jira.
+/// </summary>
+public interface IIssueService
+{
+    /// <summary>
+    /// Retrieves an issue by its key.
+    /// </summary>
+    /// <param name="issueKey">The issue key to retrieve</param>
+    /// <param name="token">Cancellation token for this operation.</param>
+    Task<Issue> GetIssueAsync(string issueKey, CancellationToken token = default);
+
+    /// <summary>
+    /// Retrieves a list of issues by their keys.
+    /// </summary>
+    /// <param name="issueKeys">List of issue keys to retrieve.</param>
+    /// <param name="token">Cancellation token for this operation.</param>
+    Task<IReadOnlyDictionary<string, Issue>> GetIssuesAsync(IEnumerable<string> issueKeys, CancellationToken token = default);
+
+    /// <summary>
+    /// Retrieves a list of issues by their keys.
+    /// </summary>
+    /// <param name="issueKeys">List of issue keys to retrieve.</param>
+    Task<IReadOnlyDictionary<string, Issue>> GetIssuesAsync(params string[] issueKeys);
+
+    /// <summary>
+    /// Updates all fields of an issue.
+    /// </summary>
+    /// <param name="issue">Issue to update.</param>
+    /// <param name="options">Options for the update</param>
+    /// <param name="token">Cancellation token for this operation.</param>
+    Task UpdateIssueAsync(Issue issue, IssueUpdateOptions options = null, CancellationToken token = default);
+
+    /// <summary>
+    /// Creates an issue and returns a new instance populated from server.
+    /// </summary>
+    /// <param name="issue">Issue to create.</param>
+    /// <param name="token">Cancellation token for this operation.</param>
+    /// <returns>Promise that contains the new issue key when resolved.</returns>
+    Task<string> CreateIssueAsync(Issue issue, CancellationToken token = default);
+
+    /// <summary>
+    /// Deletes the specified issue.
+    /// </summary>
+    /// <param name="issueKey">Key of issue to delete.</param>
+    /// <param name="token">Cancellation token for this operation.</param>
+    Task DeleteIssueAsync(string issueKey, CancellationToken token = default);
+
+    /// <summary>
+    /// Execute a specific JQL query and return the resulting issues.
+    /// </summary>
+    /// <param name="jql">JQL search query</param>
+    /// <param name="token">Cancellation token for this operation.</param>
+    IAsyncEnumerable<Issue> GetIssuesFromJqlAsync(string jql, CancellationToken token = default);
+
+    /// <summary>
+    /// Execute a specific JQL query and return the resulting issues.
+    /// </summary>
+    /// <param name="options">Options to use when executing the search.</param>
+    /// <param name="token">Cancellatin token for this operation.</param>
+    IAsyncEnumerable<Issue> GetIssuesFromJqlAsync(IssueSearchOptions options, CancellationToken token = default);
+
+    /// <summary>
+    /// Transition an issue through a workflow action.
+    /// </summary>
+    /// <param name="issue">Issue to transition.</param>
+    /// <param name="actionNameOrId">The workflow action name or id to transition to.</param>
+    /// <param name="updates">Additional updates to perform when transitioning the issue.</param>
+    /// <param name="token">Cancellation token for this operation.</param>
+    Task ExecuteWorkflowActionAsync(Issue issue, string actionNameOrId, WorkflowTransitionUpdates updates, CancellationToken token = default);
+
+    /// <summary>
+    /// Gets time tracking information for an issue.
+    /// </summary>
+    /// <param name="issueKey">The issue key.</param>
+    /// <param name="token">Cancellation token for this operation.</param>
+    Task<Model.V3.TimeTrackingDetails> GetTimeTrackingDataAsync(string issueKey, CancellationToken token = default);
+
+    /// <summary>
+    /// Gets metadata object containing dictionary with issuefields identifiers as keys and their metadata as values
+    /// </summary>
+    /// <param name="issueKey">The issue key.</param>
+    /// <param name="token">Cancellation token for this operation.</param>
+    Task<IReadOnlyDictionary<string, Model.V3.IssueUpdateMetadata>> GetFieldsEditMetadataAsync(string issueKey, CancellationToken token = default);
+
+    /// <summary>
+    /// Adds a comment to an issue.
+    /// </summary>
+    /// <param name="issueKey">Issue key to add the comment to.</param>
+    /// <param name="comment">Comment object to add.</param>
+    /// <param name="token">Cancellation token for this operation.</param>
+    Task<Model.V3.Comment> AddCommentAsync(string issueKey, Model.V3.Comment comment, CancellationToken token = default);
+
+    /// <summary>
+    /// Returns all comments of an issue.
+    /// </summary>
+    /// <param name="issueKey">Issue key to retrieve comments from.</param>
+    /// <param name="token">Cancellation token for this operation.</param>
+    IAsyncEnumerable<Model.V3.Comment> GetCommentsAsync(string issueKey, CancellationToken token = default);
+
+    /// <summary>
+    /// Returns all comments of an issue.
+    /// </summary>
+    /// <param name="issueKey">Issue key to retrieve comments from.</param>
+    /// <param name="options">Options to configure the values of the query.</param>
+    /// <param name="token">Cancellation token for this operation.</param>
+    IAsyncEnumerable<Model.V3.Comment> GetCommentsAsync(string issueKey, CommentQueryOptions options, CancellationToken token = default);
+
+    /// <summary>
+    /// Removes a comment from an issue.
+    /// </summary>
+    /// <param name="issueKey">Issue key to remove the comment from.</param>
+    /// <param name="commentId">Identifier of the comment to remove.</param>
+    /// <param name="token">Cancellation token for this operation.</param>
+    Task DeleteCommentAsync(string issueKey, string commentId, CancellationToken token = default);
+
+    /// <summary>
+    /// Updates a comment in an issue.
+    /// </summary>
+    /// <param name="issueKey">Issue key to update the comment to.</param>
+    /// <param name="comment">Comment object to update.</param>
+    /// <param name="token">Cancellation token for this operation.</param>
+    Task<Model.V3.Comment> UpdateCommentAsync(string issueKey, Model.V3.Comment comment, CancellationToken token = default);
+
+    /// <summary>
+    /// Returns the workflow actions that an issue can be transitioned to.
+    /// </summary>
+    /// <param name="issueKey">The issue key</param>
+    /// <param name="token">Cancellation token for this operation.</param>
+    IAsyncEnumerable<Model.V3.Transitions> GetActionsAsync(string issueKey, CancellationToken token = default);
+
+    /// <summary>
+    /// Returns the workflow actions that an issue can be transitioned to.
+    /// </summary>
+    /// <param name="issueKey">The issue key</param>
+    /// <param name="expandTransitionFields">Whether to show the transition fields</param>
+    /// <param name="token">Cancellation token for this operation.</param>
+    IAsyncEnumerable<Model.V3.Transitions> GetActionsAsync(string issueKey, bool expandTransitionFields, CancellationToken token = default);
+
+    /// <summary>
+    /// Retrieve attachment metadata from server for this issue
+    /// </summary>
+    /// <param name="issueKey">The issue key to get attachments from.</param>
+    /// <param name="token">Cancellation token for this operation.</param>
+    IAsyncEnumerable<Attachment> GetAttachmentsAsync(string issueKey, CancellationToken token = default);
+
+    /// <summary>
+    /// Retrieve the watchers from server for the issue specified.
+    /// </summary>
+    /// <param name="issueKey">The issue key to get watchers from.</param>
+    /// <param name="token">Cancellation token for this operation.</param>
+    IAsyncEnumerable<Model.V3.User> GetWatchersAsync(string issueKey, CancellationToken token = default);
+
+    /// <summary>
+    /// Removes a user from the watcher list of an issue.
+    /// </summary>
+    /// <param name="issueKey">The issue key to remove the watcher from.</param>
+    /// <param name="usernameOrAccountId">User name or account id of user to remove.</param>
+    /// <param name="token">Cancellation token for this operation.</param>
+    Task DeleteWatcherAsync(string issueKey, string usernameOrAccountId, CancellationToken token = default);
+
+    /// <summary>
+    /// Adds a user to the watcher list of an issue.
+    /// </summary>
+    /// <param name="issueKey">The issue key to add the watcher to.</param>
+    /// <param name="usernameOrAccountId">User name or account id of user to add.</param>
+    /// <param name="token">Cancellation token for this operation.</param>
+    Task AddWatcherAsync(string issueKey, string usernameOrAccountId, CancellationToken token = default);
+
+    /// <summary>
+    /// Retrieve the change logs from server for the issue specified.
+    /// </summary>
+    /// <param name="issueKey">The issue key to get watchers from.</param>
+    /// <param name="token">Cancellation token for this operation.</param>
+    IAsyncEnumerable<Model.V3.Changelog> GetChangeLogsAsync(string issueKey, CancellationToken token = default);
+
+    /// <summary>
+    /// Returns the issues that are marked as sub tasks of this issue.
+    /// </summary>
+    /// <param name="issueKey">The issue key to get sub tasks from.</param>
+    /// <param name="token">Cancellation token for this operation.</param>
+    IAsyncEnumerable<Issue> GetSubTasksAsync(string issueKey, CancellationToken token = default);
+
+    /// <summary>
+    /// Add one or more attachments to an issue.
+    /// </summary>
+    /// <param name="issueKey">Issue key to add attachments to.</param>
+    /// <param name="attachments">Attachments to add.</param>
+    /// <param name="token">Cancellation token for this operation.</param>
+    Task AddAttachmentsAsync(string issueKey, UploadAttachmentInfo[] attachments, CancellationToken token = default);
+
+    /// <summary>
+    /// Removes an attachment from an issue.
+    /// </summary>
+    /// <param name="issueKey">Issue key to remove the attachment from.</param>
+    /// <param name="attachmentId">Identifier of the attachment to remove.</param>
+    /// <param name="token">Cancellation token for this operation.</param>
+    Task DeleteAttachmentAsync(string issueKey, string attachmentId, CancellationToken token = default);
+
+    /// <summary>
+    /// Gets the worklog with the given identifier from an issue.
+    /// </summary>
+    /// <param name="issueKey">The issue key to retrieve the worklog from.</param>
+    /// <param name="worklogId">The worklog identifier.</param>
+    /// <param name="token">Cancellation token for this operation.</param>
+    /// <returns></returns>
+    Task<Model.V3.Worklog> GetWorklogAsync(string issueKey, string worklogId, CancellationToken token = default);
+
+    /// <summary>
+    /// Gets the worklogs for an issue.
+    /// </summary>
+    /// <param name="issueKey">Issue key to retrieve the worklogs from.</param>
+    /// <param name="token">Cancellation token for this operation.</param>
+    IAsyncEnumerable<Model.V3.Worklog> GetWorklogsAsync(string issueKey, CancellationToken token = default);
+
+    /// <summary>
+    /// Adds a work log to an issue.
+    /// </summary>
+    /// <param name="issueKey">Issue key to add the worklog to.</param>
+    /// <param name="worklog">The worklog instance to add.</param>
+    /// <param name="worklogStrategy">How to handle the remaining estimate, defaults to AutoAdjustRemainingEstimate.</param>
+    /// <param name="newEstimate">New estimate (only used if worklogStrategy set to NewRemainingEstimate)</param>
+    /// <param name="token">Cancellation token for this operation.</param>
+    Task<Model.V3.Worklog> AddWorklogAsync(string issueKey, Model.V3.Worklog worklog, WorklogStrategy worklogStrategy = WorklogStrategy.AutoAdjustRemainingEstimate, string newEstimate = null, CancellationToken token = default);
+
+    /// <summary>
+    /// Removes a work log from an issue.
+    /// </summary>
+    /// <param name="issueKey">Issue key to remove the work log from.</param>
+    /// <param name="worklogId">The identifier of the work log to remove.</param>
+    /// <param name="worklogStrategy">How to handle the remaining estimate, defaults to AutoAdjustRemainingEstimate.</param>
+    /// <param name="newEstimate">New estimate (only used if worklogStrategy set to NewRemainingEstimate)</param>
+    /// <param name="token">Cancellation token for this operation.</param>
+    Task DeleteWorklogAsync(string issueKey, string worklogId, WorklogStrategy worklogStrategy = WorklogStrategy.AutoAdjustRemainingEstimate, string newEstimate = null, CancellationToken token = default);
+
+    /// <summary>
+    /// Assigns an issue to the specified user.
+    /// </summary>
+    /// <param name="issueKey">Identifier of the issue to assign.</param>
+    /// <param name="assignee">The username or account id of the user to assign the issue to.</param>
+    /// <param name="token">Cancellation token for this operation.</param>
+    Task AssignIssueAsync(string issueKey, string assignee, CancellationToken token = default);
+
+    /// <summary>
+    /// Fetch all entity properties attached to the issue.
+    /// </summary>
+    /// <param name="issueKey">Identifier of the issue.</param>
+    /// <param name="token">Cancellation token for this operation.</param>
+    IAsyncEnumerable<string> GetPropertyKeysAsync(string issueKey, CancellationToken token = default);
+
+    /// <summary>
+    /// Fetch requested entity properties attached to the issue.
+    /// </summary>
+    /// <param name="issueKey">Identifier of the issue.</param>
+    /// <param name="propertyKeys">The property keys to fetch.</param>
+    /// <param name="token">Cancellation token for this operation.</param>
+    /// <returns>A mapping between requested property keys and stored values.</returns>
+    Task<IReadOnlyDictionary<string, object>> GetPropertiesAsync(string issueKey, IEnumerable<string> propertyKeys, CancellationToken token = default);
+
+    /// <summary>
+    /// Adds an entity property to the specified issue.
+    /// </summary>
+    /// <remarks>
+    /// This method overwrites any already existing property values with the same key!
+    /// </remarks>
+    /// <param name="issueKey">Identifier of the issue.</param>
+    /// <param name="propertyKey">The property key to identify the value.</param>
+    /// <param name="obj">The JSON construct to store as property value.</param>
+    /// <param name="token">Cancellation token for this operation.</param>
+    Task SetPropertyAsync(string issueKey, string propertyKey, object obj, CancellationToken token = default);
+
+    /// <summary>
+    /// Removes the entity property from the specified issue.
+    /// </summary>
+    /// <param name="issueKey">Identifier of the issue.</param>
+    /// <param name="propertyKey">The property key to identify the value.</param>
+    /// <param name="token">Cancellation token for this operation.</param>
+    Task DeletePropertyAsync(string issueKey, string propertyKey, CancellationToken token = default);
+}

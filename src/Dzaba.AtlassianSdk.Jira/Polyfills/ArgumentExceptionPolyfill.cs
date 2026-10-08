@@ -21,6 +21,19 @@ internal static class ArgumentExceptionPolyfill
                 throw new System.ArgumentException("The value cannot be an empty string.", paramName);
             }
         }
+
+        public static void ThrowIfNullOrWhiteSpace(string argument, string paramName = null)
+        {
+            if (argument is null)
+            {
+                throw new System.ArgumentNullException(paramName);
+            }
+
+            if (string.IsNullOrWhiteSpace(argument))
+            {
+                throw new System.ArgumentException("The value cannot be an empty string or composed entirely of whitespace.", paramName);
+            }
+        }
     }
 }
 
