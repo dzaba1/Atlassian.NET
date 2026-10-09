@@ -25,12 +25,6 @@ public interface IIssueService
     Task<IReadOnlyDictionary<string, Issue>> GetIssuesAsync(IEnumerable<string> issueKeys, CancellationToken token = default);
 
     /// <summary>
-    /// Retrieves a list of issues by their keys.
-    /// </summary>
-    /// <param name="issueKeys">List of issue keys to retrieve.</param>
-    Task<IReadOnlyDictionary<string, Issue>> GetIssuesAsync(params string[] issueKeys);
-
-    /// <summary>
     /// Updates all fields of an issue.
     /// </summary>
     /// <param name="issue">Issue to update.</param>
@@ -134,7 +128,7 @@ public interface IIssueService
     /// </summary>
     /// <param name="issueKey">The issue key</param>
     /// <param name="token">Cancellation token for this operation.</param>
-    IAsyncEnumerable<Model.V3.Transitions> GetActionsAsync(string issueKey, CancellationToken token = default);
+    IAsyncEnumerable<Model.V3.IssueTransition> GetActionsAsync(string issueKey, CancellationToken token = default);
 
     /// <summary>
     /// Returns the workflow actions that an issue can be transitioned to.
@@ -142,7 +136,7 @@ public interface IIssueService
     /// <param name="issueKey">The issue key</param>
     /// <param name="expandTransitionFields">Whether to show the transition fields</param>
     /// <param name="token">Cancellation token for this operation.</param>
-    IAsyncEnumerable<Model.V3.Transitions> GetActionsAsync(string issueKey, bool expandTransitionFields, CancellationToken token = default);
+    IAsyncEnumerable<Model.V3.IssueTransition> GetActionsAsync(string issueKey, bool expandTransitionFields, CancellationToken token = default);
 
     /// <summary>
     /// Retrieve attachment metadata from server for this issue

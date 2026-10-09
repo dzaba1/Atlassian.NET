@@ -106,7 +106,7 @@ internal sealed class IssueLinkService : IIssueLinkService
 
         if (!string.IsNullOrEmpty(comment))
         {
-            body.Comment = new Comment { Body = CreateAdfBody(comment) };
+            body.Comment = new Comment { Body = AdfDocument.FromText(comment) };
         }
 
         await _clientV3.LinkIssuesAsync(body, token).ConfigureAwait(false);
@@ -178,26 +178,5 @@ internal sealed class IssueLinkService : IIssueLinkService
     private static bool IsEmpty(LinkedIssue issue)
     {
         return issue == null || (string.IsNullOrEmpty(issue.Key) && string.IsNullOrEmpty(issue.Id));
-    }
-
-    // The V3 API accepts comment bodies only in the Atlassian Document Format.
-    private static object CreateAdfBody(string text)
-    {
-        return new
-        {
-            type = "doc",
-            version = 1,
-            content = new[]
-            {
-                new
-                {
-                    type = "paragraph",
-                    content = new[]
-                    {
-                        new { type = "text", text }
-                    }
-                }
-            }
-        };
     }
 }
