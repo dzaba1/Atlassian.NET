@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Dzaba.AtlassianSdk.Jira.Model;
@@ -20,6 +23,7 @@ public class Issue : IJiraEntity
     private readonly IIssueService _issueService;
     private readonly IIssueLinkService _linkService;
     private readonly IIssueRemoteLinkService _remoteLinkService;
+    private readonly IIssueFieldService _fieldService;
 
     /// <summary>
     /// Creates an issue wrapping the given model.
@@ -28,20 +32,24 @@ public class Issue : IJiraEntity
     /// <param name="issueService">Service used for the operations on the issue.</param>
     /// <param name="linkService">Service used for the issue links.</param>
     /// <param name="remoteLinkService">Service used for the remote links.</param>
+    /// <param name="fieldService">Service used to look up the custom fields.</param>
     public Issue(IssueBean model,
         IIssueService issueService,
         IIssueLinkService linkService,
-        IIssueRemoteLinkService remoteLinkService)
+        IIssueRemoteLinkService remoteLinkService,
+        IIssueFieldService fieldService)
     {
         ArgumentNullException.ThrowIfNull(model);
         ArgumentNullException.ThrowIfNull(issueService);
         ArgumentNullException.ThrowIfNull(linkService);
         ArgumentNullException.ThrowIfNull(remoteLinkService);
+        ArgumentNullException.ThrowIfNull(fieldService);
 
         Model = model;
         _issueService = issueService;
         _linkService = linkService;
         _remoteLinkService = remoteLinkService;
+        _fieldService = fieldService;
     }
 
     /// <summary>
@@ -58,6 +66,41 @@ public class Issue : IJiraEntity
     /// Unique key of the issue, null if the issue has not been created yet.
     /// </summary>
     public string Key => Model.Key;
+
+    /// <summary>
+    /// Gets the value of a custom field
+    /// </summary>
+    /// <param name="customFieldName">Custom field name</param>
+    /// <param name="token">Cancellation token for this operation.</param>
+    /// <returns>Value of the custom field, null if the field is not set on the issue. For a field holding multiple values, the first one is returned.</returns>
+    public async Task<string> GetCustomFieldAsync(string customFieldName, CancellationToken token = default)
+    {
+        var fieldId = await ResolveCustomFieldIdAsync(customFieldName, token).ConfigureAwait(false);
+
+        if (Model.Fields == null || !Model.Fields.TryGetValue(fieldId, out var value))
+        {
+            return null;
+        }
+
+        return ToFieldString(value);
+    }
+
+    /// <summary>
+    /// Sets the value of a custom field
+    /// </summary>
+    /// <remarks>
+    /// Only the <see cref="Model"/> is changed, call <see cref="SaveChangesAsync"/> to send the value to the server.
+    /// </remarks>
+    /// <param name="customFieldName">Custom field name</param>
+    /// <param name="value">The new value, null clears the field.</param>
+    /// <param name="token">Cancellation token for this operation.</param>
+    public async Task SetCustomFieldAsync(string customFieldName, string value, CancellationToken token = default)
+    {
+        var fieldId = await ResolveCustomFieldIdAsync(customFieldName, token).ConfigureAwait(false);
+
+        Model.Fields ??= new Dictionary<string, object>();
+        Model.Fields[fieldId] = value;
+    }
 
     /// <summary>
     /// Saves field changes to server.
@@ -548,6 +591,102 @@ public class Issue : IJiraEntity
     {
         var serverIssue = await _issueService.GetIssueAsync(Key, token).ConfigureAwait(false);
         Model = serverIssue.Model;
+    }
+
+    private async Task<string> ResolveCustomFieldIdAsync(string customFieldName, CancellationToken token)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(customFieldName);
+
+        var matches = await FindCustomFieldsAsync(_fieldService.GetCustomFieldsAsync(token), customFieldName, token).ToArrayAsync(token).ConfigureAwait(false);
+        var searchedByProject = false;
+        var projectKey = GetNestedFieldValue("project", "key");
+
+        if (matches.Length > 1)
+        {
+            // There are multiple custom fields with the same name, need to find it by the project and issue type.
+            var options = new CustomFieldFetchOptions();
+            if (!string.IsNullOrEmpty(projectKey))
+            {
+                options.ProjectKeys.Add(projectKey);
+
+                var issueTypeId = GetNestedFieldValue("issuetype", "id");
+                var issueTypeName = GetNestedFieldValue("issuetype", "name");
+                if (!string.IsNullOrEmpty(issueTypeId))
+                {
+                    options.IssueTypeIds.Add(issueTypeId);
+                }
+                else if (!string.IsNullOrEmpty(issueTypeName))
+                {
+                    options.IssueTypeNames.Add(issueTypeName);
+                }
+
+                matches = await FindCustomFieldsAsync(_fieldService.GetCustomFieldsAsync(options, token), customFieldName, token).ToArrayAsync(token).ConfigureAwait(false);
+                searchedByProject = true;
+            }
+        }
+
+        if (matches.Length == 0)
+        {
+            var message = $"Could not find custom field with name '{customFieldName}' on the JIRA server.";
+            if (searchedByProject)
+            {
+                message += $" The field was only searched for in the project with key '{projectKey}'."
+                    + " Make sure the custom field is available in the issue create screen for that project.";
+            }
+
+            throw new InvalidOperationException(message);
+        }
+
+        if (matches.Length > 1)
+        {
+            throw new InvalidOperationException($"Found {matches.Length} custom fields with name '{customFieldName}' on the JIRA server and the issue does not specify a project to tell them apart.");
+        }
+
+        return matches[0].Id;
+    }
+
+    private static async IAsyncEnumerable<FieldDetails> FindCustomFieldsAsync(IAsyncEnumerable<FieldDetails> fields, string customFieldName, [EnumeratorCancellation] CancellationToken token)
+    {
+        await foreach (var field in fields.WithCancellation(token).ConfigureAwait(false))
+        {
+            if (string.Equals(field.Name, customFieldName, StringComparison.OrdinalIgnoreCase))
+            {
+                yield return field;
+            }
+        }
+    }
+
+    private string GetNestedFieldValue(string fieldName, string propertyName)
+    {
+        if (Model.Fields == null || !Model.Fields.TryGetValue(fieldName, out var value))
+        {
+            return null;
+        }
+
+        if (value is JsonElement element)
+        {
+            return element.ValueKind == JsonValueKind.Object && element.TryGetProperty(propertyName, out var property)
+                ? ToFieldString(property)
+                : null;
+        }
+
+        return null;
+    }
+
+    private static string ToFieldString(object value)
+    {
+        return value switch
+        {
+            null => null,
+            JsonElement element => element.ValueKind switch
+            {
+                JsonValueKind.Null or JsonValueKind.Undefined => null,
+                JsonValueKind.String => element.GetString(),
+                JsonValueKind.Array => element.GetArrayLength() > 0 ? ToFieldString(element[0]) : null,
+                _ => element.GetRawText()
+            },
+            _ => Convert.ToString(value, CultureInfo.InvariantCulture)
+        };
     }
 
     private static void ValidatePropertyKey(string propertyKey)
