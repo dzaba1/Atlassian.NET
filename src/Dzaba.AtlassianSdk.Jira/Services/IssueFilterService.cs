@@ -65,22 +65,18 @@ internal sealed class IssueFilterService : IIssueFilterService
 {
     private readonly IClient _clientV3;
     private readonly ILogger<IssueFilterService> _logger;
-    private readonly JiraCache _cache;
     private readonly IIssueService _issueService;
 
     public IssueFilterService(IClient clientV3,
         ILogger<IssueFilterService> logger,
-        JiraCache cache,
         IIssueService issueService)
     {
         ArgumentNullException.ThrowIfNull(clientV3);
         ArgumentNullException.ThrowIfNull(logger);
-        ArgumentNullException.ThrowIfNull(cache);
         ArgumentNullException.ThrowIfNull(issueService);
 
         _clientV3 = clientV3;
         _logger = logger;
-        _cache = cache;
         _issueService = issueService;
     }
 
