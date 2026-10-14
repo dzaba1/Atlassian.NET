@@ -1,3 +1,4 @@
+using System;
 using Atlassian.Jira.Linq;
 using Atlassian.Jira.Remote;
 using Atlassian.Jira.Services;
@@ -103,7 +104,7 @@ public interface IJira
     /// <summary>
     /// Url to the JIRA server
     /// </summary>
-    string Url { get; }
+    Uri Url { get; }
 
     IFileSystem FileSystem { get; }
 }
