@@ -82,7 +82,7 @@ public interface IIssueService
     /// </summary>
     /// <param name="issueKey">The issue key.</param>
     /// <param name="token">Cancellation token for this operation.</param>
-    Task<IReadOnlyDictionary<string, Model.V3.IssueUpdateMetadata>> GetFieldsEditMetadataAsync(string issueKey, CancellationToken token = default);
+    Task<IReadOnlyDictionary<string, Model.V3.FieldMetadata>> GetFieldsEditMetadataAsync(string issueKey, CancellationToken token = default);
 
     /// <summary>
     /// Adds a comment to an issue.

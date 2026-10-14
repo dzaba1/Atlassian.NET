@@ -279,10 +279,10 @@ public class Issue : IJiraEntity
     }
 
     /// <summary>
-    /// Gets a dictionary with issue field names as keys and their metadata as values.
+    /// Gets a dictionary with issue field identifiers as keys and their metadata as values.
     /// </summary>
     /// <param name="token">Cancellation token for this operation.</param>
-    public async Task<IReadOnlyDictionary<string, IssueUpdateMetadata>> GetIssueFieldsEditMetadataAsync(CancellationToken token = default)
+    public async Task<IReadOnlyDictionary<string, FieldMetadata>> GetIssueFieldsEditMetadataAsync(CancellationToken token = default)
     {
         EnsureCreated("retrieve issue fields from server");
 
